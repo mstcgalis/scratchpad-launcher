@@ -50,6 +50,7 @@ dependencies {
     implementation libs.core.ktx
     implementation libs.appcompat
     implementation libs.recyclerview
+    implementation libs.kotlinx.coroutines.android
 
     // Android lifecycle
     implementation libs.lifecycle.extensions
@@ -64,4 +65,6 @@ dependencies {
     //Material dependency
     implementation libs.material
 
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation 'junit:junit:4.13.2'
 }
