@@ -21,8 +21,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import app.olauncher.MainViewModel
 import app.olauncher.R
@@ -30,6 +32,7 @@ import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentHomeBinding
+import app.olauncher.helper.Debouncer
 import app.olauncher.helper.appUsagePermissionGranted
 import app.olauncher.helper.dpToPx
 import app.olauncher.helper.expandNotificationDrawer
@@ -54,6 +57,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private lateinit var prefs: Prefs
     private lateinit var viewModel: MainViewModel
     private lateinit var deviceManager: DevicePolicyManager
+    private lateinit var scratchpadDebouncer: Debouncer
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -72,6 +76,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
         deviceManager = context?.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
 
+        scratchpadDebouncer = Debouncer(viewLifecycleOwner.lifecycleScope, 300L)
+        initScratchpad()
         initObservers()
         setHomeAlignment(prefs.homeAlignment)
         initSwipeTouchListener()
@@ -253,6 +259,14 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.homeApp6.setOnLongClickListener(this)
         binding.homeApp7.setOnLongClickListener(this)
         binding.homeApp8.setOnLongClickListener(this)
+    }
+
+    private fun initScratchpad() {
+        binding.scratchpad?.setText(prefs.scratchpadText)
+        binding.scratchpad?.addTextChangedListener(afterTextChanged = { editable ->
+            val text = editable?.toString().orEmpty()
+            scratchpadDebouncer.submit { prefs.scratchpadText = text }
+        })
     }
 
     private fun setHomeAlignment(horizontalGravity: Int = prefs.homeAlignment) {
@@ -726,6 +740,12 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                 textOnClick(view)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        scratchpadDebouncer.cancel()
+        prefs.scratchpadText = binding.scratchpad?.text.toString().orEmpty()
     }
 
     override fun onDestroyView() {
