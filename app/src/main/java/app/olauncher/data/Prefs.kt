@@ -8,6 +8,8 @@ import androidx.core.content.edit
 
 class Prefs(context: Context) {
     private val PREFS_FILENAME = "app.olauncher"
+    private val SCRATCHPAD_PREFS_FILENAME = "app.olauncher.scratchpad"
+    private val SCRATCHPAD_TEXT = "SCRATCHPAD_TEXT"
 
     private val FIRST_OPEN = "FIRST_OPEN"
     private val FIRST_OPEN_TIME = "FIRST_OPEN_TIME"
@@ -119,6 +121,7 @@ class Prefs(context: Context) {
     private val IS_SHORTCUT_SWIPE_RIGHT = "IS_SHORTCUT_SWIPE_RIGHT"
 
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_FILENAME, 0)
+    private val scratchpadPrefs: SharedPreferences = context.getSharedPreferences(SCRATCHPAD_PREFS_FILENAME, 0)
 
     var firstOpen: Boolean
         get() = prefs.getBoolean(FIRST_OPEN, true)
@@ -159,6 +162,10 @@ class Prefs(context: Context) {
     var dailyWallpaperUrl: String
         get() = prefs.getString(DAILY_WALLPAPER_URL, "").toString()
         set(value) = prefs.edit { putString(DAILY_WALLPAPER_URL, value).apply() }
+
+    var scratchpadText: String
+        get() = scratchpadPrefs.getString(SCRATCHPAD_TEXT, "").toString()
+        set(value) = scratchpadPrefs.edit { putString(SCRATCHPAD_TEXT, value).apply() }
 
     var homeAppsNum: Int
         get() = prefs.getInt(HOME_APPS_NUM, 3)
