@@ -27,10 +27,10 @@ Split Olauncher's home screen (`HomeFragment`) into two vertical panes:
 
 ## Persistence
 
-- Jetpack **DataStore (Preferences)**, single string key — Room would be overkill for one text blob.
+- **`SharedPreferences` via `Prefs.kt`** (not DataStore — corrected after reading the actual Olauncher source; the whole codebase persists settings through a single `Prefs` wrapper class around `SharedPreferences`, and the scratchpad follows that exact existing pattern rather than introducing a new persistence library). Its own dedicated `SharedPreferences` file (`app.olauncher.scratchpad`), separate from Olauncher's main settings file, so it can be excluded from backup independently.
 - Save on text-change with ~300ms debounce to avoid excessive IO.
-- Flush on `onPause`/`onStop` as a safety net against process death mid-edit.
-- **No-leak guarantee**: confirm `android:allowBackup="false"` in the manifest (verify Olauncher's current setting, set explicitly if not already). No share/export intent wired to the scratchpad text. No network permission touches scratchpad data.
+- Flush on `onPause` as a safety net against process death mid-edit.
+- **No-leak guarantee**: Olauncher's manifest has `android:allowBackup="true"` (needed for its other settings) — rather than disabling backup app-wide, the scratchpad's dedicated prefs file is explicitly excluded via `<exclude domain="sharedpref" path="app.olauncher.scratchpad.xml">` in both `data_extraction_rules.xml` (Android 12+ cloud backup) and `backup_rules.xml` (pre-12 full backup). No share/export intent wired to the scratchpad text. No network permission touches scratchpad data.
 
 ## Legibility
 
@@ -38,13 +38,14 @@ Text shadow/outline approach: `Paint.setShadowLayer` (or equivalent) behind the 
 
 ## Error handling
 
-- DataStore write failure: keep text in in-memory ViewModel state, retry write, never clear the field on error.
+- `SharedPreferences` writes are synchronous to the in-memory map and asynchronous to disk (`apply()`), so the on-screen `EditText` state is never at risk from a write failure — nothing to retry or roll back.
 - No new crash surface expected beyond Olauncher's existing lifecycle handling.
 
 ## Testing
 
-- Unit test: DataStore repository save/load round-trip and debounce behavior.
-- Manual on-device: split-screen layout rendering, legibility check across a few wallpapers (solid dark, solid light, busy photo), reboot-survival check (write text, reboot, confirm persisted).
+- Unit test: the debounce helper's save-scheduling logic (pure Kotlin, `kotlinx-coroutines-test`, no Android framework needed).
+- The `Prefs.scratchpadText` round-trip itself is verified manually, not unit tested — it's a one-line `SharedPreferences` get/set identical in shape to the ~100 other properties already in `Prefs.kt`, none of which have ever had unit tests (project has zero test infrastructure prior to this feature). Adding Robolectric solely for this one property was judged disproportionate; manual verification matches how the rest of `Prefs.kt` has always been verified.
+- Manual on-device: split-screen layout rendering, legibility check across a few wallpapers (solid dark, solid light, busy photo), reboot-survival check (write text, reboot, confirm persisted), backup-exclusion check.
 
 ## Out of scope (v1)
 
