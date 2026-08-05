@@ -1,1 +1,1 @@
-Minimalist launcher to reduce your screen time. Daily wallpapers. Zero ads.
+A minimal launcher with an always-visible scratchpad. Zero ads.
