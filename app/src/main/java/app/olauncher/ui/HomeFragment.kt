@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -33,10 +34,12 @@ import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentHomeBinding
 import app.olauncher.helper.Debouncer
+import app.olauncher.helper.MarkdownStyler
 import app.olauncher.helper.appUsagePermissionGranted
 import app.olauncher.helper.dpToPx
 import app.olauncher.helper.expandNotificationDrawer
 import app.olauncher.helper.getChangedAppTheme
+import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.getUserHandleFromString
 import app.olauncher.helper.isPackageInstalled
 import app.olauncher.helper.openAlarmApp
@@ -263,10 +266,18 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
     private fun initScratchpad() {
         binding.scratchpad?.setText(prefs.scratchpadText)
+        binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) }
         binding.scratchpad?.addTextChangedListener(afterTextChanged = { editable ->
             val text = editable?.toString().orEmpty()
             scratchpadDebouncer.submit { prefs.scratchpadText = text }
+            editable?.let { styleScratchpadMarkdown(it) }
         })
+    }
+
+    private fun styleScratchpadMarkdown(editable: Editable) {
+        val dimColor = requireContext().getColorFromAttr(R.attr.primaryColorTrans50)
+        val accentColor = requireContext().getColorFromAttr(R.attr.primaryColor)
+        MarkdownStyler.apply(editable, dimColor, accentColor)
     }
 
     private fun setHomeAlignment(horizontalGravity: Int = prefs.homeAlignment) {

@@ -21,7 +21,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <EditText
+        <app.olauncher.ui.MarkdownEditText
             android:id="@+id/scratchpad"
             style="@style/TextMedium"
             android:layout_width="match_parent"
