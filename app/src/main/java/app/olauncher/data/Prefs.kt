@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
 class Prefs(context: Context) {
-    private val PREFS_FILENAME = "app.olauncher"
-    private val SCRATCHPAD_PREFS_FILENAME = "app.olauncher.scratchpad"
+    private val PREFS_FILENAME = "app.scratchpad.launcher"
+    private val SCRATCHPAD_PREFS_FILENAME = "app.scratchpad.launcher.scratchpad"
     private val SCRATCHPAD_TEXT = "SCRATCHPAD_TEXT"
 
     private val FIRST_OPEN = "FIRST_OPEN"

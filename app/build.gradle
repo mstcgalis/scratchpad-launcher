@@ -14,11 +14,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "app.olauncher"
+        applicationId "app.scratchpad.launcher"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 110
-        versionName "v6.7.19"
+        versionCode 1
+        versionName "1.0.0"
 
         resourceConfigurations += ["en", "ar", "de", "es-rES", "es-rUS", "fr", "he", "hr", "hu", "in", "it", "ja", "nl", "pl", "pt-rBR", "ru-rRU", "sv", "tr", "uk", "zh"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

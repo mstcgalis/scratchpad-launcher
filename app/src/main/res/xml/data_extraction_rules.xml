@@ -5,7 +5,7 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <exclude domain="sharedpref" path="app.olauncher.scratchpad.xml" />
+        <exclude domain="sharedpref" path="app.scratchpad.launcher.scratchpad.xml" />
     </cloud-backup>
     <!--
     <device-transfer>
