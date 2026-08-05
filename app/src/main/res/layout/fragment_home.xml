@@ -31,7 +31,9 @@
             android:hint="@string/scratchpad_hint"
             android:inputType="textMultiLine|textCapSentences"
             android:overScrollMode="never"
-            android:padding="24dp"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="24dp"
             android:textColorHint="?attr/primaryColorTrans50" />
     </FrameLayout>
 
@@ -40,39 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-
-        <!-- Clock and calendar-->
-        <LinearLayout
-            android:id="@+id/dateTimeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <TextClock
-                android:id="@+id/clock"
-                style="@style/TextDefault"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:format12Hour="h:mm"
-                android:textSize="@dimen/text_small"
-                tools:text="02:34" />
-
-            <TextView
-                android:id="@+id/date"
-                style="@style/TextDefault"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:format12Hour="EEE, dd MMM"
-                android:format24Hour="EEE, dd MMM"
-                android:paddingHorizontal="3dp"
-                android:textSize="@dimen/date_size"
-                tools:text="Thu, 30 Dec" />
-        </LinearLayout>
 
         <!-- Screen time-->
         <androidx.appcompat.widget.AppCompatTextView
@@ -98,12 +67,45 @@
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
-            android:paddingTop="56dp"
-            android:paddingBottom="24dp">
+            android:paddingVertical="24dp">
+
+            <!-- Clock and calendar-->
+            <LinearLayout
+                android:id="@+id/dateTimeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextClock
+                    android:id="@+id/clock"
+                    style="@style/TextDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:format12Hour="h:mm"
+                    android:paddingVertical="@dimen/home_app_padding_vertical"
+                    android:textSize="@dimen/time_size"
+                    tools:text="02:34" />
+
+                <TextView
+                    android:id="@+id/date"
+                    style="@style/TextDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:format12Hour="EEE, dd MMM"
+                    android:format24Hour="EEE, dd MMM"
+                    android:paddingVertical="@dimen/home_app_padding_vertical"
+                    android:textSize="@dimen/text_large"
+                    tools:text="Thu, 30 Dec" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/homeApp1"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -116,6 +118,7 @@
             <TextView
                 android:id="@+id/homeApp2"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -128,6 +131,7 @@
             <TextView
                 android:id="@+id/homeApp3"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -140,6 +144,7 @@
             <TextView
                 android:id="@+id/homeApp4"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -152,6 +157,7 @@
             <TextView
                 android:id="@+id/homeApp5"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -164,6 +170,7 @@
             <TextView
                 android:id="@+id/homeApp6"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -176,6 +183,7 @@
             <TextView
                 android:id="@+id/homeApp7"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -188,6 +196,7 @@
             <TextView
                 android:id="@+id/homeApp8"
                 style="@style/TextLarge"
+                android:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="true"
