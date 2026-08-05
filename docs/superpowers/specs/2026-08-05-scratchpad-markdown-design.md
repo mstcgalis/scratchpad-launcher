@@ -39,13 +39,19 @@ to have" on a lightweight scratchpad.
 No new dependency. Everything lives in two new files plus a small change to
 existing wiring:
 
-- **`app/olauncher/helper/MarkdownStyler.kt`** — stateless styling function.
-  Takes the `Editable` bound to the scratchpad `EditText`, strips spans it
-  previously applied (tagged so unrelated spans, e.g. selection highlight,
-  are untouched), re-scans the full text with the five regex rules below, and
-  applies fresh spans. Wrapped in try/catch that silently no-ops on any
-  exception — styling is cosmetic, a bug in it must never crash the launcher
-  home screen or corrupt the saved text.
+- **`app/olauncher/helper/MarkdownMatcher.kt`** — pure Kotlin, no Android
+  imports. Scans a plain `String` with the five regex rules below and returns
+  a list of typed matches (marker/content character ranges). Fully unit
+  testable on the JVM, same as `DebouncerTest.kt`.
+
+- **`app/olauncher/helper/MarkdownStyler.kt`** — thin Android layer. Takes the
+  `Editable` bound to the scratchpad `EditText`, strips spans it previously
+  applied (tagged so unrelated spans, e.g. selection highlight, are
+  untouched), calls `MarkdownMatcher.findMatches` on the current text, and
+  applies fresh spans per match. Wrapped in try/catch that silently no-ops on
+  any exception — styling is cosmetic, a bug in it must never crash the
+  launcher home screen or corrupt the saved text. Verified manually
+  on-device (see Testing).
 
 - **`app/olauncher/ui/MarkdownEditText.kt`** — thin `EditText` subclass,
   replaces the plain `EditText` at `fragment_home.xml:24`. Overrides
@@ -77,7 +83,7 @@ needed.
 | `# Header` … `###### Header` | line starts with 1-6 `#` + space | `RelativeSizeSpan` (larger for fewer `#`), `StyleSpan(BOLD)` on header text; `#`+space dimmed (`RelativeSizeSpan(0.7)` + `ForegroundColorSpan` at reduced alpha) |
 | `**bold**` | `\*\*(.+?)\*\*` | `StyleSpan(BOLD)` on inner text; `**` markers dimmed |
 | `*italic*` | `\*(.+?)\*`, excluding ranges already matched as `**bold**` | `StyleSpan(ITALIC)` on inner text; `*` markers dimmed |
-| `- item` | line starts `- ` and is not `- [ ] `/`- [x] ` | `BulletSpan`; leading `- ` dimmed |
+| `- item` | line starts `- ` and is not `- [ ] `/`- [x] ` | leading `- ` dimmed (no separate bullet glyph — the dimmed dash itself reads as the marker) |
 | `- [ ] todo` | line starts `- [ ] ` | checkbox glyph via custom `ReplacementSpan` (unchecked box) drawn over the `[ ]` region |
 | `- [x] done` | line starts `- [x] ` | checkbox glyph (checked box) over `[x]`; `StrikethroughSpan` over rest of line |
 
@@ -105,10 +111,17 @@ saving and styling are independent operations on the same `Editable`.
 
 ## Testing
 
-- Unit tests for `MarkdownStyler` (plain JVM, operates on
-  `SpannableStringBuilder`): each rule in isolation, multiple rules mixed on
-  one line, no false-positive styling on plain text, checkbox toggle mutates
-  the correct character range and nothing else.
+The project has no Robolectric dependency, and `android.text.*` classes
+(`SpannableStringBuilder`, `StyleSpan`, etc.) throw in plain JUnit without it.
+So the regex/range-matching logic is split into its own pure-Kotlin function
+(operating on `String` in, plain data classes out — no Android types) so it's
+unit-testable exactly like the existing `DebouncerTest.kt`. The
+Android-span-application step that consumes those results is thin and
+verified manually.
+
+- Unit tests for the pure matcher: each rule in isolation, multiple rules
+  mixed on one line, no false-positive styling on plain text, checkbox
+  match reports the correct character ranges.
 - Manual on-device check: type each syntax element and confirm live styling;
   tap checkboxes at various positions (glyph edge, text after glyph) and
   confirm only glyph taps toggle; type quickly across styled regions and
