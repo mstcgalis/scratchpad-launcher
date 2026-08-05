@@ -24,20 +24,15 @@ import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.ActivityMainBinding
 import app.olauncher.helper.getColorFromAttr
-import app.olauncher.helper.hasBeenDays
 import app.olauncher.helper.hasBeenHours
 import app.olauncher.helper.hasBeenMinutes
 import app.olauncher.helper.isDarkThemeOn
-import app.olauncher.helper.isDaySince
 import app.olauncher.helper.isDefaultLauncher
 import app.olauncher.helper.isEinkDisplay
 import app.olauncher.helper.isOlauncherDefault
 import app.olauncher.helper.isTablet
-import app.olauncher.helper.openUrl
-import app.olauncher.helper.rateApp
 import app.olauncher.helper.resetLauncherViaFakeActivity
 import app.olauncher.helper.setPlainWallpaper
-import app.olauncher.helper.shareApp
 import app.olauncher.helper.showLauncherSelector
 import app.olauncher.helper.showToast
 import kotlinx.coroutines.Job
@@ -202,32 +197,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                Constants.Dialog.REVIEW -> {
-                    prefs.userState = Constants.UserState.RATE
-                    showMessageDialog(R.string.hey, R.string.review_message, R.string.leave_a_review) {
-                        prefs.rateClicked = true
-                        showToast("😇❤️")
-                        rateApp()
-                    }
-                }
-
-                Constants.Dialog.RATE -> {
-                    prefs.userState = Constants.UserState.SHARE
-                    showMessageDialog(R.string.app_name, R.string.rate_us_message, R.string.rate_now) {
-                        prefs.rateClicked = true
-                        showToast("🤩❤️")
-                        rateApp()
-                    }
-                }
-
-                Constants.Dialog.SHARE -> {
-                    prefs.shareShownTime = System.currentTimeMillis()
-                    showMessageDialog(R.string.hey, R.string.share_message, R.string.share_now) {
-                        showToast("😊❤️")
-                        shareApp()
-                    }
-                }
-
                 Constants.Dialog.HIDDEN -> {
                     showMessageDialog(R.string.hidden_apps, R.string.hidden_apps_message, R.string.okay) {
                     }
@@ -244,11 +213,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                Constants.Dialog.PRO_MESSAGE -> {
-                    showMessageDialog(R.string.hey, R.string.pro_message, R.string.olauncher_pro) {
-                        openUrl(Constants.URL_OLAUNCHER_PRO)
-                    }
-                }
             }
         }
     }
@@ -293,28 +257,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel.showDialog.postValue(Constants.Dialog.WALLPAPER)
             }
 
-            Constants.UserState.REVIEW -> {
-                if (prefs.rateClicked)
-                    prefs.userState = Constants.UserState.SHARE
-                else if (isOlauncherDefault(this) && prefs.firstOpenTime.hasBeenHours(1))
-                    viewModel.showDialog.postValue(Constants.Dialog.REVIEW)
-            }
-
-            Constants.UserState.RATE -> {
-                if (prefs.rateClicked)
-                    prefs.userState = Constants.UserState.SHARE
-                else if (isOlauncherDefault(this)
-                    && prefs.firstOpenTime.isDaySince() >= 7
-                    && calendar.get(Calendar.HOUR_OF_DAY) >= 16
-                ) viewModel.showDialog.postValue(Constants.Dialog.RATE)
-            }
-
-            Constants.UserState.SHARE -> {
-                if (isOlauncherDefault(this) && prefs.firstOpenTime.hasBeenDays(14)
-                    && prefs.shareShownTime.isDaySince() >= 70
-                    && calendar.get(Calendar.HOUR_OF_DAY) >= 16
-                ) viewModel.showDialog.postValue(Constants.Dialog.SHARE)
-            }
+            else -> Unit
         }
     }
 
