@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -26,6 +27,7 @@ import app.olauncher.databinding.ActivityMainBinding
 import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.hasBeenHours
 import app.olauncher.helper.hasBeenMinutes
+import app.olauncher.helper.hideKeyboard
 import app.olauncher.helper.isDarkThemeOn
 import app.olauncher.helper.isDefaultLauncher
 import app.olauncher.helper.isEinkDisplay
@@ -83,7 +85,12 @@ class MainActivity : AppCompatActivity() {
                         // if you want other system/activity level handling
                     }
                 } else {
-                    binding.messageLayout.visibility = View.GONE
+                    val focusedView = currentFocus
+                    if (focusedView is EditText) {
+                        focusedView.hideKeyboard()
+                    } else {
+                        binding.messageLayout.visibility = View.GONE
+                    }
                 }
             }
         }
