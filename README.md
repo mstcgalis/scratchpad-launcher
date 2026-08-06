@@ -18,7 +18,7 @@ No accounts, no analytics, no network calls except the optional daily-wallpaper 
 
 ### Status
 
-This is a personal fork, freshly rebranded from Olauncher (new `applicationId`, own icon pending). Not yet submitted to F-Droid.
+This is a personal fork, freshly rebranded from Olauncher (new `applicationId`, own icon). F-Droid metadata is prepared; not yet submitted to `fdroiddata`.
 
 ### License
 
