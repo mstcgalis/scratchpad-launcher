@@ -3,7 +3,6 @@
     <string name="app">App</string>
     <string name="set_as_default_launcher">Stel in als standaard launcher</string>
     <string name="set_as_default_launcher_u"><u>Stel in als standaard launcher</u></string>
-    <string name="set_as_default_launcher_first">Stel Scratchpad Launcher eerst in als standaard</string>
     <string name="app_text_color">Tekstkleur</string>
     <string name="double_tap_to_lock_screen">Dubbel tik om te vergrendelen</string>
     <string name="admin_permission_message">Scratchpad Launcher belooft de toestemming voor vergrendelingsscherm verantwoord te gebruiken. Scratchpad Launcher verzamelt of deelt geen gegevens.</string>
@@ -20,7 +19,6 @@
     <string name="email">E-mail</string>
     <string name="swipe_up_for_apps">1. Veeg omhoog voor alle apps\n2. Ergens lang indrukken voor instellingen</string>
     <string name="apps_on_home_screen">Apps op startscherm</string>
-    <string name="daily_wallpaper_update">Dagelijks nieuwe achtergrond</string>
     <string name="left">Links</string>
     <string name="right">Rechts</string>
     <string name="center">Midden</string>
@@ -60,8 +58,6 @@
         \n\nZoek in de instellingen van je telefoon naar Digital Wellbeing en schakel het in.</string>
     <string name="app_usage_message">Om je schermtijd op het startscherm te tonen of te verbergen, geef of weiger de toestemming voor app-gebruik.
         \n\nOpmerking: er worden geen app-gebruiksgegevens verzameld. Alles wordt op je apparaat verwerkt.</string>
-    <string name="wallpaper_message">Scratchpad Launcher biedt dagelijks mooie nieuwe achtergronden. Geef je startscherm iedere dag een frisse nieuwe look, gratis!
-        \n\nWil je het proberen?</string>
     <string name="accessibility_service_description">De toegankelijkheidstoestemming is vereist om dubbel tikken om te vergrendelen en de startknop voor recente apps mogelijk te maken. Alle gegevens die Scratchpad Launcher via deze service verkrijgt, verlaten je apparaat niet.</string>
     <string name="open">Link openen</string>
     <string name="copy">Kopiëren</string>
@@ -105,8 +101,6 @@
     <string name="swipe_right_app_enabled">Veeg rechts-app ingeschakeld</string>
     <string name="swipe_left_app_disabled">Veeg links-app uitgeschakeld</string>
     <string name="swipe_right_app_disabled">Veeg rechts-app uitgeschakeld</string>
-    <string name="your_wallpaper_will_update_shortly">Je achtergrond wordt binnenkort bijgewerkt</string>
-    <string name="olauncher_is_not_default_launcher">Scratchpad Launcher is niet de standaard launcher. Achtergrondupdate zal mislukken.</string>
     <string name="long_press_to_enable">Lang indrukken om in te schakelen</string>
     <string name="no_hidden_apps">Geen verborgen apps</string>
     <string name="hidden_apps">Verborgen apps</string>
@@ -116,7 +110,6 @@
     <string name="about_olauncher">Over en veelgestelde vragen</string>
     <string name="screen_time">Schermtijd</string>
     <string name="learn_more">Meer informatie</string>
-    <string name="did_you_know">Wist je dat?</string>
     <string name="alignment_changed">Uitlijning gewijzigd ✅</string>
     <string name="home_screen">Startscherm</string>
     <string name="hey">Hoi</string>

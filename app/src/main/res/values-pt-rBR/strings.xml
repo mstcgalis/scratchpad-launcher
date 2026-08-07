@@ -3,7 +3,6 @@
     <string name="app">Aplicativo</string>
     <string name="set_as_default_launcher">Definir como launcher padrão</string>
     <string name="set_as_default_launcher_u"><u>Definir como launcher padrão</u></string>
-    <string name="set_as_default_launcher_first">Definir como launcher padrão</string>
     <string name="app_text_color">Cor do texto</string>
     <string name="double_tap_to_lock_screen">Toque duplo para bloquear</string>
     <string name="admin_permission_message">Scratchpad Launcher promete usar a permissão de bloqueio de telemóvel de forma responsável. Scratchpad Launcher não faz coleção ou compartilha quaisquer dados.</string>
@@ -21,7 +20,6 @@
 
     <string name="swipe_up_for_apps">1. Deslize para cima para ver todos os aplicativos\n2. Pressione continuamente em qualquer ponto do ecrã para aceder às configurações</string>
     <string name="apps_on_home_screen">Aplicativos na home</string>
-    <string name="daily_wallpaper_update">Novo fundo de ecrã diariamente</string>
     <string name="left">Esquerda</string>
     <string name="right">Direita</string>
     <string name="center">Centro</string>
@@ -59,8 +57,6 @@
         \n\nProcure Bem-estar Digital nas configurações do seu telefone e ative-o.</string>
     <string name="app_usage_message">Para exibir/ocultar o tempo de tela na tela inicial, permita ou negue a permissão de uso do aplicativo.
         \n\nNota: Não são coletados dados de uso do aplicativo. Tudo é processado no seu dispositivo.</string>
-    <string name="wallpaper_message">Scratchpad Launcher oferece lindos papéis de parede novos todos os dias. Dê uma nova aparência à sua tela inicial todos os dias, gratuitamente!
-        \n\nQuer tentar?</string>
     <string name="accessibility_service_description">A permissão de acessibilidade é necessária para ativar o toque duplo para bloquear e o botão início para mostrar aplicativos recentes. Quaisquer dados adquiridos pelo Scratchpad Launcher através deste serviço não sairão do seu dispositivo.</string>
     <string name="open">Abrir link</string>
     <string name="copy">Copiar</string>
@@ -105,8 +101,6 @@
     <string name="swipe_right_app_enabled">Deslizar para a direita para abrir aplicativo ativado</string>
     <string name="swipe_left_app_disabled">Deslizar para a esquerda para abrir aplicativo desativado</string>
     <string name="swipe_right_app_disabled">Deslizar para a direita para abrir aplicativo desativado</string>
-    <string name="your_wallpaper_will_update_shortly">Seu fundo de ecrã será atualizado em breve</string>
-    <string name="olauncher_is_not_default_launcher">Scratchpad Launcher não é launcher padrão. A atualização diária do fundo de ecrã pode falhar.</string>
     <string name="long_press_to_enable">Pressione por muito tempo para ativar</string>
     <string name="no_hidden_apps">Sem aplicativos ocultos</string>
     <string name="hidden_apps">Aplicativos ocultos</string>
@@ -116,7 +110,6 @@
     <string name="about_olauncher">Sobre Scratchpad Launcher</string>
     <string name="learn_more">Saber mais</string>
     <string name="screen_time">Tempo de tela</string>
-    <string name="did_you_know">Você sabia?</string>
     <string name="alignment_changed">Alinhamento alterado ✅</string>
     <string name="home_screen">Tela inicial</string>
     <string name="hey">Oi</string>

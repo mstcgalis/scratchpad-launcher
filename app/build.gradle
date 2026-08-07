@@ -17,8 +17,8 @@ android {
         applicationId "app.scratchpad.launcher"
         minSdkVersion 24
         targetSdkVersion 35
-        versionCode 3
-        versionName "1.1.1"
+        versionCode 4
+        versionName "1.1.2"
 
         resourceConfigurations += ["en", "ar", "de", "es-rES", "es-rUS", "fr", "he", "hr", "hu", "in", "it", "ja", "nl", "pl", "pt-rBR", "ru-rRU", "sv", "tr", "uk", "zh"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -58,9 +58,6 @@ dependencies {
 
     // Navigation
     implementation libs.navigation.fragment.ktx
-
-    // Work Manager
-    implementation libs.work.runtime.ktx
 
     //Material dependency
     implementation libs.material

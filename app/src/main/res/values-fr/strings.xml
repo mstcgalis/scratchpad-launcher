@@ -3,7 +3,6 @@
     <string name="app">App</string>
     <string name="set_as_default_launcher">Définir comme lanceur par défaut</string>
     <string name="set_as_default_launcher_u"><u>Définir comme lanceur par défaut</u></string>
-    <string name="set_as_default_launcher_first">Définir comme lanceur par défaut</string>
     <string name="app_text_color">Couleur du texte</string>
     <string name="double_tap_to_lock_screen">Double appui pour verrouiller</string>
     <string name="admin_permission_message">Scratchpad Launcher promet d\'utiliser l\'autorisation d\'écran de verrouillage de manière responsable. Scratchpad Launcher ne collecte ni ne partage aucune donnée.</string>
@@ -21,7 +20,6 @@
 
     <string name="swipe_up_for_apps">1. Balayez vers le haut pour toutes les applications.\n2. Appuyez longuement n\'importe où pour les paramètres.</string>
     <string name="apps_on_home_screen">Applications sur l\'écran d\'accueil</string>
-    <string name="daily_wallpaper_update">Nouveau fond d\'écran quotidien</string>
     <string name="left">Gauche</string>
     <string name="right">Droite</string>
     <string name="center">Centre</string>
@@ -58,8 +56,6 @@
         \n\nVeuillez rechercher Digital Wellbeing dans les paramètres de votre téléphone et l\'activer.</string>
     <string name="app_usage_message">Pour afficher/masquer le temps d\'écran sur l\'écran d\'accueil, autorisez ou refusez l\'autorisation d\'utilisation de l\'application.
         \n\nRemarque : Aucune donnée d\'utilisation de l\'application n\'est collectée. Tout est traité sur votre appareil.</string>
-    <string name="wallpaper_message">Scratchpad Launcher propose de superbes fonds d\'écran nouveaux chaque jour. Donne un nouveau look à ton écran d\'accueil chaque jour, gratuitement!
-        \n\nTu veux essayer?</string>
     <string name="accessibility_service_description">L\'autorisation d\'accessibilité est requise pour activer le double appui pour verrouiller et le bouton d\'accueil pour afficher les applications récentes. Toutes les données acquises par Scratchpad Launcher via ce service ne quitteront pas votre appareil.</string>
     <string name="open">Ouvrir le lien</string>
     <string name="copy">Copier</string>
@@ -104,9 +100,6 @@
     <string name="swipe_right_app_enabled">Balayage vers la droite activée</string>
     <string name="swipe_left_app_disabled">Balayage vers la gauche désactivé</string>
     <string name="swipe_right_app_disabled">Balayage vers la droite désactivé</string>
-    <string name="your_wallpaper_will_update_shortly">Votre fond d\'écran sera bientôt mis à jour.</string>
-    <string name="olauncher_is_not_default_launcher">Scratchpad Launcher n\'est pas le lanceur par défaut.
-        La mise à jour quotidienne du fond d\'écran peut échouer.</string>
     <string name="long_press_to_enable">Appuyez longuement pour activer.</string>
     <string name="no_hidden_apps">Aucune application cachées</string>
     <string name="hidden_apps">Applications cachées</string>
@@ -116,7 +109,6 @@
     <string name="about_olauncher">À propos Scratchpad Launcher</string>
     <string name="learn_more">Apprendre encore plus</string>
     <string name="screen_time">Temps d\'écran</string>
-    <string name="did_you_know">Saviez-vous?</string>
     <string name="alignment_changed">Alignement changé ✅</string>
     <string name="home_screen">Écran d\'accueil</string>
     <string name="hey">Salut</string>

@@ -21,7 +21,6 @@
     <string name="app">App</string>
     <string name="set_as_default_launcher">Set as default launcher</string>
     <string name="set_as_default_launcher_u"><u>Set as default launcher</u></string>
-    <string name="set_as_default_launcher_first">Set Scratchpad Launcher default first</string>
     <string name="app_text_color">Text color</string>
     <string name="double_tap_to_lock_screen">Double tap to lock</string>
     <string name="home_button_show_recents">Home button for recents</string>
@@ -40,7 +39,6 @@
     <string name="swipe_up_for_apps">1. Swipe up for all apps\n2. Long press anywhere for settings</string>
     <string name="scratchpad_hint">Scratchpad empty…</string>
     <string name="apps_on_home_screen">Apps on home screen</string>
-    <string name="daily_wallpaper_update">Daily new wallpaper</string>
     <string name="left">Left</string>
     <string name="right">Right</string>
     <string name="center">Center</string>
@@ -77,8 +75,6 @@
     <string name="digital_wellbeing_message">If you want to set time limits for certain apps, Digital Wellbeing feature of Android can help you do it.           Please search for Digital Wellbeing in your phone settings and enable it.</string>
     <string name="app_usage_message">To show/hide your screen time on the home screen, please allow or disallow the app usage permission.
         \n\nNote: No app usage data is collected. Everything is processed on your device.</string>
-    <string name="wallpaper_message">Scratchpad Launcher offers beautiful new wallpapers daily. Give your homescreen a fresh new look every day, for free!
-        \n\nWant to try it?</string>
     <string name="accessibility_service_description">The accessibility permission is required to enable the gesture - double tap to lock . Any data acquired by Scratchpad Launcher via this service will not leave your device.</string>
     <string name="open">Open link</string>
     <string name="copy">Copy</string>
@@ -123,8 +119,6 @@
     <string name="swipe_right_app_enabled">Swipe right app enabled</string>
     <string name="swipe_left_app_disabled">Swipe left app disabled</string>
     <string name="swipe_right_app_disabled">Swipe right app disabled</string>
-    <string name="your_wallpaper_will_update_shortly">Your wallpaper will update shortly</string>
-    <string name="olauncher_is_not_default_launcher">Scratchpad Launcher is not default. Wallpaper update will fail.</string>
     <string name="long_press_to_enable">Long press to enable</string>
     <string name="no_hidden_apps">No hidden apps</string>
     <string name="hidden_apps">Hidden apps</string>
@@ -134,7 +128,6 @@
     <string name="about_olauncher">About</string>
     <string name="screen_time">Screen time</string>
     <string name="learn_more">Learn more</string>
-    <string name="did_you_know">Did you know?</string>
     <string name="alignment_changed">Alignment changed ✅</string>
     <string name="home_screen">Home screen</string>
     <string name="hey">Hey</string>

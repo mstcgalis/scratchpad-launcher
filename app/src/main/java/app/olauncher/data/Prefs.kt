@@ -20,8 +20,6 @@ class Prefs(context: Context) {
     private val HOME_APPS_NUM = "HOME_APPS_NUM"
     private val AUTO_SHOW_KEYBOARD = "AUTO_SHOW_KEYBOARD"
     private val KEYBOARD_MESSAGE = "KEYBOARD_MESSAGE"
-    private val DAILY_WALLPAPER = "DAILY_WALLPAPER"
-    private val DAILY_WALLPAPER_URL = "DAILY_WALLPAPER_URL"
     private val HOME_ALIGNMENT = "HOME_ALIGNMENT"
     private val HOME_BOTTOM_ALIGNMENT = "HOME_BOTTOM_ALIGNMENT"
     private val APP_LABEL_ALIGNMENT = "APP_LABEL_ALIGNMENT"
@@ -35,7 +33,6 @@ class Prefs(context: Context) {
     private val APP_THEME = "APP_THEME"
     private val ABOUT_CLICKED = "ABOUT_CLICKED"
     private val RATE_CLICKED = "RATE_CLICKED"
-    private val WALLPAPER_MSG_SHOWN = "WALLPAPER_MSG_SHOWN"
     private val SHARE_SHOWN_TIME = "SHARE_SHOWN_TIME"
     private val SWIPE_DOWN_ACTION = "SWIPE_DOWN_ACTION"
     private val TEXT_SIZE_SCALE = "TEXT_SIZE_SCALE"
@@ -155,14 +152,6 @@ class Prefs(context: Context) {
         get() = prefs.getBoolean(KEYBOARD_MESSAGE, false)
         set(value) = prefs.edit { putBoolean(KEYBOARD_MESSAGE, value).apply() }
 
-    var dailyWallpaper: Boolean
-        get() = prefs.getBoolean(DAILY_WALLPAPER, false)
-        set(value) = prefs.edit { putBoolean(DAILY_WALLPAPER, value).apply() }
-
-    var dailyWallpaperUrl: String
-        get() = prefs.getString(DAILY_WALLPAPER_URL, "").toString()
-        set(value) = prefs.edit { putString(DAILY_WALLPAPER_URL, value).apply() }
-
     var scratchpadText: String
         get() = scratchpadPrefs.getString(SCRATCHPAD_TEXT, "").toString()
         set(value) = scratchpadPrefs.edit { putString(SCRATCHPAD_TEXT, value).apply() }
@@ -251,10 +240,6 @@ class Prefs(context: Context) {
     var rateClicked: Boolean
         get() = prefs.getBoolean(RATE_CLICKED, false)
         set(value) = prefs.edit { putBoolean(RATE_CLICKED, value).apply() }
-
-    var wallpaperMsgShown: Boolean
-        get() = prefs.getBoolean(WALLPAPER_MSG_SHOWN, false)
-        set(value) = prefs.edit { putBoolean(WALLPAPER_MSG_SHOWN, value).apply() }
 
     var shareShownTime: Long
         get() = prefs.getLong(SHARE_SHOWN_TIME, 0L)

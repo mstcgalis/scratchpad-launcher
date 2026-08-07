@@ -3,7 +3,6 @@
     <string name="app">تطبيق</string>
     <string name="set_as_default_launcher">تعيين كمشغل افتراضي</string>
     <string name="set_as_default_launcher_u"><u>تعيين كمشغل افتراضي</u></string>
-    <string name="set_as_default_launcher_first">تعيين كمشغل افتراضي</string>
     <string name="_0">صفر</string>
     <string name="_1">واحد</string>
     <string name="_2">إثنان</string>
@@ -17,8 +16,6 @@
     <string name="okay">حسنًا</string>
     <string name="cool">رائع!</string>
     <string name="tip_start_typing_for_rename">نصيحة: ابدأ الكتابة بتغيير اسم التطبيق</string>
-    <string name="your_wallpaper_will_update_shortly">سيتم تحديث الخلفية الخاصة بك قريبًا</string>
-    <string name="olauncher_is_not_default_launcher">Scratchpad Launcher ليس المشغل الافتراضي. قد يفشل التحديث اليومي للخلفية.</string>
     <string name="long_press_to_enable">اضغط مطولًا للتمكين</string>
     <string name="no_hidden_apps">لا توجد تطبيقات مخفية</string>
     <string name="hidden_apps">تطبيقات مخفية</string>
@@ -67,7 +64,6 @@
     <string name="email">بريد</string>
     <string name="swipe_up_for_apps">1. مرر لأعلى لجميع التطبيقات\n2. اضغط مطوّلًا في أي مكان للإعدادات</string>
     <string name="apps_on_home_screen">التطبيقات على الشاشة الرئيسية</string>
-    <string name="daily_wallpaper_update">تحديث الخلفية يوميّا</string>
     <string name="left">يسار</string>
     <string name="right">يمين</string>
     <string name="center">مركز</string>
@@ -91,8 +87,6 @@
         \n\nيرجى البحث عن الرفاهية الرقمية في إعدادات هاتفك وتمكينها.</string>
     <string name="app_usage_message">لعرض/إخفاء وقت استخدام الشاشة على الشاشة الرئيسية، يرجى السماح أو منع إذن استخدام التطبيق.
         \n\nملاحظة: لا يتم جمع أي بيانات حول استخدام التطبيقات. يتم معالجة كل شيء على جهازك.</string>
-    <string name="wallpaper_message">يقدم Scratchpad Launcher خلفيات جميلة جديدة يوميًا. امنح شاشتك الرئيسية مظهرًا جديدًا كل يوم، مجانًا!
-        \n\nهل ترغب في تجربته؟</string>
     <string name="accessibility_service_description">إذن الوصول مطلوب لتمكين النقر المزدوج للقفل وزر الشاشة الرئيسية لعرض التطبيقات الأخيرة. أي بيانات حصل عليها Scratchpad Launcher عبر هذه الخدمة لن تترك جهازك.</string>
     <string name="open">افتح الرابط</string>
     <string name="copy">ينسخ</string>
@@ -112,7 +106,6 @@
     <string name="are_you_using_your_phone_or_is_your_phone_using_you">هل تستخدم هاتفك أم أن هاتفك يستخدمك؟</string>
     <string name="about_olauncher">عن Scratchpad Launcher</string>
     <string name="learn_more">تعلم أكثر</string>
-    <string name="did_you_know">هل كنت تعلم؟</string>
     <string name="screen_time">وقت الشاشة</string>
     <string name="alignment_changed">تم تغيير المحاذاة ✅</string>
     <string name="home_screen">الشاشة الرئيسية</string>

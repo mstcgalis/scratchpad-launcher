@@ -3,7 +3,6 @@
     <string name="app">Alkalmazás</string>
     <string name="set_as_default_launcher">Beállítás alapért. indítóként</string>
     <string name="set_as_default_launcher_u"><u>Beállítás alapért. indítóként</u></string>
-    <string name="set_as_default_launcher_first">Beállítás alapértelmezett indítóként</string>
     <string name="app_text_color">Szövegszín</string>
     <string name="double_tap_to_lock_screen">Dupla koppintás a képernyő lezárásához</string>
     <string name="admin_permission_message">Az Scratchpad Launcher vállalja, hogy felelősségteljesen használja a képernyő lezárásához szükséges engedélyt. Az Scratchpad Launcher nem gyűjt vagy oszt meg semmilyen adatot.</string>
@@ -20,7 +19,6 @@
     <string name="email">E-mail</string>
     <string name="swipe_up_for_apps">1. Simítson felfelé az összes alkalmazás megjelenítéséhez\n2. Nyomja meg hosszan bármelyik ponton a beállításokhoz</string>
     <string name="apps_on_home_screen">Alkalmazások a kezdőképernyőn</string>
-    <string name="daily_wallpaper_update">Naponta új háttérkép</string>
     <string name="left">Bal</string>
     <string name="right">Jobb</string>
     <string name="center">Közép</string>
@@ -60,8 +58,6 @@
         \n\nKeresse meg a Digitális jólét elemet a telefon beállításai között, és engedélyezze.</string>
     <string name="app_usage_message">A képernyőidő megjelenítéséhez/elrejtéséhez a kezdőképernyőn engedélyezze vagy tagadja meg az alkalmazás használati engedélyét.
         \n\nMegjegyzés: Nem gyűjtünk alkalmazás-használati adatokat. Minden az Ön eszközén kerül feldolgozásra.</string>
-    <string name="wallpaper_message">Az Scratchpad Launcher minden nap gyönyörű, új háttérképeket kínál, amelyekkel frissen tarthatja kezdőképernyőjét, ingyen!
-        \n\nSzeretné kipróbálni?</string>
     <string name="accessibility_service_description">A hozzáférhetőségi engedély szükséges a dupla koppintás általi zároláshoz és a kezdőgomb megnyomásával a legutóbbi alkalmazások megjelenítéséhez. Az Scratchpad Launcher által ezen a szolgáltatáson keresztül megszerzett adatok nem hagyják el a készüléket.</string>
     <string name="open">Link megnyitása</string>
     <string name="copy">Másolás</string>
@@ -106,8 +102,6 @@
     <string name="swipe_right_app_enabled">Jobbra simítva indítható alkalmazás engedélyezve</string>
     <string name="swipe_left_app_disabled">Balra simítva indítható alkalmazás letiltva</string>
     <string name="swipe_right_app_disabled">Jobbra simítva indítható alkalmazás letiltva</string>
-    <string name="your_wallpaper_will_update_shortly">A háttérkép hamarosan frissülni fog</string>
-    <string name="olauncher_is_not_default_launcher">Az Scratchpad Launcher nem az alapértelmezett indító.\nA napi háttérkép frissítés sikertelen lehet.</string>
     <string name="long_press_to_enable">Hosszan nyomva tartás az engedélyezéshez</string>
     <string name="no_hidden_apps">Nincsenek rejtett alkalmazások</string>
     <string name="hidden_apps">Rejtett alkalmazások</string>
@@ -117,7 +111,6 @@
     <string name="about_olauncher">Az Scratchpad Launcher-ről</string>
     <string name="screen_time">Képernyőidő</string>
     <string name="learn_more">Tudjon meg többet</string>
-    <string name="did_you_know">Tudta?</string>
     <string name="alignment_changed">Az igazítás megváltozott ✅</string>
     <string name="home_screen">Kezdőképernyő</string>
     <string name="hey">Üdvözöljük!</string>

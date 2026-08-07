@@ -3,7 +3,6 @@
     <string name="app">App</string>
     <string name="set_as_default_launcher">Ange som förvald startskärmsapp</string>
     <string name="set_as_default_launcher_u"><u>Ange som förvald startskärmsapp</u></string>
-    <string name="set_as_default_launcher_first">Ange Scratchpad Launcher som förvald först</string>
     <string name="app_text_color">Textfärg</string>
     <string name="double_tap_to_lock_screen">Dubbeltryck för att låsa</string>
     <string name="admin_permission_message">Scratchpad Launcher lovar att använda skärmlåsningsbehörigheten ansvarsfullt. Scratchpad Launcher varken samlar in eller delar några data.</string>
@@ -20,7 +19,6 @@
     <string name="email">E-post</string>
     <string name="swipe_up_for_apps">1. Svep uppåt för alla appar\n2. Långtryck var som helst för inställningar</string>
     <string name="apps_on_home_screen">Appar på startskärmen</string>
-    <string name="daily_wallpaper_update">Daglig ny bakgrundsbild</string>
     <string name="left">Vänster</string>
     <string name="right">Höger</string>
     <string name="center">Mitten</string>
@@ -58,8 +56,6 @@
         \n\nVänligen sök efter Digitalt välmående i dina telefoninställningar och aktivera den.</string>
     <string name="app_usage_message">För att visa/dölja din skärmtid på startsidan, vänligen tillåt eller neka appanvändningsbehörigheten.
         \n\nObs: Inga data om appanvändning samlas in. Allt bearbetas på din enhet.</string>
-    <string name="wallpaper_message">Scratchpad Launcher erbjuder vackra nya bakgrundsbilder varje dag. Ge din hemskärm ett fräscht utseende varje dag, gratis!
-        \n\nVill du prova?</string>
     <string name="accessibility_service_description">Tillgänglighetsbehörigheten krävs för att aktivera dubbeltryck för att låsa och hemknappen för att visa senaste appar. Eventuella data förvärvade av Scratchpad Launcher genom denna tjänst kommer inte att lämna din enhet.</string>
     <string name="open">Öppna länk</string>
     <string name="copy">Kopiera</string>
@@ -103,8 +99,6 @@
     <string name="swipe_right_app_enabled">Högersvepsapp aktiverad</string>
     <string name="swipe_left_app_disabled">Vänstersvepsapp inaktiverad</string>
     <string name="swipe_right_app_disabled">Högersvepsapp inaktiverad</string>
-    <string name="your_wallpaper_will_update_shortly">Din bakgrundsbild kommer att uppdateras inom kort</string>
-    <string name="olauncher_is_not_default_launcher">Scratchpad Launcher är inte förvald. Uppdatering av bakgrundsbild kommer att misslyckas.</string>
     <string name="long_press_to_enable">Långtryck för att aktivera</string>
     <string name="no_hidden_apps">Inga dolda appar</string>
     <string name="hidden_apps">Dolda appar</string>
@@ -114,7 +108,6 @@
     <string name="about_olauncher">Om Scratchpad Launcher</string>
     <string name="screen_time">Skärmtid</string>
     <string name="learn_more">Läs mer</string>
-    <string name="did_you_know">Visste du?</string>
     <string name="alignment_changed">Justering ändrad ✅</string>
     <string name="home_screen">Startskärm</string>
     <string name="hey">Hej</string>
