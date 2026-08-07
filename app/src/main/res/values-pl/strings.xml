@@ -86,8 +86,6 @@
     <string name="light">Jasny</string>
     <string name="welcome_to_olauncher_settings">Witamy w ustawieniach!
         \n\nPamiętaj, jeśli masz jakiekolwiek pytania, nasza strona „O nas” ma odpowiedź.</string>
-    <string name="share_message">Cześć, potrzebujemy Twojej pomocy! W zeszłym roku przekroczyliśmy milion pobrań. W tym roku chcemy dotrzeć do kolejnego miliona, ale sami nie możemy tego zrobić.
-        \n\nCzy byłbyś tak miły i udostępnił Scratchpad Launcher swoim znajomym? Dziękuję i życzę cudownego dnia!</string>
     <string name="keyboard_message">Cześć, klawiatura to najszybszy sposób znajdowania i uruchamiania aplikacji w Scratchpad Launcher. Czy możemy poprosić o pozostawienie tego włączonego jeszcze przez kilka dni, a następnie podjęcie decyzji?\n\nWybór zawsze należy do Ciebie.</string>
     <string name="digital_wellbeing_message">Jeśli chcesz ustawić limity czasowe dla niektórych aplikacji, funkcja Cyfrowa równowaga w systemie Android może Ci w tym pomóc.
         \n\nWyszukaj opcję Cyfrowa równowaga w ustawieniach telefonu i włącz ją.</string>

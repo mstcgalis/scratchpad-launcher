@@ -53,8 +53,6 @@
     <string name="light">Claro</string>
     <string name="welcome_to_olauncher_settings">¡Bienvenido a la configuración!
         \n\nRecuerda, si tienes alguna pregunta, nuestra página Acerca de tiene la respuesta.</string>
-    <string name="share_message">Hola, necesitamos tu ayuda! El año pasado superamos el millón de descargas. Este año queremos llegar a un millón más, pero no podemos hacerlo solos.
-        \n\n¿Serías tan amable de compartir Scratchpad Launcher con tus amigos, por favor? ¡Gracias y tenga un maravilloso día!</string>
     <string name="keyboard_message">Hola, el teclado es la forma más rápida de encontrar y ejecutar aplicaciones en Scratchpad Launcher. ¿Podemos pedirte que mantenga esto activado durante unos días más y luego decidir?
         \n\nLa decisión siempre es vuestra.</string>
     <string name="digital_wellbeing_message">Si deseas establecer límites de tiempo para determinadas aplicaciones, la función Bienestar digital de Android puede ayudarte a hacerlo.

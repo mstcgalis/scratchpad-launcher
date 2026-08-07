@@ -52,8 +52,6 @@
     <string name="light">Ljust</string>
     <string name="welcome_to_olauncher_settings">Välkommen till inställningarna!
         \n\nKom ihåg, om du har några frågor har vår sida Om oss svaret.</string>
-    <string name="share_message">Vi behöver din hjälp! Förra året passerade vi en miljon nedladdningar. I år vill vi nå en miljon till, men vi kan inte göra det på egen hand.
-        \n\nKan du dela Scratchpad Launcher med dina vänner? Scratchpad Launcher behöver människor, och människor behöver Scratchpad Launcher.</string>
     <string name="keyboard_message">Hejsan, tangentbordet är det snabbaste sättet att hitta och starta appar i Scratchpad Launcher. Får vi be dig att behålla denna På i några dagar till innan du bestämmer dig?
         \n\nValet är alltid ditt.</string>
     <string name="digital_wellbeing_message">Om du vill ställa in tidsgränser för vissa appar, kan Digitalt välmående-funktionen i Android hjälpa dig att göra det.

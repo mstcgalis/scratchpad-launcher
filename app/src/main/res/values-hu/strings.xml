@@ -52,8 +52,6 @@
     <string name="light">Világos</string>
     <string name="welcome_to_olauncher_settings">Üdvözöljük a beállításokban!
         \n\nNe feledje, ha bármilyen kérdése van, az „Rólunk” oldalunk tartalmazza a választ.</string>
-    <string name="share_message">A segítségére van szükségünk! Tavaly átléptük az egymillió letöltést. Idén egy millióval többet szeretnénk elérni, de egyedül nem tudjuk megtenni.
-        \n\nAz Scratchpad Launcher-nek emberekre van szüksége, az embereknek pedig az Scratchpad Launcher-re. Köszönettel vennénk, ha megosztaná másokkal is az Scratchpad Launchert!</string>
     <!--    <string name="share_message">Az Ön havi emlékeztetője - használja Ön a telefonját, és ne a telefonja Önt! Csak így tovább! Nagyszerűen csinálja!-->
     <!--        \n\nHa van egy kis ideje, kérjük, ossza meg másokkal is az Scratchpad Launcher-t. Az Scratchpad Launcher-nek szüksége van emberekre. De ami még fontosabb, az embereknek szüksége van az Scratchpad Launcher-re..</string>-->
     <string name="keyboard_message">Üdvözöljük! A billentyűzet a leggyorsabb módja az alkalmazások megtalálásához és elindításához az Scratchpad Launcherben. Megkérhetjük, hogy hagyja bekapcsolva még néhány napig, és utána döntsön?

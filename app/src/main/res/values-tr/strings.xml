@@ -86,8 +86,6 @@
     <string name="light">Açık</string>
     <string name="welcome_to_olauncher_settings">Ayarlar sayfasına hoş geldiniz!
         \n\nUnutmayın, herhangi bir sorunuz olursa "Hakkında" sayfamıza danışabilirsiniz.</string>
-    <string name="share_message">Merhaba, yardımınıza ihtiyacımız var! Geçen yıl bir milyon indirmeyi geçtik. Bu yıl bir milyona daha ulaşmak istiyoruz ama bunu tek başımıza yapamayız.
-        \n\nScratchpad Launcher\'ı arkadaşlarınızla paylaşma nezaketini gösterir misiniz lütfen? Teşekkür eder, harika bir gün geçirmenizi dileriz!</string>
     <string name="keyboard_message">Merhaba, klavye, Scratchpad Launcher\'da uygulamaları bulmanın ve başlatmanın en hızlı yoludur. Birkaç gün daha kullanıp karar vermenizi rica ederiz.
         \n\nSeçim her zaman sizindir.</string>
     <string name="digital_wellbeing_message">Belirli uygulamalar için zaman sınırları belirlemek istiyorsanız Android\'in Dijital Denge özelliği bunu yapmanıza yardımcı olacaktır.

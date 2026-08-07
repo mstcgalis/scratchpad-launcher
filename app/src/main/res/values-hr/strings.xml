@@ -52,8 +52,6 @@
     <string name="light">Svijetla</string>
     <string name="welcome_to_olauncher_settings">Dobrodošli u postavke!
         \n\nZapamtite, ako imate bilo kakvih pitanja, naša stranica O nama ima odgovor.</string>
-    <string name="share_message">Bok, trebamo tvoju pomoć! Prošle godine prešli smo milijun preuzimanja. Ove godine želimo doseći milijun više, ali ne možemo sami.
-        \n\nHoćete li, molim vas, biti ljubazni podijeliti Scratchpad Launcher sa svojim prijateljima? Hvala i ugodan dan!</string>
     <string name="keyboard_message">Bok, tipkovnica je najbrži način za pronalaženje i pokretanje aplikacija u Scratchpad Launcheru. Možemo li vas zamoliti da to zadržite uključeno još nekoliko dana, a zatim odlučite?
         \n\nIzbor je uvijek vaš.</string>
     <string name="digital_wellbeing_message">Ako želite postaviti vremenska ograničenja za određene aplikacije, značajka Digital Wellbeing na Androidu može vam pomoći u tome.

@@ -87,8 +87,6 @@
     <string name="light">ライト</string>
     <string name="welcome_to_olauncher_settings">設定へようこそ！
         \n\n質問がある場合は、私たちの「About」ページに答えがありますので、覚えておいてください。</string>
-    <string name="share_message">こんにちは、あなたの助けが必要です!昨年、ダウンロード数が 100 万件を突破しました。今年はさらに 100 万人を達成したいと考えていますが、私たちだけでは達成できません。
-        \n\nScratchpad Launcher をお友達と共有していただけますか?ありがとう、そして素晴らしい一日をお過ごしください!</string>
     <string name="keyboard_message">こんにちは、キーボードは Scratchpad Launcher でアプリを見つけて起動する最も速い方法です。もう数日間これをオンにしてから判断していただくようお願いできますか?選択は常にあなた次第です。</string>
     <string name="digital_wellbeing_message">特定のアプリに時間制限を設定したい場合は、Android の Digital Wellbeing 機能を使用すると便利です。
         \n\n携帯電話の設定で Digital Wellbeing を検索し、有効にしてください。</string>
