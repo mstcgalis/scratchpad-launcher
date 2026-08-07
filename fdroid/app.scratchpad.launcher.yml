@@ -10,7 +10,7 @@ AutoName: Scratchpad Launcher
 
 RepoType: git
 Repo: https://github.com/mstcgalis/scratchpad-launcher
-Binaries:
+Binaries: 
   https://github.com/mstcgalis/scratchpad-launcher/releases/download/v%v/ScratchpadLauncher-v%v.apk
 
 Builds:
