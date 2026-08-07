@@ -10,7 +10,8 @@ AutoName: Scratchpad Launcher
 
 RepoType: git
 Repo: https://github.com/mstcgalis/scratchpad-launcher
-Binaries: https://github.com/mstcgalis/scratchpad-launcher/releases/download/v%v/ScratchpadLauncher-v%v.apk
+Binaries:
+  https://github.com/mstcgalis/scratchpad-launcher/releases/download/v%v/ScratchpadLauncher-v%v.apk
 
 Builds:
   - versionName: 1.1.3
@@ -20,9 +21,9 @@ Builds:
     gradle:
       - yes
 
+AllowedAPKSigningKeys: e90c58229467378aaa5046333969fe9a199d7716b8863fd14227b61064d3af7c
+
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
 CurrentVersion: 1.1.3
 CurrentVersionCode: 5
-
-AllowedAPKSigningKeys: e90c58229467378aaa5046333969fe9a199d7716b8863fd14227b61064d3af7c
