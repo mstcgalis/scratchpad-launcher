@@ -739,7 +739,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     override fun onPause() {
         super.onPause()
         scratchpadDebouncer.cancel()
-        prefs.scratchpadText = binding.scratchpad?.text.toString().orEmpty()
+        binding.scratchpad?.text?.toString()?.let { prefs.scratchpadText = it }
     }
 
     override fun onDestroyView() {
