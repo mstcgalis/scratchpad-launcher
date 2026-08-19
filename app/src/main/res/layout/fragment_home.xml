@@ -36,11 +36,12 @@
             android:textColorHint="?attr/primaryColorTrans50" />
     </FrameLayout>
 
-    <!-- Bottom half: clock/date, screen time, app list -->
+    <!-- Bottom half: clock/date, screen time, app list. Sized to its own content
+         (not weighted) so the app grid can never be pushed off-screen; the
+         scratchpad above absorbs whatever space is left. -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content">
 
         <!-- Screen time-->
         <androidx.appcompat.widget.AppCompatTextView
@@ -62,19 +63,19 @@
         <LinearLayout
             android:id="@+id/homeAppsLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
-            android:paddingVertical="24dp">
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
 
-            <!-- Clock and calendar: pinned right below scratchpad, gap matches clock-date gap -->
+            <!-- Clock and calendar: pinned right below scratchpad -->
             <LinearLayout
                 android:id="@+id/dateTimeLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:orientation="vertical"
-                android:paddingTop="@dimen/home_app_padding_vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -85,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
                     android:format12Hour="h:mm"
-                    android:paddingVertical="@dimen/home_app_padding_vertical"
+                    android:paddingTop="@dimen/home_app_padding_vertical"
                     android:textSize="@dimen/time_size"
                     tools:text="02:34" />
 
@@ -97,7 +98,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:format12Hour="EEE, dd MMM"
                     android:format24Hour="EEE, dd MMM"
-                    android:paddingVertical="@dimen/home_app_padding_vertical"
+                    android:paddingBottom="@dimen/home_app_padding_vertical"
                     android:textSize="@dimen/text_large"
                     tools:text="Thu, 30 Dec" />
             </LinearLayout>
@@ -105,8 +106,7 @@
             <LinearLayout
                 android:id="@+id/homeAppsGridContainer"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <LinearLayout
