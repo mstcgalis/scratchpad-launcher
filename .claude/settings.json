@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(just build)",
+      "Bash(just test)",
+      "Bash(just lint)",
+      "Bash(just run)",
+      "Bash(just clean)",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(./gradlew testDebugUnitTest)",
+      "Bash(./gradlew lintDebug)",
+      "Bash(./gradlew installDebug)",
+      "Bash(./gradlew clean)"
+    ]
+  }
+}
