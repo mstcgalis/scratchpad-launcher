@@ -80,7 +80,8 @@
         android:layout_height="match_parent"
         android:layout_marginHorizontal="74dp"
         android:orientation="vertical"
-        android:paddingVertical="@dimen/home_app_padding_vertical">
+        android:paddingTop="@dimen/home_app_padding_vertical"
+        android:paddingBottom="80dp">
 
         <LinearLayout
             android:id="@+id/homeAppsGridContainer"

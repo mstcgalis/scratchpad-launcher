@@ -430,17 +430,27 @@ fun View.animateAlpha(alpha: Float = 1.0f) {
 }
 
 fun Context.shareApp() {
-    val message = getString(R.string.are_you_using_your_phone_or_is_your_phone_using_you) +
-            "\n" + Constants.URL_GITHUB
-    val sendIntent: Intent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, message)
-        type = "text/plain"
+        val message = getString(R.string.are_you_using_your_phone_or_is_your_phone_using_you) +
+                "\n" + Constants.URL_GITHUB
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
-    val shareIntent = Intent.createChooser(sendIntent, null)
-    startActivity(shareIntent)
-}
+    fun Context.saveScratchpadToFile(content: String, fileName: String = "scratchpad.txt") {
+        try {
+            val file = java.io.File(getExternalFilesDir(null), fileName)
+            file.writeText(content)
+            showToast("Scratchpad saved to ${file.absolutePath}")
+        } catch (e: Exception) {
+            showToast("Failed to save scratchpad: ${e.message}")
+        }
+    }
 
 fun Context.rateApp() {
     val intent = Intent(

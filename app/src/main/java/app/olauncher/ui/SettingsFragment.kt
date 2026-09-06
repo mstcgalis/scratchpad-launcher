@@ -82,6 +82,15 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         initObservers()
     }
 
+    private fun saveScratchpad() {
+        val scratchpadText = prefs.scratchpadText
+        if (scratchpadText.isBlank()) {
+            requireContext().showToast("Scratchpad is empty")
+        } else {
+            requireActivity().saveScratchpadToFile(scratchpadText)
+        }
+    }
+
     override fun onClick(view: View) {
         binding.appsNumSelectLayout.visibility = View.GONE
         binding.dateTimeSelectLayout.visibility = View.GONE
@@ -152,6 +161,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             }
 
             R.id.share -> requireActivity().shareApp()
+            R.id.saveScratchpad -> saveScratchpad()
             R.id.rate -> {
                 prefs.rateClicked = true
                 requireActivity().rateApp()

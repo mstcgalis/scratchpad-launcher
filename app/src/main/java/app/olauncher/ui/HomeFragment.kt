@@ -266,6 +266,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             scratchpadDebouncer.submit { prefs.scratchpadText = text }
             editable?.let { styleScratchpadMarkdown(it) }
         })
+        binding.scratchpad?.setOnLongClickListener {
+            prefs.firstSettingsOpen = false
+            findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
+            true
+        }
     }
 
     private fun styleScratchpadMarkdown(editable: Editable) {
