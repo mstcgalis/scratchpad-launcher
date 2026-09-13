@@ -16,6 +16,16 @@ Sometimes you just want to write something down and have it always visible witho
 
 No accounts, no analytics, no network calls except the optional daily-wallpaper feature (off by default) and outbound links you tap yourself. Scratchpad text is stored locally in its own preferences file and excluded from Android auto-backup, so it never leaves the device.
 
+### Development
+
+Single Gradle module, built with `just` (see `justfile`):
+
+- `just build` — assemble debug APK
+- `just test` — unit tests
+- `just lint` — Android lint
+- `just run` — install debug build on a connected device/emulator and launch it
+- `just release VERSION` — bump version, build/sign a release APK, tag, push, and publish a GitHub release (e.g. `just release 1.1.9`)
+
 ### Status
 
 This is a personal fork, freshly rebranded from Olauncher (new `applicationId`, own icon). F-Droid metadata is prepared; not yet submitted to `fdroiddata`.

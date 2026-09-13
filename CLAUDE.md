@@ -11,6 +11,7 @@ Single Gradle module (`app`), Kotlin, no CI configured. Use `just` (justfile at 
 - `just lint` — Android lint
 - `just run` — install debug build on connected device/emulator and launch it
 - `just clean`
+- `just release VERSION` — bump `versionCode`/`versionName`, build a signed release APK, tag `vVERSION`, push, and publish a GitHub release. Reads signing credentials from `~/keys/scratchpad-launcher/credentials.env` (keystore + password/alias env vars, see `app/build.gradle`'s `signingConfigs.release`). After running it, the F-Droid metadata (`fdroid/app.scratchpad.launcher.yml`) still needs a matching `Builds:` entry and `CurrentVersion`/`CurrentVersionCode` bump, then a push to the `fdroiddata` MR branch — not automated by this recipe.
 
 Java 21 / compileSdk 35 / minSdk 24. No ktlint/detekt configured — `just lint` is Android Lint only.
 
