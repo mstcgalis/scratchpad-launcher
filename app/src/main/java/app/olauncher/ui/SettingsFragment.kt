@@ -33,6 +33,7 @@ import app.olauncher.helper.isTablet
 import app.olauncher.helper.openAppInfo
 import app.olauncher.helper.openUrl
 import app.olauncher.helper.rateApp
+import app.olauncher.helper.saveScratchpadToFile
 import app.olauncher.helper.shareApp
 import app.olauncher.helper.showToast
 import app.olauncher.listener.DeviceAdmin
