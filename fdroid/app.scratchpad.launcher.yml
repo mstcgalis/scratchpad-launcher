@@ -37,11 +37,11 @@ Builds:
 
   - versionName: 1.1.7
     versionCode: 9
+    disable: missing import, does not compile - fixed in 1.1.8
     commit: 33639ffb68667211f962b0036a2bf719ccde9fa3
     subdir: app
     gradle:
       - yes
-    disable: missing import, does not compile - fixed in 1.1.8
 
   - versionName: 1.1.8
     versionCode: 10
