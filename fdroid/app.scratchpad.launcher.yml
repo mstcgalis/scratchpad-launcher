@@ -41,6 +41,7 @@ Builds:
     subdir: app
     gradle:
       - yes
+    disable: missing import, does not compile - fixed in 1.1.8
 
   - versionName: 1.1.8
     versionCode: 10
