@@ -51,6 +51,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // Suppress backToHomeScreen during Private Space lock/unlock auth
     var isPrivateSpaceToggling = false
 
+    // Suppress backToHomeScreen while the sync folder picker (a separate task) is in front
+    var isPickingSyncFolder = false
+
     val showDialog = SingleLiveEvent<String>()
     val checkForMessages = SingleLiveEvent<Unit?>()
     val resetLauncherLiveData = SingleLiveEvent<Unit?>()

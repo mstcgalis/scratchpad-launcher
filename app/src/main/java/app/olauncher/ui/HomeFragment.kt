@@ -50,6 +50,10 @@ import app.olauncher.helper.openSearch
 import app.olauncher.helper.showToast
 import app.olauncher.listener.OnSwipeTouchListener
 import app.olauncher.listener.ViewSwipeTouchListener
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -60,6 +64,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private lateinit var viewModel: MainViewModel
     private lateinit var deviceManager: DevicePolicyManager
     private lateinit var scratchpadDebouncer: Debouncer
+    private var syncPollJob: Job? = null
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -96,6 +101,18 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         }
         if (prefs.showStatusBar) showStatusBar()
         else hideStatusBar()
+
+        // SAF tree URIs (Syncthing's folder) don't support change notifications, so poll while visible.
+        syncPollJob = viewLifecycleOwner.lifecycleScope.launch {
+            while (isActive) {
+                delay(3000)
+                if (binding.scratchpad?.isFocused == true) continue
+                ScratchpadSync.readIfChanged(requireContext(), prefs)?.let {
+                    prefs.scratchpadText = it
+                    binding.scratchpad?.setText(it)
+                }
+            }
+        }
     }
 
     override fun onClick(view: View) {
@@ -749,6 +766,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
     override fun onPause() {
         super.onPause()
+        syncPollJob?.cancel()
         scratchpadDebouncer.cancel()
         binding.scratchpad?.text?.toString()?.let {
             prefs.scratchpadText = it

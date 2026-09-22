@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         isResumed = true
         viewModel.isPrivateSpaceToggling = false
+        viewModel.isPickingSyncFolder = false
     }
 
     override fun onStop() {
@@ -252,7 +253,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun backToHomeScreen() {
-        if (viewModel.isPrivateSpaceToggling) return
+        if (viewModel.isPrivateSpaceToggling || viewModel.isPickingSyncFolder) return
         binding.messageLayout.visibility = View.GONE
         if (navController.currentDestination?.id != R.id.mainFragment)
             navController.popBackStack(R.id.mainFragment, false)

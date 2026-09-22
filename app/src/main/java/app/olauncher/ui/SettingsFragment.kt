@@ -85,6 +85,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     }
 
     private val pickSyncFolder = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        viewModel.isPickingSyncFolder = false
         uri ?: return@registerForActivityResult
         requireContext().contentResolver.takePersistableUriPermission(
             uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
@@ -167,7 +168,10 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             }
 
             R.id.share -> requireActivity().shareApp()
-            R.id.syncFolder -> pickSyncFolder.launch(null)
+            R.id.syncFolder -> {
+                viewModel.isPickingSyncFolder = true
+                pickSyncFolder.launch(null)
+            }
             R.id.rate -> {
                 prefs.rateClicked = true
                 requireActivity().rateApp()
