@@ -59,11 +59,12 @@
 - First-run hint overlap: ✅ FIXED (layout padding + long-press listener)
 - Text size > 1.0 bug: ✅ FIXED (ellipsize + maxLines)
 - Upstream update to v1.1.4+: ✅ FIXED IN CODE (v1.1.6, commit 6fc5ba3 applied)
-- Save scratchpad to file: ✅ ADDED (new feature)
+- Scratchpad sync folder: ✅ ADDED (new feature)
 
 ## New Features
 
-### Save Scratchpad to File
-- Added "Save scratchpad" option in Settings
-- Saves scratchpad content to `Android/data/app.scratchpad.launcher/files/scratchpad.txt`
-- Toast notification confirms save location
+### Scratchpad Sync Folder (Syncthing)
+- **Status**: ✅ ADDED (untested on device)
+- Settings > "Sync folder" opens a SAF folder picker; long-press stops syncing
+- `scratchpad.txt` in that folder is rewritten on pause and re-read on resume if it changed externally (`helper/ScratchpadSync.kt`)
+- Point Syncthing at the chosen folder. Local wins on pause (no merge); replaces the old, unwired "Save scratchpad" item

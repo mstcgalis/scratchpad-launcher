@@ -442,16 +442,6 @@ fun Context.shareApp() {
         startActivity(shareIntent)
     }
 
-    fun Context.saveScratchpadToFile(content: String, fileName: String = "scratchpad.txt") {
-        try {
-            val file = java.io.File(getExternalFilesDir(null), fileName)
-            file.writeText(content)
-            showToast("Scratchpad saved to ${file.absolutePath}")
-        } catch (e: Exception) {
-            showToast("Failed to save scratchpad: ${e.message}")
-        }
-    }
-
 fun Context.rateApp() {
     val intent = Intent(
         Intent.ACTION_VIEW,

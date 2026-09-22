@@ -114,4 +114,7 @@
     <string name="new_year_wish_1">لا يهم كيف مضى شهر يناير. لا يزال لديك بقية العام لتقدم أداءً أفضل من أي وقت مضى.</string>
     <string name="cheers">هتافات!</string>
     <string name="notification_bar">شريط الإشعارات</string>
+    <string name="sync_folder">مجلد المزامنة</string>
+    <string name="sync_folder_set">مزامنة scratchpad.txt (اضغط مطولاً للإيقاف)</string>
+    <string name="sync_folder_cleared">تم إيقاف المزامنة</string>
 </resources>

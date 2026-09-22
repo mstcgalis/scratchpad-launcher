@@ -898,6 +898,15 @@
                     android:text="@string/privacy" />
 
                 <TextView
+                    android:id="@+id/syncFolder"
+                    style="@style/TextSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:padding="10dp"
+                    android:text="@string/sync_folder" />
+
+                <TextView
                     android:id="@+id/share"
                     style="@style/TextSmall"
                     android:layout_width="wrap_content"

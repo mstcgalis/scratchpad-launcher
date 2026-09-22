@@ -116,4 +116,7 @@
     <string name="new_year_wish_1">Nie ma znaczenia, jak minął styczeń. Wciąż masz resztę roku, aby poradzić sobie lepiej niż kiedykolwiek.</string>
     <string name="cheers">Na zdrowie!</string>
     <string name="notification_bar">Pasek powiadomień</string>
+    <string name="sync_folder">Folder synchronizacji</string>
+    <string name="sync_folder_set">Synchronizacja scratchpad.txt (przytrzymaj, aby zatrzymać)</string>
+    <string name="sync_folder_cleared">Synchronizacja zatrzymana</string>
 </resources><!-- Polish -->

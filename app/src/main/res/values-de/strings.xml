@@ -117,4 +117,7 @@
     <string name="new_year_wish_1">Egal, wie der Januar gelaufen ist. Du hast noch den Rest des Jahres Zeit, um besser zu sein als je zuvor.</string>
     <string name="cheers">Prost!</string>
     <string name="notification_bar">Benachrichtigungsleiste</string>
+    <string name="sync_folder">Sync-Ordner</string>
+    <string name="sync_folder_set">scratchpad.txt wird synchronisiert (lange drücken zum Beenden)</string>
+    <string name="sync_folder_cleared">Synchronisierung beendet</string>
 </resources>

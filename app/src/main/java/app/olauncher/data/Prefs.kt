@@ -10,6 +10,8 @@ class Prefs(context: Context) {
     private val PREFS_FILENAME = "app.scratchpad.launcher"
     private val SCRATCHPAD_PREFS_FILENAME = "app.scratchpad.launcher.scratchpad"
     private val SCRATCHPAD_TEXT = "SCRATCHPAD_TEXT"
+    private val SYNC_FOLDER_URI = "SYNC_FOLDER_URI"
+    private val SYNC_LAST_MODIFIED = "SYNC_LAST_MODIFIED"
 
     private val FIRST_OPEN = "FIRST_OPEN"
     private val FIRST_OPEN_TIME = "FIRST_OPEN_TIME"
@@ -151,6 +153,14 @@ class Prefs(context: Context) {
     var keyboardMessageShown: Boolean
         get() = prefs.getBoolean(KEYBOARD_MESSAGE, false)
         set(value) = prefs.edit { putBoolean(KEYBOARD_MESSAGE, value).apply() }
+
+    var syncFolderUri: String
+        get() = scratchpadPrefs.getString(SYNC_FOLDER_URI, "").toString()
+        set(value) = scratchpadPrefs.edit { putString(SYNC_FOLDER_URI, value).apply() }
+
+    var syncLastModified: Long
+        get() = scratchpadPrefs.getLong(SYNC_LAST_MODIFIED, 0L)
+        set(value) = scratchpadPrefs.edit { putLong(SYNC_LAST_MODIFIED, value).apply() }
 
     var scratchpadText: String
         get() = scratchpadPrefs.getString(SCRATCHPAD_TEXT, "").toString()

@@ -118,4 +118,7 @@
     <string name="new_year_wish_1">Nem számít, hogyan telt a január. Még mindig van hátra az évből, hogy minden eddiginél jobban teljesíts.</string>
     <string name="cheers">Egészségére!</string>
     <string name="notification_bar">Értesítési sáv</string>
+    <string name="sync_folder">Szinkronmappa</string>
+    <string name="sync_folder_set">A scratchpad.txt szinkronizálása (hosszan nyomva leállítható)</string>
+    <string name="sync_folder_cleared">Szinkronizálás leállítva</string>
 </resources><!-- Hungarian -->

@@ -113,4 +113,7 @@
     <string name="alignment_changed">Uitlijning gewijzigd ✅</string>
     <string name="home_screen">Startscherm</string>
     <string name="hey">Hoi</string>
-    </resources><!-- Dutch -->
+        <string name="sync_folder">Synchronisatiemap</string>
+    <string name="sync_folder_set">scratchpad.txt wordt gesynchroniseerd (lang indrukken om te stoppen)</string>
+    <string name="sync_folder_cleared">Synchronisatie gestopt</string>
+</resources><!-- Dutch -->

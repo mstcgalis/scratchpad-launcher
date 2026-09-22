@@ -115,4 +115,7 @@
     <string name="new_year_wish_1">Nije važno kako je prošao siječanj. Još uvijek imate ostatak godine da budete bolji nego ikad.</string>
     <string name="cheers">Živjeli!</string>
     <string name="notification_bar">Traka obavijesti</string>
+    <string name="sync_folder">Mapa za sinkronizaciju</string>
+    <string name="sync_folder_set">Sinkronizacija datoteke scratchpad.txt (dugo pritisnite za prekid)</string>
+    <string name="sync_folder_cleared">Sinkronizacija zaustavljena</string>
 </resources><!-- Croatian -->

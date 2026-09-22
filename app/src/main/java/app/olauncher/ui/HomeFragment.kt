@@ -33,6 +33,7 @@ import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentHomeBinding
+import app.olauncher.helper.ScratchpadSync
 import app.olauncher.helper.Debouncer
 import app.olauncher.helper.MarkdownStyler
 import app.olauncher.helper.appUsagePermissionGranted
@@ -89,6 +90,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         super.onResume()
         populateHomeScreen(false)
         viewModel.isOlauncherDefault()
+        ScratchpadSync.readIfChanged(requireContext(), prefs)?.let {
+            prefs.scratchpadText = it
+            binding.scratchpad?.setText(it)
+        }
         if (prefs.showStatusBar) showStatusBar()
         else hideStatusBar()
     }
@@ -745,7 +750,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     override fun onPause() {
         super.onPause()
         scratchpadDebouncer.cancel()
-        binding.scratchpad?.text?.toString()?.let { prefs.scratchpadText = it }
+        binding.scratchpad?.text?.toString()?.let {
+            prefs.scratchpadText = it
+            ScratchpadSync.write(requireContext(), prefs, it)
+        }
     }
 
     override fun onDestroyView() {

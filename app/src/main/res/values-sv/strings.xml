@@ -115,4 +115,7 @@
     <string name="new_year_wish_1">Det spelar ingen roll hur januari gick. Du har fortfarande resten av året på dig att göra bättre ifrån dig än någonsin.</string>
     <string name="cheers">Skål!</string>
     <string name="notification_bar">Aviseringsfält</string>
+    <string name="sync_folder">Synkmapp</string>
+    <string name="sync_folder_set">Synkar scratchpad.txt (håll nedtryckt för att stoppa)</string>
+    <string name="sync_folder_cleared">Synkning stoppad</string>
 </resources><!-- Swedish -->

@@ -930,14 +930,14 @@
                     android:text="@string/privacy" />
 
                 <TextView
-                    android:id="@+id/saveScratchpad"
+                    android:id="@+id/syncFolder"
                     style="@style/TextSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:padding="10dp"
-                    android:text="@string/save_scratchpad" />
+                    android:text="@string/sync_folder" />
 
                 <TextView
                     android:id="@+id/share"

@@ -117,4 +117,7 @@
     <string name="new_year_wish_1">" Неважливо, як пройшов січень. У вас ще є решта року, щоб досягти успіху, як ніколи раніше."</string>
     <string name="cheers">будьмо!</string>
     <string name="notification_bar">Панель сповіщень</string>
+    <string name="sync_folder">Папка синхронізації</string>
+    <string name="sync_folder_set">Синхронізація scratchpad.txt (довге натискання — зупинити)</string>
+    <string name="sync_folder_cleared">Синхронізацію зупинено</string>
 </resources><!-- Ukrainian -->

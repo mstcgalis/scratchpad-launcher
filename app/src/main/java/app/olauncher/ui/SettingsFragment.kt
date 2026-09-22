@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -33,7 +34,7 @@ import app.olauncher.helper.isTablet
 import app.olauncher.helper.openAppInfo
 import app.olauncher.helper.openUrl
 import app.olauncher.helper.rateApp
-import app.olauncher.helper.saveScratchpadToFile
+import app.olauncher.helper.ScratchpadSync
 import app.olauncher.helper.shareApp
 import app.olauncher.helper.showToast
 import app.olauncher.listener.DeviceAdmin
@@ -83,13 +84,17 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         initObservers()
     }
 
-    private fun saveScratchpad() {
-        val scratchpadText = prefs.scratchpadText
-        if (scratchpadText.isBlank()) {
-            requireContext().showToast("Scratchpad is empty")
-        } else {
-            requireActivity().saveScratchpadToFile(scratchpadText)
-        }
+    private val pickSyncFolder = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(
+            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        )
+        prefs.syncFolderUri = uri.toString()
+        prefs.syncLastModified = 0L
+        // Blank note adopts an existing file; otherwise the note is written out.
+        if (prefs.scratchpadText.isBlank()) ScratchpadSync.readIfChanged(requireContext(), prefs)?.let { prefs.scratchpadText = it }
+        else ScratchpadSync.write(requireContext(), prefs, prefs.scratchpadText)
+        requireContext().showToast(getString(R.string.sync_folder_set))
     }
 
     override fun onClick(view: View) {
@@ -162,7 +167,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             }
 
             R.id.share -> requireActivity().shareApp()
-            R.id.saveScratchpad -> saveScratchpad()
+            R.id.syncFolder -> pickSyncFolder.launch(null)
             R.id.rate -> {
                 prefs.rateClicked = true
                 requireActivity().rateApp()
@@ -189,6 +194,10 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.swipeLeftApp -> toggleSwipeLeft()
             R.id.swipeRightApp -> toggleSwipeRight()
             R.id.toggleLock -> startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            R.id.syncFolder -> {
+                prefs.syncFolderUri = ""
+                requireContext().showToast(getString(R.string.sync_folder_cleared))
+            }
         }
         return true
     }
@@ -229,6 +238,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.closeAccessibility.setOnClickListener(this)
         binding.notWorking.setOnClickListener(this)
 
+        binding.syncFolder.setOnClickListener(this)
+        binding.syncFolder.setOnLongClickListener(this)
         binding.share.setOnClickListener(this)
         binding.rate.setOnClickListener(this)
         binding.github.setOnClickListener(this)

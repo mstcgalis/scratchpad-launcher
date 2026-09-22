@@ -32,7 +32,9 @@
     <string name="white">White</string>
     <string name="change_default_launcher">Change default launcher</string>
     <string name="privacy">Privacy</string>
-    <string name="save_scratchpad">Save scratchpad</string>
+    <string name="sync_folder">Sync folder</string>
+    <string name="sync_folder_set">Syncing scratchpad.txt (long-press to stop)</string>
+    <string name="sync_folder_cleared">Sync stopped</string>
     <string name="share">Share</string>
     <string name="rate">Rate</string>
     <string name="follow">Follow</string>
