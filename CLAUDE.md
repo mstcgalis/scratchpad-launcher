@@ -11,7 +11,7 @@ Single Gradle module (`app`), Kotlin, no CI configured. Use `just` (justfile at 
 - `just lint` — Android lint
 - `just run` — install debug build on connected device/emulator and launch it
 - `just clean`
-- `just release VERSION` — bump `versionCode`/`versionName`, build a signed release APK, tag `vVERSION`, push, and publish a GitHub release. Reads signing credentials from `~/keys/scratchpad-launcher/credentials.env` (keystore + password/alias env vars, see `app/build.gradle`'s `signingConfigs.release`). After running it, the F-Droid metadata (`fdroid/app.scratchpad.launcher.yml`) still needs a matching `Builds:` entry and `CurrentVersion`/`CurrentVersionCode` bump, then a push to the `fdroiddata` MR branch — not automated by this recipe.
+- `just release VERSION` — bump `versionCode`/`versionName`, build a signed release APK, tag `vVERSION`, push, publish a GitHub release, then add a matching `Builds:` entry and bump `CurrentVersion`/`CurrentVersionCode` in `fdroid/app.scratchpad.launcher.yml`, commit that here, and push the same change to the `dgalis/fdroiddata` fork's `app.scratchpad.launcher` branch (the F-Droid MR !45012 branch). Reads signing credentials from `~/keys/scratchpad-launcher/credentials.env` (keystore + password/alias env vars, see `app/build.gradle`'s `signingConfigs.release`). The fdroiddata push uses `glab`'s stored gitlab.com credentials over HTTPS (no SSH key is set up for gitlab.com) — needs `glab auth status` logged in as `dgalis`.
 
 Java 21 / compileSdk 35 / minSdk 24. No ktlint/detekt configured — `just lint` is Android Lint only.
 
