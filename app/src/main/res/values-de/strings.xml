@@ -120,4 +120,8 @@
     <string name="sync_folder">Sync-Ordner</string>
     <string name="sync_folder_set">scratchpad.md wird synchronisiert (lange drücken zum Beenden)</string>
     <string name="sync_folder_cleared">Synchronisierung beendet</string>
+    <string name="scratchpad_hint">Notizblock leer…</string>
+    <string name="scratchpad_text_size">Textgröße Notizblock</string>
+    <string name="unable_to_open_app_info">App-Info kann nicht geöffnet werden</string>
+    <string name="private_space">Privater Bereich</string>
 </resources>

@@ -120,4 +120,8 @@
     <string name="sync_folder">同期フォルダ</string>
     <string name="sync_folder_set">scratchpad.md を同期中（長押しで停止）</string>
     <string name="sync_folder_cleared">同期を停止しました</string>
+    <string name="scratchpad_hint">メモは空です…</string>
+    <string name="scratchpad_text_size">メモの文字サイズ</string>
+    <string name="unable_to_open_app_info">アプリ情報を開けません</string>
+    <string name="private_space">プライベート スペース</string>
 </resources> <!-- Japanese -->

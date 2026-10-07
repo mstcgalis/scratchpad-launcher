@@ -322,6 +322,8 @@ fun openAlarmApp(context: Context) {
     }
 }
 
+// False positive: CATEGORY_APP_CALENDAR can't match the (disabled) FakeHomeActivity HOME filter.
+@SuppressLint("UnsafeImplicitIntentLaunch")
 fun openCalendar(context: Context) {
     try {
         val calendarUri = CalendarContract.CONTENT_URI

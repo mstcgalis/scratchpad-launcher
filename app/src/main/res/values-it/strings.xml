@@ -120,4 +120,8 @@
     <string name="sync_folder">Cartella di sincronizzazione</string>
     <string name="sync_folder_set">Sincronizzazione di scratchpad.md (tieni premuto per fermare)</string>
     <string name="sync_folder_cleared">Sincronizzazione interrotta</string>
+    <string name="scratchpad_hint">Blocco note vuoto…</string>
+    <string name="scratchpad_text_size">Dimensione testo blocco note</string>
+    <string name="unable_to_open_app_info">Impossibile aprire le info app</string>
+    <string name="private_space">Spazio privato</string>
 </resources><!-- Italian -->

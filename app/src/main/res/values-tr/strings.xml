@@ -120,4 +120,8 @@
     <string name="sync_folder">Senkronizasyon klasörü</string>
     <string name="sync_folder_set">scratchpad.md senkronize ediliyor (durdurmak için uzun bas)</string>
     <string name="sync_folder_cleared">Senkronizasyon durduruldu</string>
+    <string name="scratchpad_hint">Not defteri boş…</string>
+    <string name="scratchpad_text_size">Not defteri metin boyutu</string>
+    <string name="unable_to_open_app_info">Uygulama bilgisi açılamıyor</string>
+    <string name="private_space">Özel alan</string>
 </resources><!-- Turkish -->

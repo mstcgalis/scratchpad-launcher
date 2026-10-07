@@ -117,4 +117,8 @@
     <string name="sync_folder">مجلد المزامنة</string>
     <string name="sync_folder_set">مزامنة scratchpad.md (اضغط مطولاً للإيقاف)</string>
     <string name="sync_folder_cleared">تم إيقاف المزامنة</string>
+    <string name="scratchpad_hint">المسودة فارغة…</string>
+    <string name="scratchpad_text_size">حجم نص المسودة</string>
+    <string name="unable_to_open_app_info">تعذّر فتح معلومات التطبيق</string>
+    <string name="private_space">المساحة الخاصة</string>
 </resources>

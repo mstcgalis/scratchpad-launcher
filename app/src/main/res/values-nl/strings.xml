@@ -116,4 +116,8 @@
         <string name="sync_folder">Synchronisatiemap</string>
     <string name="sync_folder_set">scratchpad.md wordt gesynchroniseerd (lang indrukken om te stoppen)</string>
     <string name="sync_folder_cleared">Synchronisatie gestopt</string>
+    <string name="scratchpad_hint">Kladblok leeg…</string>
+    <string name="scratchpad_text_size">Tekstgrootte kladblok</string>
+    <string name="unable_to_open_app_info">Kan app-info niet openen</string>
+    <string name="private_space">Privéruimte</string>
 </resources><!-- Dutch -->

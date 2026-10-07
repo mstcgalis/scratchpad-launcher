@@ -118,4 +118,8 @@
     <string name="sync_folder">Mapa za sinkronizaciju</string>
     <string name="sync_folder_set">Sinkronizacija datoteke scratchpad.md (dugo pritisnite za prekid)</string>
     <string name="sync_folder_cleared">Sinkronizacija zaustavljena</string>
+    <string name="scratchpad_hint">Bilješke su prazne…</string>
+    <string name="scratchpad_text_size">Veličina teksta bilješki</string>
+    <string name="unable_to_open_app_info">Nije moguće otvoriti podatke o aplikaciji</string>
+    <string name="private_space">Privatni prostor</string>
 </resources><!-- Croatian -->

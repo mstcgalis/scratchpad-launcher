@@ -120,4 +120,8 @@
     <string name="sync_folder">Папка синхронізації</string>
     <string name="sync_folder_set">Синхронізація scratchpad.md (довге натискання — зупинити)</string>
     <string name="sync_folder_cleared">Синхронізацію зупинено</string>
+    <string name="scratchpad_hint">Нотатки порожні…</string>
+    <string name="scratchpad_text_size">Розмір тексту нотаток</string>
+    <string name="unable_to_open_app_info">Не вдалося відкрити інформацію про додаток</string>
+    <string name="private_space">Приватний простір</string>
 </resources><!-- Ukrainian -->

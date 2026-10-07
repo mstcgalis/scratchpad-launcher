@@ -121,4 +121,8 @@
     <string name="sync_folder">同步文件夹</string>
     <string name="sync_folder_set">正在同步 scratchpad.md（长按停止）</string>
     <string name="sync_folder_cleared">已停止同步</string>
+    <string name="scratchpad_hint">便笺为空…</string>
+    <string name="scratchpad_text_size">便笺文字大小</string>
+    <string name="unable_to_open_app_info">无法打开应用信息</string>
+    <string name="private_space">私密空间</string>
 </resources><!-- Chinese -->

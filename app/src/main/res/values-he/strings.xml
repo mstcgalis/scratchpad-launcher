@@ -115,4 +115,8 @@
     <string name="sync_folder">תיקיית סנכרון</string>
     <string name="sync_folder_set">מסנכרן את scratchpad.md (לחיצה ארוכה לעצירה)</string>
     <string name="sync_folder_cleared">הסנכרון הופסק</string>
+    <string name="scratchpad_hint">הפנקס ריק…</string>
+    <string name="scratchpad_text_size">גודל טקסט בפנקס</string>
+    <string name="unable_to_open_app_info">לא ניתן לפתוח את פרטי האפליקציה</string>
+    <string name="private_space">מרחב פרטי</string>
 </resources>

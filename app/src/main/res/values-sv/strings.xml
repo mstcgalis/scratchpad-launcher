@@ -118,4 +118,8 @@
     <string name="sync_folder">Synkmapp</string>
     <string name="sync_folder_set">Synkar scratchpad.md (håll nedtryckt för att stoppa)</string>
     <string name="sync_folder_cleared">Synkning stoppad</string>
+    <string name="scratchpad_hint">Anteckningsblocket är tomt…</string>
+    <string name="scratchpad_text_size">Textstorlek för anteckningar</string>
+    <string name="unable_to_open_app_info">Det gick inte att öppna appinfo</string>
+    <string name="private_space">Privat utrymme</string>
 </resources><!-- Swedish -->

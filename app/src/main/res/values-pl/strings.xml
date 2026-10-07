@@ -119,4 +119,8 @@
     <string name="sync_folder">Folder synchronizacji</string>
     <string name="sync_folder_set">Synchronizacja scratchpad.md (przytrzymaj, aby zatrzymać)</string>
     <string name="sync_folder_cleared">Synchronizacja zatrzymana</string>
+    <string name="scratchpad_hint">Notatnik jest pusty…</string>
+    <string name="scratchpad_text_size">Rozmiar tekstu notatnika</string>
+    <string name="unable_to_open_app_info">Nie można otworzyć informacji o aplikacji</string>
+    <string name="private_space">Przestrzeń prywatna</string>
 </resources><!-- Polish -->

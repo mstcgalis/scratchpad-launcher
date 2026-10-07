@@ -118,4 +118,8 @@
     <string name="sync_folder">Folder sinkronisasi</string>
     <string name="sync_folder_set">Menyinkronkan scratchpad.md (tekan lama untuk berhenti)</string>
     <string name="sync_folder_cleared">Sinkronisasi dihentikan</string>
+    <string name="scratchpad_hint">Catatan kosong…</string>
+    <string name="scratchpad_text_size">Ukuran teks catatan</string>
+    <string name="unable_to_open_app_info">Tidak dapat membuka info aplikasi</string>
+    <string name="private_space">Ruang pribadi</string>
 </resources><!-- Indonesian -->

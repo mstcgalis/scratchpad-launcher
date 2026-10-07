@@ -120,4 +120,8 @@
     <string name="sync_folder">Pasta de sincronização</string>
     <string name="sync_folder_set">Sincronizando scratchpad.md (mantenha pressionado para parar)</string>
     <string name="sync_folder_cleared">Sincronização interrompida</string>
+    <string name="scratchpad_hint">Bloco de notas vazio…</string>
+    <string name="scratchpad_text_size">Tamanho do texto do bloco de notas</string>
+    <string name="unable_to_open_app_info">Não foi possível abrir as informações do app</string>
+    <string name="private_space">Espaço privado</string>
 </resources><!-- Portuguese -->

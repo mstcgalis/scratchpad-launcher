@@ -1,5 +1,6 @@
 package app.olauncher.helper
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AppOpsManager
 import android.app.SearchManager
@@ -50,6 +51,8 @@ fun Activity.showLauncherSelector(requestCode: Int) {
         resetDefaultLauncher()
 }
 
+// Implicit HOME intent is the point: briefly enabling FakeHomeActivity forces the launcher chooser.
+@SuppressLint("UnsafeImplicitIntentLaunch")
 fun Context.resetDefaultLauncher() {
     try {
         val componentName = ComponentName(this, FakeHomeActivity::class.java)

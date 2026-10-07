@@ -1,9 +1,13 @@
 package app.olauncher.helper
 
 import android.content.pm.LauncherApps
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 
+// Only started by the system's pin-shortcut flow, which exists on API 26+.
+@RequiresApi(Build.VERSION_CODES.O)
 class PinItemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
