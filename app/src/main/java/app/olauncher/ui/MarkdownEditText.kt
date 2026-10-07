@@ -28,6 +28,8 @@ class MarkdownEditText @JvmOverloads constructor(
                 if (span != null) {
                     val toggleIndex = editable.getSpanStart(span) + 1
                     editable.replace(toggleIndex, toggleIndex + 1, if (span.checked) " " else "x")
+                    // super never sees this UP, so the long-press scheduled on DOWN would fire (opens settings).
+                    cancelLongPress()
                     return true
                 }
             }
