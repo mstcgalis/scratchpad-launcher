@@ -35,3 +35,4 @@ Layouts are duplicated per orientation: `res/layout/` (portrait) and `res/layout
 - License: repo is GPLv3 (inherited from Olauncher) — do NOT relicense to AGPL despite the user's general default preference for new repos.
 - Scratchpad text must never leave the device and must survive reboots — no analytics/network calls on that path.
 - Keep changes scoped; this is a small personal fork, not upstream Olauncher — don't reintroduce upstream features that were deliberately cut (reduced app grid, etc).
+- Typography: system `sans-serif` (not bundled Roboto), regular weight; clock/date medium. Scratchpad is 17sp × its own `scratchpadTextScale` setting (independent of the global launcher text size), 1.3 line spacing, centred halo shadow kept for legibility over bright wallpapers.

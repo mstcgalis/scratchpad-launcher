@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
@@ -281,6 +282,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     }
 
     private fun initScratchpad() {
+        // Own size setting: undo the global launcher scale (still honours system font size).
+        binding.scratchpad?.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f * prefs.scratchpadTextScale / prefs.textSizeScale)
         binding.scratchpad?.setText(prefs.scratchpadText)
         binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) }
         binding.scratchpad?.addTextChangedListener(afterTextChanged = { editable ->

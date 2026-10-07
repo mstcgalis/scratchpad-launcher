@@ -74,6 +74,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         // populateHomeButtonRecents()
         populateAppThemeText()
         populateTextSize()
+        populateScratchpadSize()
         populateAlignment()
         populateStatusBar()
         populateDateTime()
@@ -109,6 +110,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 applyTextSizeScale()
             }
         }
+        if (view.id != R.id.scratchpadSizeMinus && view.id != R.id.scratchpadSizePlus)
+            binding.scratchpadSizesLayout.visibility = View.GONE
         if (view.id != R.id.alignmentBottom)
             binding.alignmentSelectLayout.visibility = View.GONE
 
@@ -137,6 +140,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.themeDark -> updateTheme(AppCompatDelegate.MODE_NIGHT_YES)
             R.id.themeSystem -> updateTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             R.id.textSizeValue -> binding.textSizesLayout.visibility = View.VISIBLE
+            R.id.scratchpadSizeValue -> binding.scratchpadSizesLayout.visibility = View.VISIBLE
             R.id.actionAccessibility -> openAccessibilityService()
             R.id.closeAccessibility -> toggleAccessibilityVisibility(false)
             R.id.notWorking -> requireContext().openUrl(Constants.URL_DOUBLE_TAP)
@@ -155,6 +159,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
             R.id.textSizeMinus -> adjustTextSizePreview(-0.1f)
             R.id.textSizePlus -> adjustTextSizePreview(0.1f)
+            R.id.scratchpadSizeMinus -> adjustScratchpadSize(-0.1f)
+            R.id.scratchpadSizePlus -> adjustScratchpadSize(0.1f)
 
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
@@ -238,6 +244,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.themeDark.setOnClickListener(this)
         binding.themeSystem.setOnClickListener(this)
         binding.textSizeValue.setOnClickListener(this)
+        binding.scratchpadSizeValue.setOnClickListener(this)
         binding.actionAccessibility.setOnClickListener(this)
         binding.closeAccessibility.setOnClickListener(this)
         binding.notWorking.setOnClickListener(this)
@@ -261,6 +268,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
         binding.textSizeMinus.setOnClickListener(this)
         binding.textSizePlus.setOnClickListener(this)
+        binding.scratchpadSizeMinus.setOnClickListener(this)
+        binding.scratchpadSizePlus.setOnClickListener(this)
 
         binding.alignment.setOnLongClickListener(this)
         binding.appThemeText.setOnLongClickListener(this)
@@ -490,6 +499,18 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             AppCompatDelegate.MODE_NIGHT_NO -> binding.appThemeText.text = getString(R.string.light)
             else -> binding.appThemeText.text = getString(R.string.system_default)
         }
+    }
+
+    // Applied when the home view is rebuilt on return, so no activity recreate needed.
+    private fun adjustScratchpadSize(delta: Float) {
+        prefs.scratchpadTextScale = (Math.round((prefs.scratchpadTextScale + delta) * 10f) / 10f).coerceIn(0.5f, 2.0f)
+        populateScratchpadSize()
+    }
+
+    private fun populateScratchpadSize() {
+        val formatted = String.format("%.1f", prefs.scratchpadTextScale)
+        binding.scratchpadSizeValue.text = formatted
+        binding.scratchpadSizeCurrent.text = formatted
     }
 
     private fun populateTextSize() {
