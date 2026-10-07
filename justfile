@@ -30,9 +30,14 @@ release version:
     set -euo pipefail
     current_code=$(grep -oE 'versionCode [0-9]+' app/build.gradle | grep -oE '[0-9]+')
     new_code=$((current_code + 1))
+    # Changelog = commit subjects since the last tag; shown on the GitHub release and in F-Droid
+    changelog="fastlane/metadata/android/en-US/changelogs/$new_code.txt"
+    mkdir -p "$(dirname "$changelog")"
+    git log --pretty='- %s' "$(git describe --tags --abbrev=0)..HEAD" > "$changelog"
+    [ -s "$changelog" ] || { rm "$changelog"; echo "No commits since the last tag - nothing to release"; exit 1; }
     sed -i '' "s/versionCode .*/versionCode $new_code/" app/build.gradle
     sed -i '' "s/versionName \".*\"/versionName \"{{version}}\"/" app/build.gradle
-    git add app/build.gradle
+    git add app/build.gradle "$changelog"
     git commit -m "Bump to {{version}}"
     git push
     source ~/keys/scratchpad-launcher/credentials.env
@@ -46,4 +51,4 @@ release version:
     mkdir -p release-artifacts
     cp app/build/outputs/apk/release/app-release.apk "release-artifacts/ScratchpadLauncher-v{{version}}.apk"
     gh release create "v{{version}}" "release-artifacts/ScratchpadLauncher-v{{version}}.apk" \
-        --repo mstcgalis/scratchpad-launcher --title "v{{version}}" --notes "Release v{{version}}"
+        --repo mstcgalis/scratchpad-launcher --title "v{{version}}" --notes-file "$changelog"
