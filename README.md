@@ -33,7 +33,7 @@ The optional accessibility service is used only for double-tap-to-lock. It's off
 
 Sometimes you just want to write something down and have it always visible, without opening any app. This is a fork of [Olauncher](https://github.com/tanujnotes/Olauncher), a minimal, ad-free Android launcher, with the app grid cut down and a persistent scratchpad put in its place.
 
-Feedback and bug reports are welcome in [Issues](https://github.com/mstcgalis/scratchpad-launcher/issues).
+Feedback and bug reports are welcome in [Issues](https://github.com/mstcgalis/scratchpad-launcher/issues) or by email at [daniel@dgalis.sk](mailto:daniel@dgalis.sk).
 
 ## Development
 
