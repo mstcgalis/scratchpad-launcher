@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.Editable
@@ -25,6 +26,7 @@ private class MarkdownStrikeSpan : StrikethroughSpan(), MarkdownSpan
 
 /** Draws a tappable checkbox glyph over a `[ ]`/`[x]` marker range. */
 class CheckboxSpan(val checked: Boolean, private val color: Int) : ReplacementSpan(), MarkdownSpan {
+    private val bounds = Rect()
 
     override fun getSize(paint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt?): Int {
         return (paint.textSize * 1.2f).toInt()
@@ -43,7 +45,8 @@ class CheckboxSpan(val checked: Boolean, private val color: Int) : ReplacementSp
     ) {
         val boxSize = paint.textSize * 0.75f
         val boxLeft = x + paint.textSize * 0.1f
-        val boxTop = y + paint.fontMetrics.ascent + (paint.textSize - boxSize) / 2f
+        paint.getTextBounds("H", 0, 1, bounds)
+        val boxTop = y + bounds.exactCenterY() - boxSize / 2f
         val rect = RectF(boxLeft, boxTop, boxLeft + boxSize, boxTop + boxSize)
         val cornerRadius = boxSize * 0.2f
 
