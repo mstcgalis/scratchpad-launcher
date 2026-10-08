@@ -15,6 +15,7 @@ import android.text.Editable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
@@ -332,19 +333,30 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         // Markers are hidden unless the note is being edited; leaving the keyboard hides them again.
         // Focusing makes the box scroll to reveal the cursor; put the view back where it was if nothing was typed.
         var scrollOnFocus = 0
+        var scrolledWhileEditing = false
         var textOnFocus = 0
         binding.scratchpad?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 scrollOnFocus = v.scrollY
+                scrolledWhileEditing = false
                 textOnFocus = binding.scratchpad?.text.toString().hashCode()
             }
             binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) }
         }
         binding.scratchpad?.let { pad ->
+            // A drag that scrolled the note while editing is the user's own scroll: keep it on leaving
+            var scrollOnDown = 0
+            pad.setOnTouchListener { _, event ->
+                when (event.actionMasked) {
+                    MotionEvent.ACTION_DOWN -> scrollOnDown = pad.scrollY
+                    MotionEvent.ACTION_UP -> if (pad.isFocused && pad.scrollY != scrollOnDown) scrolledWhileEditing = true
+                }
+                false
+            }
             fun leaveEditing() {
                 if (!pad.isFocused) return
                 binding.mainLayout.requestFocus()
-                pad.post { if (pad.text.toString().hashCode() == textOnFocus) pad.scrollTo(0, scrollOnFocus) }
+                pad.post { if (!scrolledWhileEditing && pad.text.toString().hashCode() == textOnFocus) pad.scrollTo(0, scrollOnFocus) }
             }
             // A back swipe reports the keyboard hidden as soon as its hide animation starts; moving focus then
             // makes the keyboard bounce back up. So leave editing only once the keyboard animation has ended.
@@ -391,6 +403,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         fun follow(imeBottom: Int) {
             val frameBottom = IntArray(2).also { frame.getLocationInWindow(it) }[1] + frame.height
             toolbar.translationY = (root.rootView.height - imeBottom - frameBottom).toFloat()
+            // Hidden until the keyboard actually starts rising, so it never sits alone at the screen bottom
+            toolbar.alpha = if (imeBottom > 0) 1f else 0f
         }
         ViewCompat.setWindowInsetsAnimationCallback(root, object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
             override fun onProgress(insets: WindowInsetsCompat, runningAnimations: List<WindowInsetsAnimationCompat>): WindowInsetsCompat {
