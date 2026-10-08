@@ -302,6 +302,17 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
             true
         }
+        // Markers are hidden unless the note is being edited; leaving the keyboard hides them again.
+        binding.scratchpad?.setOnFocusChangeListener { _, _ -> binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) } }
+        binding.scratchpad?.let { pad ->
+            var keyboardWasVisible = false
+            ViewCompat.setOnApplyWindowInsetsListener(pad) { _, insets ->
+                val visible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                if (keyboardWasVisible && !visible) binding.mainLayout.requestFocus()
+                keyboardWasVisible = visible
+                insets
+            }
+        }
         initFormatToolbar()
     }
 
@@ -341,7 +352,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private fun styleScratchpadMarkdown(editable: Editable) {
         val dimColor = requireContext().getColorFromAttr(R.attr.primaryColorTrans50)
         val accentColor = requireContext().getColorFromAttr(R.attr.primaryColor)
-        MarkdownStyler.apply(editable, dimColor, accentColor)
+        MarkdownStyler.apply(editable, dimColor, accentColor, binding.scratchpad?.isFocused == true)
     }
 
     private fun setHomeAlignment(horizontalGravity: Int = prefs.homeAlignment) {

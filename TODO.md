@@ -69,9 +69,10 @@
 - `scratchpad.md` in that folder is rewritten on pause and re-read on resume if it changed externally (`helper/ScratchpadSync.kt`)
 - Point Syncthing at the chosen folder. Local wins on pause (no merge); replaces the old, unwired "Save scratchpad" item
 
-## Deferred
+## Deferred (from issue #4)
 
-### Hide markdown markers when not editing
-- From the Scratchpad Plus fork (`MarkdownStyler.apply(..., editing)`): hides `#`, `**`, `*`, and the `- ` before checkboxes, and draws `•` for bullets, unless the editor is focused
-- Changes how the note looks, so it needs a product decision before porting
-- Fork also shades headings by level and centres the checkbox glyph (the latter is already ported)
+### Images and embeds in the scratchpad
+- The note is plain text that syncs as `scratchpad.md`; there's no place to put images. Revisit only if a text-based approach appears
+
+### Transparent box behind the scratchpad text
+- Halo shadow already covers legibility over bright wallpapers; a box would work against the minimal look
