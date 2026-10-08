@@ -68,3 +68,10 @@
 - Settings > "Sync folder" opens a SAF folder picker; long-press stops syncing
 - `scratchpad.md` in that folder is rewritten on pause and re-read on resume if it changed externally (`helper/ScratchpadSync.kt`)
 - Point Syncthing at the chosen folder. Local wins on pause (no merge); replaces the old, unwired "Save scratchpad" item
+
+## Deferred
+
+### Hide markdown markers when not editing
+- From the Scratchpad Plus fork (`MarkdownStyler.apply(..., editing)`): hides `#`, `**`, `*`, and the `- ` before checkboxes, and draws `•` for bullets, unless the editor is focused
+- Changes how the note looks, so it needs a product decision before porting
+- Fork also shades headings by level and centres the checkbox glyph (the latter is already ported)
