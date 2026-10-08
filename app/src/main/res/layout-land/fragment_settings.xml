@@ -677,6 +677,17 @@
 
                 </FrameLayout>
 
+                <TextView
+                    android:id="@+id/clockAppearance"
+                    style="@style/TextSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/clock_appearance"
+                    android:textColor="?attr/primaryColor" />
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

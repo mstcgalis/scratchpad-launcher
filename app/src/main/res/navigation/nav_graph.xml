@@ -53,6 +53,19 @@
             app:exitAnim="@anim/fade_exit"
             app:popEnterAnim="@anim/fade_enter"
             app:popExitAnim="@anim/fade_exit" />
+        <action
+            android:id="@+id/action_settingsFragment_to_clockAppearanceFragment"
+            app:destination="@id/clockAppearanceFragment"
+            app:enterAnim="@anim/fade_enter"
+            app:exitAnim="@anim/fade_exit"
+            app:popEnterAnim="@anim/fade_enter"
+            app:popExitAnim="@anim/fade_exit" />
     </fragment>
+
+    <fragment
+        android:id="@+id/clockAppearanceFragment"
+        android:name="app.olauncher.ui.ClockAppearanceFragment"
+        android:label="ClockAppearanceFragment"
+        tools:layout="@layout/fragment_clock_appearance" />
 
 </navigation>

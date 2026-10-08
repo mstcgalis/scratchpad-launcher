@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/primaryShadeDarkColor"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:id="@+id/back"
+            style="@style/TextSmallBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingVertical="12dp"
+            android:text="@string/done" />
+
+        <TextView
+            android:id="@+id/reset"
+            style="@style/TextSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:text="@string/reset" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="190dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp">
+
+        <app.olauncher.ui.FittingTextClock
+            android:id="@+id/previewClock"
+            style="@style/TextDefault"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/time_size" />
+
+        <TextView
+            android:id="@+id/previewDate"
+            style="@style/TextDefault"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/date_size" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="48dp">
+
+            <TextView style="@style/TextMedium" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingVertical="10dp" android:text="@string/clock" />
+            <TextView style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/font" android:labelFor="@id/clockFont" />
+            <Spinner android:id="@+id/clockFont" android:layout_width="match_parent" android:layout_height="48dp" />
+            <TextView style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/weight" android:labelFor="@id/clockWeight" />
+            <Spinner android:id="@+id/clockWeight" android:layout_width="match_parent" android:layout_height="48dp" />
+            <TextView style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/time_format" android:labelFor="@id/timeFormat" />
+            <Spinner android:id="@+id/timeFormat" android:layout_width="match_parent" android:layout_height="48dp" />
+            <TextView android:id="@+id/clockSizeValue" style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/clockSize" />
+            <SeekBar android:id="@+id/clockSize" android:layout_width="match_parent" android:layout_height="40dp" />
+
+            <TextView style="@style/TextMedium" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingTop="20dp" android:paddingBottom="10dp" android:text="@string/date" />
+            <TextView style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/font" android:labelFor="@id/dateFont" />
+            <Spinner android:id="@+id/dateFont" android:layout_width="match_parent" android:layout_height="48dp" />
+            <TextView style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/weight" android:labelFor="@id/dateWeight" />
+            <Spinner android:id="@+id/dateWeight" android:layout_width="match_parent" android:layout_height="48dp" />
+            <TextView style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/date_format" android:labelFor="@id/dateFormat" />
+            <Spinner android:id="@+id/dateFormat" android:layout_width="match_parent" android:layout_height="48dp" />
+            <TextView android:id="@+id/dateSizeValue" style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/dateSize" />
+            <SeekBar android:id="@+id/dateSize" android:layout_width="match_parent" android:layout_height="40dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

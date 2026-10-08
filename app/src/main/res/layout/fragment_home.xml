@@ -82,7 +82,7 @@
                 android:visibility="gone"
                 tools:visibility="visible">
 
-                <TextClock
+                <app.olauncher.ui.FittingTextClock
                     android:id="@+id/clock"
                     style="@style/TextDefault"
                     android:layout_width="wrap_content"

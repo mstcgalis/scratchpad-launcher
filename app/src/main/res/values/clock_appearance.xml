@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="clock_appearance">Clock &amp; date appearance</string>
+    <string name="clock">Clock</string>
+    <string name="font">Font</string>
+    <string name="weight">Weight</string>
+    <string name="time_format">Time format</string>
+    <string name="date_format">Date format</string>
+    <string name="reset">Reset</string>
+    <string name="done">Done</string>
+    <string name="size_offset_sp">Size · %1$+d sp</string>
+</resources>
