@@ -41,7 +41,6 @@ Single Gradle module, built with [`just`](https://github.com/casey/just): `just 
 
 ## License
 
-
 [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), inherited from [Olauncher](https://github.com/tanujnotes/Olauncher) by [tanujnotes](https://github.com/tanujnotes). This fork builds on Olauncher v6.7.19.
 
 Bundled clock fonts (Space Grotesk, Fraunces, Fredoka, Caveat) are © their respective Project Authors and licensed under the [SIL Open Font License 1.1](https://openfontlicense.org).
