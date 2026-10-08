@@ -30,10 +30,11 @@ release version:
     set -euo pipefail
     current_code=$(grep -oE 'versionCode [0-9]+' app/build.gradle | grep -oE '[0-9]+')
     new_code=$((current_code + 1))
-    # Changelog = commit subjects since the last tag; shown on the GitHub release and in F-Droid
+    # Changelog shown on the GitHub release and in F-Droid: a hand-written changelogs/<code>.txt if present,
+    # otherwise commit subjects since the last tag
     changelog="fastlane/metadata/android/en-US/changelogs/$new_code.txt"
     mkdir -p "$(dirname "$changelog")"
-    git log --pretty='- %s' "$(git describe --tags --abbrev=0)..HEAD" > "$changelog"
+    [ -s "$changelog" ] || git log --pretty='- %s' "$(git describe --tags --abbrev=0)..HEAD" > "$changelog"
     [ -s "$changelog" ] || { rm "$changelog"; echo "No commits since the last tag - nothing to release"; exit 1; }
     sed -i '' "s/versionCode .*/versionCode $new_code/" app/build.gradle
     sed -i '' "s/versionName \".*\"/versionName \"{{version}}\"/" app/build.gradle

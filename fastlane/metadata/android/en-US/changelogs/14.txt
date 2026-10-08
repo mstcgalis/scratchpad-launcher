@@ -1,0 +1,7 @@
+- Pinch the note to zoom; small text stays easy to read
+- Lists continue when you press Enter; a button clears ticked items
+- Optional formatting toolbar above the keyboard
+- Nested lists and heading shades; formatting marks show only while editing
+- Restyle the clock and date: fonts, spacing, size
+- Back up and restore your note to a file
+- One back gesture leaves the note, and it stays where you scrolled
