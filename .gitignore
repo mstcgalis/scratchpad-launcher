@@ -21,3 +21,5 @@ google-services.json
 .claude/*
 !.claude/settings.json
 release-artifacts/
+.kotlin/
+docs/superpowers/
