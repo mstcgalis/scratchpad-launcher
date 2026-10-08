@@ -14,4 +14,5 @@
     <string name="format_checkbox">☐</string>
     <string name="format_indent">→</string>
     <string name="format_outdent">←</string>
+    <string name="format_clear_done">Clear ✓</string>
 </resources>

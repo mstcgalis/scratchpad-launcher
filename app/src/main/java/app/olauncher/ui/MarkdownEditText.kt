@@ -3,6 +3,7 @@ package app.olauncher.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import androidx.appcompat.widget.AppCompatEditText
 import app.olauncher.helper.CheckboxSpan
 
@@ -17,7 +18,33 @@ class MarkdownEditText @JvmOverloads constructor(
     defStyleAttr: Int = android.R.attr.editTextStyle,
 ) : AppCompatEditText(context, attrs, defStyleAttr) {
 
+    /** Pinch-to-zoom callback: cumulative scale since the pinch began, and whether the pinch ended. */
+    var onPinch: ((scale: Float, done: Boolean) -> Unit)? = null
+    private var pinch = 1f
+    private var pinching = false
+    private val scaleDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean { pinch = 1f; return true }
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            pinch *= detector.scaleFactor
+            onPinch?.invoke(pinch, false)
+            return true
+        }
+        override fun onScaleEnd(detector: ScaleGestureDetector) { onPinch?.invoke(pinch, true) }
+    })
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (onPinch != null) {
+            scaleDetector.onTouchEvent(event)
+            if (event.actionMasked == MotionEvent.ACTION_DOWN) pinching = false
+            if (!pinching && event.pointerCount > 1) {
+                // Second finger: cancel whatever the first one started (cursor, selection, long-press).
+                pinching = true
+                val cancel = MotionEvent.obtain(event).apply { action = MotionEvent.ACTION_CANCEL }
+                super.onTouchEvent(cancel)
+                cancel.recycle()
+            }
+            if (pinching) return true
+        }
         if (event.action == MotionEvent.ACTION_UP) {
             val editable = text
             val currentLayout = layout
@@ -33,6 +60,14 @@ class MarkdownEditText @JvmOverloads constructor(
                     return true
                 }
             }
+        }
+        if (event.action == MotionEvent.ACTION_UP && !isFocused) {
+            // Focusing reveals the hidden markdown markers, which reflows the text before super places the
+            // cursor; place it where the tap landed in the layout the user actually saw.
+            val offset = layout?.let { offsetForTouch(it, event.x, event.y) }
+            val handled = super.onTouchEvent(event)
+            if (offset != null && isFocused && selectionStart == selectionEnd) setSelection(offset.coerceIn(0, length()))
+            return handled
         }
         return super.onTouchEvent(event)
     }

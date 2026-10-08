@@ -55,4 +55,30 @@ class ScratchpadEditingTest {
         assertEquals("  - [ ] child", MarkdownFormatter.edit("  - child", 5, 5, MarkdownAction.CHECKBOX).replacement)
         assertEquals("  child", MarkdownFormatter.edit("  - child", 5, 5, MarkdownAction.BULLET).replacement)
     }
+
+    @Test
+    fun `checkbox button cycles empty, ticked, none`() {
+        assertEquals("- [x] a", MarkdownFormatter.edit("- [ ] a", 6, 6, MarkdownAction.CHECKBOX).replacement)
+        assertEquals("  a", MarkdownFormatter.edit("  - [X] a", 8, 8, MarkdownAction.CHECKBOX).replacement)
+    }
+
+    @Test
+    fun `enter continues lists and ends them on an empty item`() {
+        fun type(source: String, at: Int): String {
+            val typed = source.substring(0, at) + "\n" + source.substring(at)
+            val edit = MarkdownFormatter.continueList(typed, at) ?: return typed
+            return typed.replaceRange(edit.start, edit.end, edit.replacement)
+        }
+        assertEquals("  - [x] done\n  - [ ] ", type("  - [x] done", 12))
+        assertEquals("* one\n* two", type("* onetwo", 5))
+        assertEquals("a\n", type("a\n- ", 4))
+        assertEquals("plain\n", type("plain", 5))
+    }
+
+    @Test
+    fun `clear done removes only ticked lines`() {
+        assertEquals("- [ ] a\n  - b", MarkdownFormatter.clearDone("- [x] x\n- [ ] a\n  - [X] y\n  - b"))
+        assertEquals("a\n", MarkdownFormatter.clearDone("a\n- [x] b\n"))
+        assertEquals("a", MarkdownFormatter.clearDone("a\n- [x] b"))
+    }
 }

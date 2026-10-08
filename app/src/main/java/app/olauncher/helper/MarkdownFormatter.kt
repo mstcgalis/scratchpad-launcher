@@ -32,7 +32,12 @@ object MarkdownFormatter {
                     val current = prefix.find(body)?.value.orEmpty()
                     val marker = when (action) {
                         MarkdownAction.HEADING -> "# "
-                        MarkdownAction.CHECKBOX -> "- [ ] "
+                        // Checkbox cycles: none -> [ ] -> [x] -> none, so items can be ticked while editing.
+                        MarkdownAction.CHECKBOX -> when {
+                            current.endsWith("[ ] ") -> "- [x] "
+                            current.endsWith("] ") -> ""
+                            else -> "- [ ] "
+                        }
                         else -> "- "
                     }
                     indent + (if (current == marker) "" else marker) + body.removePrefix(current)
@@ -45,4 +50,20 @@ object MarkdownFormatter {
         }
         return MarkdownEdit(from, to, replacement, from, from + replacement.length)
     }
+
+    private val listItem = Regex("""^([ \t]*)([-+*] )(\[[ xX]] )?(.*)$""")
+    private val doneItem = Regex("""^[ \t]*[-+*] \[[xX]] .*(\n|$)""", RegexOption.MULTILINE)
+
+    /** After a newline was typed at [newline]: carry the list marker onto the new line, or end the list on an empty item. */
+    fun continueList(text: String, newline: Int): MarkdownEdit? {
+        val from = text.lastIndexOf('\n', newline - 1) + 1
+        val m = listItem.find(text.substring(from, newline)) ?: return null
+        val (indent, bullet, box, body) = m.destructured
+        if (body.isBlank()) return MarkdownEdit(from, newline + 1, "", from, from)
+        val marker = indent + bullet + (if (box.isEmpty()) "" else "[ ] ")
+        return MarkdownEdit(newline + 1, newline + 1, marker, newline + 1 + marker.length, newline + 1 + marker.length)
+    }
+
+    /** Removes every ticked checkbox line. */
+    fun clearDone(text: String): String = doneItem.replace(text, "").removeSuffix("\n").let { if (text.endsWith("\n")) "$it\n" else it }
 }

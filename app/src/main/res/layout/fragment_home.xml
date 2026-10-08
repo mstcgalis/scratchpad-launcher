@@ -37,7 +37,6 @@
             android:inputType="textMultiLine|textCapSentences"
             android:lineSpacingMultiplier="1.3"
             android:shadowDy="0"
-            android:shadowRadius="3"
             android:overScrollMode="never"
             android:paddingHorizontal="24dp"
             android:paddingTop="56dp"
@@ -67,6 +66,8 @@
                 <Button android:id="@+id/formatCheckbox" style="@style/ScratchpadTool" android:text="@string/format_checkbox" />
                 <Button android:id="@+id/formatIndent" style="@style/ScratchpadTool" android:text="@string/format_indent" />
                 <Button android:id="@+id/formatOutdent" style="@style/ScratchpadTool" android:text="@string/format_outdent" />
+                <!-- Last, away from the others: deletes ticked lines -->
+                <Button android:id="@+id/formatClearDone" style="@style/ScratchpadTool" android:layout_marginStart="16dp" android:text="@string/format_clear_done" />
             </LinearLayout>
         </HorizontalScrollView>
     </FrameLayout>

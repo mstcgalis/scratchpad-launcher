@@ -291,17 +291,40 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     }
 
     private fun initScratchpad() {
-        // Own size setting: undo the global launcher scale (still honours system font size).
-        binding.scratchpad?.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f * prefs.scratchpadTextScale / prefs.textSizeScale)
-        binding.scratchpad?.typeface = Typeface.create(prefs.scratchpadFont, Typeface.NORMAL)
+        applyScratchpadTypography(prefs.scratchpadTextScale)
+        binding.scratchpad?.onPinch = { scale, done ->
+            val target = (prefs.scratchpadTextScale * scale).coerceIn(0.5f, 2.0f)
+            if (done) {
+                prefs.scratchpadTextScale = Math.round(target * 10f) / 10f
+                applyScratchpadTypography(prefs.scratchpadTextScale)
+            } else applyScratchpadTypography(target)
+        }
         binding.scratchpad?.setText(prefs.scratchpadText)
         binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) }
-        binding.scratchpad?.addTextChangedListener(afterTextChanged = { editable ->
-            val text = editable?.toString().orEmpty()
-            scratchpadDebouncer.submit { prefs.scratchpadText = text }
-            editable?.let { styleScratchpadMarkdown(it) }
-        })
-        binding.scratchpad?.setOnLongClickListener {
+        var typedNewline = -1
+        binding.scratchpad?.addTextChangedListener(
+            onTextChanged = { s, start, before, count ->
+                typedNewline = if (count == 1 && before == 0 && s?.getOrNull(start) == '\n') start else -1
+            },
+            afterTextChanged = { editable ->
+                if (editable != null && typedNewline >= 0 && binding.scratchpad?.isFocused == true) {
+                    val newline = typedNewline
+                    typedNewline = -1
+                    // Re-enters this listener, which saves and restyles the continued text.
+                    MarkdownFormatter.continueList(editable.toString(), newline)?.let { edit ->
+                        editable.replace(edit.start, edit.end, edit.replacement)
+                        binding.scratchpad?.setSelection(edit.selectionStart)
+                        return@addTextChangedListener
+                    }
+                }
+                val text = editable?.toString().orEmpty()
+                scratchpadDebouncer.submit { prefs.scratchpadText = text }
+                editable?.let { styleScratchpadMarkdown(it) }
+            },
+        )
+        // While editing, long-press belongs to text selection/paste.
+        binding.scratchpad?.setOnLongClickListener { pad ->
+            if (pad.isFocused) return@setOnLongClickListener false
             prefs.firstSettingsOpen = false
             findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
             true
@@ -364,6 +387,14 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             insets
         }
         binding.formatDone?.setOnClickListener { scratchpad.hideKeyboard() }
+        binding.formatClearDone?.setOnClickListener {
+            val editable = scratchpad.text ?: return@setOnClickListener
+            val cleared = MarkdownFormatter.clearDone(editable.toString())
+            if (cleared == editable.toString()) return@setOnClickListener
+            val cursor = scratchpad.selectionStart
+            editable.replace(0, editable.length, cleared)
+            scratchpad.setSelection(cursor.coerceIn(0, cleared.length))
+        }
         mapOf(
             binding.formatBold to MarkdownAction.BOLD,
             binding.formatItalic to MarkdownAction.ITALIC,
@@ -382,6 +413,26 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                 scratchpad.setSelection(edit.selectionStart, edit.selectionEnd)
             }
         }
+    }
+
+    /**
+     * Own size setting: undo the global launcher scale (still honours system font size).
+     * Below 1.0 the note gets medium weight and a touch of tracking, so small text keeps its strokes.
+     */
+    private fun applyScratchpadTypography(scale: Float) {
+        val pad = binding.scratchpad ?: return
+        val small = scale < 1f
+        pad.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f * scale / prefs.textSizeScale)
+        val base = Typeface.create(prefs.scratchpadFont, Typeface.NORMAL)
+        pad.typeface = when {
+            !small -> base
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> Typeface.create(base, 500, false)
+            prefs.scratchpadFont == "sans-serif" -> Typeface.create("sans-serif-medium", Typeface.NORMAL)
+            else -> base
+        }
+        pad.letterSpacing = if (small) 0.02f else 0f
+        // Halo scales with the glyphs (3px at the default 17sp on xxhdpi) instead of a fixed blur.
+        pad.setShadowLayer(pad.textSize * 0.06f, 0f, 0f, pad.shadowColor)
     }
 
     private fun styleScratchpadMarkdown(editable: Editable) {
