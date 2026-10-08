@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Root frame only hosts the format toolbar overlay above the whole home layout (so it gets touches
+     anywhere it rides, e.g. over the bottom half) -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    tools:context=".ui.HomeFragment">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:clipChildren="false"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    tools:context=".ui.HomeFragment">
+    android:orientation="vertical">
 
     <!-- Placeholder layout for locking screen-->
     <FrameLayout
@@ -18,12 +24,9 @@
         android:contentDescription="@string/lock_layout_description" />
 
     <!-- Top half: scratchpad -->
-    <!-- Unclipped and raised so the toolbar can ride the keyboard's top edge over the bottom half -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipChildren="false"
-        android:elevation="1dp"
         android:layout_weight="1">
 
         <app.olauncher.ui.MarkdownEditText
@@ -40,36 +43,9 @@
             android:overScrollMode="never"
             android:paddingHorizontal="24dp"
             android:paddingTop="56dp"
+            android:textColor="?attr/primaryColor"
             android:textColorHint="?attr/primaryColorTrans50" />
 
-        <!-- Opt-in (Settings > Formatting toolbar); shown only while the keyboard is up -->
-        <HorizontalScrollView
-            android:id="@+id/formatToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="?attr/primaryColorInverseTrans90"
-            android:scrollbars="none"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp">
-
-                <Button android:id="@+id/formatDone" style="@style/ScratchpadTool" android:text="@string/format_done" />
-                <Button android:id="@+id/formatBold" style="@style/ScratchpadTool" android:text="@string/format_bold" android:textStyle="bold" />
-                <Button android:id="@+id/formatItalic" style="@style/ScratchpadTool" android:text="@string/format_italic" android:textStyle="italic" />
-                <Button android:id="@+id/formatHeading" style="@style/ScratchpadTool" android:text="@string/format_heading" />
-                <Button android:id="@+id/formatBullet" style="@style/ScratchpadTool" android:text="@string/format_bullet" />
-                <Button android:id="@+id/formatCheckbox" style="@style/ScratchpadTool" android:text="@string/format_checkbox" />
-                <Button android:id="@+id/formatIndent" style="@style/ScratchpadTool" android:text="@string/format_indent" />
-                <Button android:id="@+id/formatOutdent" style="@style/ScratchpadTool" android:text="@string/format_outdent" />
-                <!-- Last, away from the others: deletes ticked lines -->
-                <Button android:id="@+id/formatClearDone" style="@style/ScratchpadTool" android:layout_marginStart="16dp" android:text="@string/format_clear_done" />
-            </LinearLayout>
-        </HorizontalScrollView>
     </FrameLayout>
 
     <!-- Bottom half: clock/date, screen time, app list. Sized to its own content
@@ -322,3 +298,33 @@
             android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>
+
+    <!-- Opt-in (Settings > Formatting toolbar); shown only while the keyboard is up -->
+    <HorizontalScrollView
+        android:id="@+id/formatToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?attr/primaryColorInverseTrans90"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
+
+            <Button android:id="@+id/formatDone" style="@style/ScratchpadTool" android:text="@string/format_done" />
+            <Button android:id="@+id/formatBold" style="@style/ScratchpadTool" android:text="@string/format_bold" android:textStyle="bold" />
+            <Button android:id="@+id/formatItalic" style="@style/ScratchpadTool" android:text="@string/format_italic" android:textStyle="italic" />
+            <Button android:id="@+id/formatHeading" style="@style/ScratchpadTool" android:text="@string/format_heading" />
+            <Button android:id="@+id/formatBullet" style="@style/ScratchpadTool" android:text="@string/format_bullet" />
+            <Button android:id="@+id/formatCheckbox" style="@style/ScratchpadTool" android:text="@string/format_checkbox" />
+            <Button android:id="@+id/formatIndent" style="@style/ScratchpadTool" android:text="@string/format_indent" />
+            <Button android:id="@+id/formatOutdent" style="@style/ScratchpadTool" android:text="@string/format_outdent" />
+            <!-- Last, away from the others: deletes ticked lines -->
+            <Button android:id="@+id/formatClearDone" style="@style/ScratchpadTool" android:layout_marginStart="16dp" android:text="@string/format_clear_done" />
+        </LinearLayout>
+    </HorizontalScrollView>
+</FrameLayout>

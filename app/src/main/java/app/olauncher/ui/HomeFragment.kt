@@ -341,13 +341,30 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) }
         }
         binding.scratchpad?.let { pad ->
+            fun leaveEditing() {
+                if (!pad.isFocused) return
+                binding.mainLayout.requestFocus()
+                pad.post { if (pad.text.toString().hashCode() == textOnFocus) pad.scrollTo(0, scrollOnFocus) }
+            }
+            // A back swipe reports the keyboard hidden as soon as its hide animation starts; moving focus then
+            // makes the keyboard bounce back up. So leave editing only once the keyboard animation has ended.
+            var keyboardAnimating = false
             var keyboardWasVisible = false
+            ViewCompat.setWindowInsetsAnimationCallback(pad, object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_STOP) {
+                override fun onPrepare(animation: WindowInsetsAnimationCompat) {
+                    if (animation.typeMask and WindowInsetsCompat.Type.ime() != 0) keyboardAnimating = true
+                }
+                override fun onProgress(insets: WindowInsetsCompat, runningAnimations: List<WindowInsetsAnimationCompat>) = insets
+                override fun onEnd(animation: WindowInsetsAnimationCompat) {
+                    if (animation.typeMask and WindowInsetsCompat.Type.ime() == 0) return
+                    keyboardAnimating = false
+                    if (ViewCompat.getRootWindowInsets(pad)?.isVisible(WindowInsetsCompat.Type.ime()) != true) leaveEditing()
+                }
+            })
             ViewCompat.setOnApplyWindowInsetsListener(pad) { _, insets ->
                 val visible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                if (keyboardWasVisible && !visible) {
-                    binding.mainLayout.requestFocus()
-                    pad.post { if (pad.text.toString().hashCode() == textOnFocus) pad.scrollTo(0, scrollOnFocus) }
-                }
+                // Keyboard hidden without an animation
+                if (keyboardWasVisible && !visible && !keyboardAnimating) leaveEditing()
                 keyboardWasVisible = visible
                 insets
             }
