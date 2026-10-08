@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:clipChildren="false"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     tools:context=".ui.HomeFragment">
@@ -17,9 +18,12 @@
         android:contentDescription="@string/lock_layout_description" />
 
     <!-- Top half: scratchpad -->
+    <!-- Unclipped and raised so the toolbar can ride the keyboard's top edge over the bottom half -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:clipChildren="false"
+        android:elevation="1dp"
         android:layout_weight="1">
 
         <app.olauncher.ui.MarkdownEditText

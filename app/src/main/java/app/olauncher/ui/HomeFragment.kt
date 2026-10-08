@@ -307,12 +307,24 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             true
         }
         // Markers are hidden unless the note is being edited; leaving the keyboard hides them again.
-        binding.scratchpad?.setOnFocusChangeListener { _, _ -> binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) } }
+        // Focusing makes the box scroll to reveal the cursor; put the view back where it was if nothing was typed.
+        var scrollOnFocus = 0
+        var textOnFocus = 0
+        binding.scratchpad?.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                scrollOnFocus = v.scrollY
+                textOnFocus = binding.scratchpad?.text.toString().hashCode()
+            }
+            binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) }
+        }
         binding.scratchpad?.let { pad ->
             var keyboardWasVisible = false
             ViewCompat.setOnApplyWindowInsetsListener(pad) { _, insets ->
                 val visible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                if (keyboardWasVisible && !visible) binding.mainLayout.requestFocus()
+                if (keyboardWasVisible && !visible) {
+                    binding.mainLayout.requestFocus()
+                    pad.post { if (pad.text.toString().hashCode() == textOnFocus) pad.scrollTo(0, scrollOnFocus) }
+                }
                 keyboardWasVisible = visible
                 insets
             }
@@ -327,30 +339,28 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         if (!prefs.formatToolbar) return
         // Follow the system light/dark setting (like the keyboard), not the launcher's own theme mode
         val systemDark = Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        toolbar.setBackgroundColor(if (systemDark) 0xE6000000.toInt() else 0xE6FFFFFF.toInt())
+        toolbar.setBackgroundColor(if (systemDark) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
         val textColor = if (systemDark) Color.WHITE else Color.BLACK
         ((toolbar.getChildAt(0)) as ViewGroup).children.forEach { (it as? TextView)?.setTextColor(textColor) }
 
-        // Let the layout follow the keyboard frame by frame instead of jumping to its final height
-        var animating = false
+        // The layout never resizes: the toolbar just rides the keyboard's top edge over the bottom half,
+        // so closing the keyboard can't shift the note or the clock. ponytail: a keyboard taller than the
+        // bottom half would cover the last note lines; fall back to resizing if that matters.
         val root = binding.mainLayout
-        fun fit(imeBottom: Int) {
-            root.updatePadding(bottom = imeBottom)
+        val frame = toolbar.parent as View
+        fun follow(imeBottom: Int) {
+            val frameBottom = IntArray(2).also { frame.getLocationInWindow(it) }[1] + frame.height
+            toolbar.translationY = (root.rootView.height - imeBottom - frameBottom).toFloat()
         }
         ViewCompat.setWindowInsetsAnimationCallback(root, object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
-            override fun onPrepare(animation: WindowInsetsAnimationCompat) { animating = true }
             override fun onProgress(insets: WindowInsetsCompat, runningAnimations: List<WindowInsetsAnimationCompat>): WindowInsetsCompat {
-                fit(insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
+                follow(insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
                 return insets
             }
-            override fun onEnd(animation: WindowInsetsAnimationCompat) { animating = false }
         })
         ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
-            val keyboard = insets.isVisible(WindowInsetsCompat.Type.ime())
-            if (!animating) fit(insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
-            toolbar.isVisible = keyboard
-            scratchpad.updatePadding(bottom = if (keyboard) 48.dpToPx() else 0)
-            binding.homeControls?.isVisible = !keyboard
+            toolbar.isVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            follow(insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
             insets
         }
         binding.formatDone?.setOnClickListener { scratchpad.hideKeyboard() }
