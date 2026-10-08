@@ -11,7 +11,7 @@ Single Gradle module (`app`), Kotlin, no CI configured. Use `just` (justfile at 
 - `just lint` — Android lint
 - `just run` — install debug build on connected device/emulator and launch it
 - `just clean`
-- `just release VERSION` — bump `versionCode`/`versionName`, write a changelog from commit subjects since the last tag (`fastlane/.../changelogs/<versionCode>.txt`, also used as the GitHub release notes), build a signed release APK, tag `vVERSION`, push, publish a GitHub release. F-Droid (merged into `fdroiddata`, MR !45012) auto-detects the new tag, so no metadata step here. Reads signing credentials from `~/keys/scratchpad-launcher/credentials.env` (keystore + password/alias env vars, see `app/build.gradle`'s `signingConfigs.release`).
+- `just release VERSION` — bump `versionCode`/`versionName`, write a changelog from commit subjects since the last tag unless a hand-written one already exists (`fastlane/.../changelogs/<versionCode>.txt`, also used as the GitHub release notes), build a signed release APK, tag `vVERSION`, push, publish a GitHub release. F-Droid (merged into `fdroiddata`, MR !45012) auto-detects the new tag, so no metadata step here. Reads signing credentials from `~/keys/scratchpad-launcher/credentials.env` (keystore + password/alias env vars, see `app/build.gradle`'s `signingConfigs.release`).
 
 Java 21 / compileSdk 35 / minSdk 24. No ktlint/detekt configured — `just lint` is Android Lint only.
 
