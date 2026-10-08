@@ -38,10 +38,16 @@ object ScratchpadSync {
     private fun read(context: Context, uri: Uri): String =
         context.contentResolver.openInputStream(uri)?.use { it.reader().readText() }.orEmpty()
 
+    /**
+     * Never lets a blank note replace a non-blank file: an empty note is far more often a stale or fresh
+     * view than a deliberate wipe. ponytail: clearing the whole note doesn't sync until something is typed.
+     */
+    internal fun shouldWrite(file: String, note: String) = file != note && (note.isNotBlank() || file.isBlank())
+
     /** Writes the note if it differs from the file. ponytail: local wins on pause; no merge, add one if conflicts bite. */
     fun write(context: Context, prefs: Prefs, text: String) = runCatching {
         val uri = fileUri(context, prefs, create = true) ?: return@runCatching
-        if (read(context, uri) != text)
+        if (shouldWrite(read(context, uri), text))
             context.contentResolver.openOutputStream(uri, "wt")?.use { it.write(text.toByteArray()) }
         prefs.syncLastModified = lastModified(context, uri)
     }

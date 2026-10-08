@@ -43,6 +43,7 @@
             android:overScrollMode="never"
             android:paddingHorizontal="24dp"
             android:paddingTop="56dp"
+            android:saveEnabled="false"
             android:textColor="?attr/primaryColor"
             android:textColorHint="?attr/primaryColorTrans50" />
 
