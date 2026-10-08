@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="scratchpad_font">Scratchpad font</string>
+    <string name="format_toolbar">Formatting toolbar</string>
+    <string name="font_sans">Sans</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_mono">Mono</string>
+    <string name="format_done">Done</string>
+    <string name="format_bold">B</string>
+    <string name="format_italic">I</string>
+    <string name="format_heading">H</string>
+    <string name="format_bullet">•</string>
+    <string name="format_checkbox">☐</string>
+    <string name="format_indent">→</string>
+    <string name="format_outdent">←</string>
+</resources>

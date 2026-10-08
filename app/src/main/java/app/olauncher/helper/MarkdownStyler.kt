@@ -15,6 +15,7 @@ import android.text.style.ReplacementSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.util.Log
+import androidx.core.graphics.ColorUtils
 
 /** Marks a span as owned by [MarkdownStyler], so a restyle pass only clears its own spans. */
 private interface MarkdownSpan
@@ -94,7 +95,12 @@ object MarkdownStyler {
 
             for (match in MarkdownMatcher.findMatches(editable.toString())) {
                 when (match) {
-                    is MarkdownMatch.Header -> applyHeader(editable, match, dimColor)
+                    is MarkdownMatch.Header -> {
+                        applyHeader(editable, match, dimColor)
+                        // Deeper headings fade toward the dim colour.
+                        val shade = ColorUtils.blendARGB(accentColor, dimColor, (match.level - 1) * 0.12f)
+                        editable.setSpan(MarkdownColorSpan(shade), match.contentRange.start, match.contentRange.end, FLAG)
+                    }
                     is MarkdownMatch.Bold -> applyEmphasis(editable, Typeface.BOLD, match.content, match.openMarker, match.closeMarker, dimColor)
                     is MarkdownMatch.Italic -> applyEmphasis(editable, Typeface.ITALIC, match.content, match.openMarker, match.closeMarker, dimColor)
                     is MarkdownMatch.Bullet -> dim(editable, match.markerRange, dimColor)

@@ -69,6 +69,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
         binding.homeAppsNum.text = prefs.homeAppsNum.toString()
         populateKeyboardText()
+        populateScratchpadOptions()
         populateScreenTimeOnOff()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -160,6 +161,14 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             // Home button for recents feature disabled
             // R.id.homeButtonRecents -> toggleHomeButtonRecents()
             R.id.autoShowKeyboard -> toggleKeyboardText()
+            R.id.scratchpadFont -> {
+                prefs.scratchpadFont = SCRATCHPAD_FONTS.keys.toList().let { it[(it.indexOf(prefs.scratchpadFont) + 1) % it.size] }
+                populateScratchpadOptions()
+            }
+            R.id.formatToolbarToggle -> {
+                prefs.formatToolbar = !prefs.formatToolbar
+                populateScratchpadOptions()
+            }
             R.id.homeAppsNum -> binding.appsNumSelectLayout.visibility = View.VISIBLE
             R.id.alignment -> binding.alignmentSelectLayout.visibility = View.VISIBLE
             R.id.alignmentLeft -> viewModel.updateHomeAlignment(Gravity.START)
@@ -264,6 +273,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.setLauncher.setOnClickListener(this)
         binding.aboutOlauncher.setOnClickListener(this)
         binding.autoShowKeyboard.setOnClickListener(this)
+        binding.scratchpadFont.setOnClickListener(this)
+        binding.formatToolbarToggle.setOnClickListener(this)
         binding.toggleLock.setOnClickListener(this)
         // Home button for recents feature disabled
         // binding.homeButtonRecents.setOnClickListener(this)
@@ -574,6 +585,11 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         } else binding.screenTimeLayout.visibility = View.GONE
     }
 
+    private fun populateScratchpadOptions() {
+        binding.scratchpadFont.setText(SCRATCHPAD_FONTS[prefs.scratchpadFont] ?: R.string.font_sans)
+        binding.formatToolbarToggle.setText(if (prefs.formatToolbar) R.string.on else R.string.off)
+    }
+
     private fun populateKeyboardText() {
         if (prefs.autoShowKeyboard) binding.autoShowKeyboard.text = getString(R.string.on)
         else binding.autoShowKeyboard.text = getString(R.string.off)
@@ -694,3 +710,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     }
 }
 private const val MAX_RESTORE_BYTES = 1024 * 1024
+
+/** Typeface family -> label, in cycle order. */
+private val SCRATCHPAD_FONTS = linkedMapOf("sans-serif" to R.string.font_sans, "serif" to R.string.font_serif, "monospace" to R.string.font_mono)

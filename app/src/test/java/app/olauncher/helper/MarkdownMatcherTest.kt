@@ -120,8 +120,8 @@ class MarkdownMatcherTest {
     }
 
     @Test
-    fun `indented dash is not treated as a bullet`() {
-        val matches = MarkdownMatcher.findMatches("  - not a bullet")
-        assertTrue(matches.none { it is MarkdownMatch.Bullet })
+    fun `indented dash retains its nesting before the bullet marker`() {
+        val matches = MarkdownMatcher.findMatches("  - nested bullet")
+        assertEquals(TextRange(2, 4), matches.filterIsInstance<MarkdownMatch.Bullet>().single().markerRange)
     }
 }

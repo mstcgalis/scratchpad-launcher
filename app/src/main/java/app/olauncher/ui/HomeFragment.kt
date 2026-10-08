@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.LauncherApps
 import android.content.res.Configuration
 import android.os.BatteryManager
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -21,7 +22,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.core.view.setPadding
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
@@ -35,6 +39,9 @@ import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentHomeBinding
 import app.olauncher.helper.ClockAppearance
+import app.olauncher.helper.MarkdownAction
+import app.olauncher.helper.MarkdownFormatter
+import app.olauncher.helper.hideKeyboard
 import app.olauncher.helper.ScratchpadSync
 import app.olauncher.helper.Debouncer
 import app.olauncher.helper.MarkdownStyler
@@ -282,6 +289,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private fun initScratchpad() {
         // Own size setting: undo the global launcher scale (still honours system font size).
         binding.scratchpad?.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17f * prefs.scratchpadTextScale / prefs.textSizeScale)
+        binding.scratchpad?.typeface = Typeface.create(prefs.scratchpadFont, Typeface.NORMAL)
         binding.scratchpad?.setText(prefs.scratchpadText)
         binding.scratchpad?.text?.let { styleScratchpadMarkdown(it) }
         binding.scratchpad?.addTextChangedListener(afterTextChanged = { editable ->
@@ -293,6 +301,40 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             prefs.firstSettingsOpen = false
             findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
             true
+        }
+        initFormatToolbar()
+    }
+
+    /** Opt-in toolbar: sits above the keyboard, and the bottom half steps aside so the note keeps room. */
+    private fun initFormatToolbar() {
+        val scratchpad = binding.scratchpad ?: return
+        val toolbar = binding.formatToolbar ?: return
+        if (!prefs.formatToolbar) return
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainLayout) { root, insets ->
+            val keyboard = insets.isVisible(WindowInsetsCompat.Type.ime())
+            root.updatePadding(bottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
+            toolbar.isVisible = keyboard
+            binding.homeControls?.isVisible = !keyboard
+            insets
+        }
+        binding.formatDone?.setOnClickListener { scratchpad.hideKeyboard() }
+        mapOf(
+            binding.formatBold to MarkdownAction.BOLD,
+            binding.formatItalic to MarkdownAction.ITALIC,
+            binding.formatHeading to MarkdownAction.HEADING,
+            binding.formatBullet to MarkdownAction.BULLET,
+            binding.formatCheckbox to MarkdownAction.CHECKBOX,
+            binding.formatIndent to MarkdownAction.INDENT,
+            binding.formatOutdent to MarkdownAction.OUTDENT,
+        ).forEach { (button, action) ->
+            button?.setOnClickListener {
+                val editable = scratchpad.text ?: return@setOnClickListener
+                val start = minOf(scratchpad.selectionStart, scratchpad.selectionEnd).coerceAtLeast(0)
+                val end = maxOf(scratchpad.selectionStart, scratchpad.selectionEnd).coerceAtLeast(0)
+                val edit = MarkdownFormatter.edit(editable.toString(), start, end, action)
+                editable.replace(edit.start, edit.end, edit.replacement)
+                scratchpad.setSelection(edit.selectionStart, edit.selectionEnd)
+            }
         }
     }
 

@@ -39,6 +39,8 @@ class Prefs(context: Context) {
     private val SWIPE_DOWN_ACTION = "SWIPE_DOWN_ACTION"
     private val TEXT_SIZE_SCALE = "TEXT_SIZE_SCALE"
     private val SCRATCHPAD_TEXT_SCALE = "SCRATCHPAD_TEXT_SCALE"
+    private val SCRATCHPAD_FONT = "SCRATCHPAD_FONT"
+    private val FORMAT_TOOLBAR = "FORMAT_TOOLBAR"
     private val CLOCK_HOUR_FORMAT = "CLOCK_HOUR_FORMAT"
     private val CLOCK_FONT = "CLOCK_FONT"
     private val DATE_FONT = "DATE_FONT"
@@ -261,6 +263,14 @@ class Prefs(context: Context) {
     var clockDateGap: Int
         get() = prefs.getInt(CLOCK_DATE_GAP, 0)
         set(value) = prefs.edit { putInt(CLOCK_DATE_GAP, value).apply() }
+
+    var scratchpadFont: String
+        get() = prefs.getString(SCRATCHPAD_FONT, "sans-serif") ?: "sans-serif"
+        set(value) = prefs.edit { putString(SCRATCHPAD_FONT, value).apply() }
+
+    var formatToolbar: Boolean
+        get() = prefs.getBoolean(FORMAT_TOOLBAR, false)
+        set(value) = prefs.edit { putBoolean(FORMAT_TOOLBAR, value).apply() }
 
     var scratchpadTextScale: Float
         get() = prefs.getFloat(SCRATCHPAD_TEXT_SCALE, 1.0f)

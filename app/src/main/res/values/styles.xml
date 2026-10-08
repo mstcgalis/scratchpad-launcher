@@ -93,4 +93,13 @@
         <item name="android:textColor">@drawable/text_colors_light</item>
     </style>
 
+
+    <style name="ScratchpadTool" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/primaryColor</item>
+    </style>
 </resources>
