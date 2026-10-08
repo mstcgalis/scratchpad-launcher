@@ -325,6 +325,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             val keyboard = insets.isVisible(WindowInsetsCompat.Type.ime())
             root.updatePadding(bottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
             toolbar.isVisible = keyboard
+            scratchpad.updatePadding(bottom = if (keyboard) 48.dpToPx() else 0)
             binding.homeControls?.isVisible = !keyboard
             insets
         }
