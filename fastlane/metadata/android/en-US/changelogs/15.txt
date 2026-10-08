@@ -1,0 +1,2 @@
+- Fixed: choosing a sync folder could erase the synced note file
+- Fixed: restoring a backup could be silently undone
