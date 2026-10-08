@@ -47,6 +47,9 @@ class ClockAppearanceFragment : BaseFragment() {
         binding.dateFormat.bind(ClockAppearance.dateFormats.mapIndexed { i, f -> f.first to i }, { prefs.dateFormat }) { prefs.dateFormat = it }
         binding.clockSize.bind({ prefs.clockSizeOffset }) { prefs.clockSizeOffset = it }
         binding.dateSize.bind({ prefs.dateSizeOffset }) { prefs.dateSizeOffset = it }
+        binding.clockSpacing.bind({ prefs.clockLetterSpacing }, ClockAppearance.MIN_SPACING, ClockAppearance.MAX_SPACING) { prefs.clockLetterSpacing = it }
+        binding.dateSpacing.bind({ prefs.dateLetterSpacing }, ClockAppearance.MIN_SPACING, ClockAppearance.MAX_SPACING) { prefs.dateLetterSpacing = it }
+        binding.lineGap.bind({ prefs.clockDateGap }, 0, ClockAppearance.MAX_GAP) { prefs.clockDateGap = it }
 
         binding.back.setOnClickListener { findNavController().navigateUp() }
         binding.reset.setOnClickListener {
@@ -54,11 +57,14 @@ class ClockAppearanceFragment : BaseFragment() {
             prefs.clockWeight = 500; prefs.dateWeight = 500
             prefs.clockSizeOffset = 0; prefs.dateSizeOffset = 0
             prefs.clockHourFormat = 0; prefs.dateFormat = 0
+            prefs.clockLetterSpacing = 0; prefs.dateLetterSpacing = 0; prefs.clockDateGap = 0
             loading = true
             listOf(binding.clockFont, binding.dateFont, binding.clockWeight, binding.dateWeight, binding.timeFormat, binding.dateFormat)
                 .forEach { it.setSelection(0) }
             binding.clockWeight.setSelection(1); binding.dateWeight.setSelection(1)
             binding.clockSize.progress = -ClockAppearance.MIN_OFFSET; binding.dateSize.progress = -ClockAppearance.MIN_OFFSET
+            binding.clockSpacing.progress = -ClockAppearance.MIN_SPACING; binding.dateSpacing.progress = -ClockAppearance.MIN_SPACING
+            binding.lineGap.progress = 0
             loading = false
             refresh()
         }
@@ -71,6 +77,9 @@ class ClockAppearanceFragment : BaseFragment() {
         binding.previewDate.text = ClockAppearance.formatDate(prefs)
         binding.clockSizeValue.text = getString(R.string.size_offset_sp, prefs.clockSizeOffset)
         binding.dateSizeValue.text = getString(R.string.size_offset_sp, prefs.dateSizeOffset)
+        binding.clockSpacingValue.text = getString(R.string.letter_spacing_em, prefs.clockLetterSpacing / 100f)
+        binding.dateSpacingValue.text = getString(R.string.letter_spacing_em, prefs.dateLetterSpacing / 100f)
+        binding.lineGapValue.text = getString(R.string.gap_dp, prefs.clockDateGap)
     }
 
     private fun <T> Spinner.bind(options: List<Pair<String, T>>, current: () -> T, save: (T) -> Unit) {
@@ -86,13 +95,15 @@ class ClockAppearanceFragment : BaseFragment() {
         }
     }
 
-    private fun SeekBar.bind(current: () -> Int, save: (Int) -> Unit) {
-        max = ClockAppearance.MAX_OFFSET - ClockAppearance.MIN_OFFSET
-        progress = current() - ClockAppearance.MIN_OFFSET
+    private fun SeekBar.bind(
+        current: () -> Int, min: Int = ClockAppearance.MIN_OFFSET, maxValue: Int = ClockAppearance.MAX_OFFSET, save: (Int) -> Unit,
+    ) {
+        max = maxValue - min
+        progress = current() - min
         setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(bar: SeekBar?, value: Int, fromUser: Boolean) {
                 if (loading || !fromUser) return
-                save(value + ClockAppearance.MIN_OFFSET)
+                save(value + min)
                 refresh()
             }
             override fun onStartTrackingTouch(bar: SeekBar?) = Unit

@@ -76,6 +76,8 @@
             <Spinner android:id="@+id/timeFormat" android:layout_width="match_parent" android:layout_height="48dp" />
             <TextView android:id="@+id/clockSizeValue" style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/clockSize" />
             <SeekBar android:id="@+id/clockSize" android:layout_width="match_parent" android:layout_height="40dp" />
+            <TextView android:id="@+id/clockSpacingValue" style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/clockSpacing" />
+            <SeekBar android:id="@+id/clockSpacing" android:layout_width="match_parent" android:layout_height="40dp" />
 
             <TextView style="@style/TextMedium" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingTop="20dp" android:paddingBottom="10dp" android:text="@string/date" />
             <TextView style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/font" android:labelFor="@id/dateFont" />
@@ -86,6 +88,10 @@
             <Spinner android:id="@+id/dateFormat" android:layout_width="match_parent" android:layout_height="48dp" />
             <TextView android:id="@+id/dateSizeValue" style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/dateSize" />
             <SeekBar android:id="@+id/dateSize" android:layout_width="match_parent" android:layout_height="40dp" />
+            <TextView android:id="@+id/dateSpacingValue" style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/dateSpacing" />
+            <SeekBar android:id="@+id/dateSpacing" android:layout_width="match_parent" android:layout_height="40dp" />
+            <TextView android:id="@+id/lineGapValue" style="@style/TextSmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:labelFor="@id/lineGap" />
+            <SeekBar android:id="@+id/lineGap" android:layout_width="match_parent" android:layout_height="40dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

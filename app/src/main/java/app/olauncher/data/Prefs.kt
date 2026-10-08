@@ -47,6 +47,9 @@ class Prefs(context: Context) {
     private val CLOCK_SIZE_OFFSET = "CLOCK_SIZE_OFFSET"
     private val DATE_SIZE_OFFSET = "DATE_SIZE_OFFSET"
     private val DATE_FORMAT = "DATE_FORMAT"
+    private val CLOCK_DATE_GAP = "CLOCK_DATE_GAP"
+    private val DATE_LETTER_SPACING = "DATE_LETTER_SPACING"
+    private val CLOCK_LETTER_SPACING = "CLOCK_LETTER_SPACING"
     private val PRO_MESSAGE_SHOWN = "PRO_MESSAGE_SHOWN"
     private val HIDE_SET_DEFAULT_LAUNCHER = "HIDE_SET_DEFAULT_LAUNCHER"
     private val SCREEN_TIME_LAST_UPDATED = "SCREEN_TIME_LAST_UPDATED"
@@ -246,6 +249,18 @@ class Prefs(context: Context) {
     var dateFormat: Int
         get() = prefs.getInt(DATE_FORMAT, 0)
         set(value) = prefs.edit { putInt(DATE_FORMAT, value).apply() }
+
+    var clockLetterSpacing: Int
+        get() = prefs.getInt(CLOCK_LETTER_SPACING, 0)
+        set(value) = prefs.edit { putInt(CLOCK_LETTER_SPACING, value).apply() }
+
+    var dateLetterSpacing: Int
+        get() = prefs.getInt(DATE_LETTER_SPACING, 0)
+        set(value) = prefs.edit { putInt(DATE_LETTER_SPACING, value).apply() }
+
+    var clockDateGap: Int
+        get() = prefs.getInt(CLOCK_DATE_GAP, 0)
+        set(value) = prefs.edit { putInt(CLOCK_DATE_GAP, value).apply() }
 
     var scratchpadTextScale: Float
         get() = prefs.getFloat(SCRATCHPAD_TEXT_SCALE, 1.0f)
