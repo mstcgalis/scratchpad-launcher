@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherApps
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.BatteryManager
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +27,8 @@ import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.WindowInsetsAnimationCompat
+import androidx.core.view.children
 import androidx.core.view.updatePadding
 import androidx.core.view.setPadding
 import androidx.core.widget.addTextChangedListener
@@ -321,9 +325,29 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         val scratchpad = binding.scratchpad ?: return
         val toolbar = binding.formatToolbar ?: return
         if (!prefs.formatToolbar) return
-        ViewCompat.setOnApplyWindowInsetsListener(binding.mainLayout) { root, insets ->
+        // Follow the system light/dark setting (like the keyboard), not the launcher's own theme mode
+        val systemDark = Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        toolbar.setBackgroundColor(if (systemDark) 0xE6000000.toInt() else 0xE6FFFFFF.toInt())
+        val textColor = if (systemDark) Color.WHITE else Color.BLACK
+        ((toolbar.getChildAt(0)) as ViewGroup).children.forEach { (it as? TextView)?.setTextColor(textColor) }
+
+        // Let the layout follow the keyboard frame by frame instead of jumping to its final height
+        var animating = false
+        val root = binding.mainLayout
+        fun fit(imeBottom: Int) {
+            root.updatePadding(bottom = imeBottom)
+        }
+        ViewCompat.setWindowInsetsAnimationCallback(root, object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
+            override fun onPrepare(animation: WindowInsetsAnimationCompat) { animating = true }
+            override fun onProgress(insets: WindowInsetsCompat, runningAnimations: List<WindowInsetsAnimationCompat>): WindowInsetsCompat {
+                fit(insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
+                return insets
+            }
+            override fun onEnd(animation: WindowInsetsAnimationCompat) { animating = false }
+        })
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
             val keyboard = insets.isVisible(WindowInsetsCompat.Type.ime())
-            root.updatePadding(bottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
+            if (!animating) fit(insets.getInsets(WindowInsetsCompat.Type.ime()).bottom)
             toolbar.isVisible = keyboard
             scratchpad.updatePadding(bottom = if (keyboard) 48.dpToPx() else 0)
             binding.homeControls?.isVisible = !keyboard
