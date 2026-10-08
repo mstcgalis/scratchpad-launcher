@@ -712,37 +712,27 @@
                     android:text="@string/clock_appearance"
                     android:textColor="?attr/primaryColor" />
 
-                <TextView
-                    android:id="@+id/syncFolder"
-                    style="@style/TextSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/sync_folder"
-                    android:textColor="?attr/primaryColor" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp"
+                android:animateLayoutChanges="true"
+                android:background="@drawable/rounded_rect_shade_color"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="16dp">
 
                 <TextView
-                    android:id="@+id/backupScratchpad"
-                    style="@style/TextSmall"
-                    android:layout_width="match_parent"
+                    style="@style/TextLarge"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/backup_scratchpad"
-                    android:textColor="?attr/primaryColor" />
-
-                <TextView
-                    android:id="@+id/restoreScratchpad"
-                    style="@style/TextSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:paddingVertical="8dp"
-                    android:text="@string/restore_scratchpad"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/scratchpad"
                     android:textColor="?attr/primaryColor" />
 
                 <FrameLayout
@@ -877,6 +867,38 @@
 
                 </FrameLayout>
 
+                <TextView
+                    android:id="@+id/syncFolder"
+                    style="@style/TextSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/sync_folder"
+                    android:textColor="?attr/primaryColor" />
+
+                <TextView
+                    android:id="@+id/backupScratchpad"
+                    style="@style/TextSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/backup_scratchpad"
+                    android:textColor="?attr/primaryColor" />
+
+                <TextView
+                    android:id="@+id/restoreScratchpad"
+                    style="@style/TextSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/restore_scratchpad"
+                    android:textColor="?attr/primaryColor" />
             </LinearLayout>
 
             <LinearLayout

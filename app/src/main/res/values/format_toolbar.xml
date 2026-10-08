@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="scratchpad_font">Scratchpad font</string>
+    <string name="scratchpad">Scratchpad</string>
     <string name="format_toolbar">Formatting toolbar</string>
     <string name="font_sans">Sans</string>
     <string name="font_serif">Serif</string>
