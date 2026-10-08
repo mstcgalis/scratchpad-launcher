@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -85,8 +86,43 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         initObservers()
     }
 
+    private val exportScratchpad = registerForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
+        viewModel.isPickingDocument = false
+        uri ?: return@registerForActivityResult
+        val ok = runCatching {
+            requireContext().contentResolver.openOutputStream(uri, "wt")!!.use { it.write(prefs.scratchpadText.toByteArray()) }
+        }.isSuccess
+        requireContext().showToast(getString(if (ok) R.string.backup_saved else R.string.backup_failed))
+    }
+
+    private val importScratchpad = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        viewModel.isPickingDocument = false
+        uri ?: return@registerForActivityResult
+        val context = requireContext()
+        // Strict UTF-8 decode and a size cap reject binaries and huge files before they replace the note.
+        val text = runCatching {
+            val buf = ByteArray(MAX_RESTORE_BYTES + 1)
+            val size = context.contentResolver.openInputStream(uri)!!.use { input ->
+                var n = 0
+                while (n < buf.size) n += input.read(buf, n, buf.size - n).takeIf { it >= 0 } ?: break
+                n
+            }
+            require(size <= MAX_RESTORE_BYTES)
+            Charsets.UTF_8.newDecoder().decode(java.nio.ByteBuffer.wrap(buf, 0, size)).toString().removePrefix("\uFEFF").also { require('\u0000' !in it) }
+        }.getOrNull()
+        if (text == null) return@registerForActivityResult context.showToast(getString(R.string.restore_failed))
+        AlertDialog.Builder(context)
+            .setMessage(R.string.restore_confirmation)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.restore_scratchpad) { _, _ ->
+                prefs.scratchpadText = text
+                ScratchpadSync.write(context, prefs, text)
+            }
+            .show()
+    }
+
     private val pickSyncFolder = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-        viewModel.isPickingSyncFolder = false
+        viewModel.isPickingDocument = false
         uri ?: return@registerForActivityResult
         requireContext().contentResolver.takePersistableUriPermission(
             uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
@@ -176,8 +212,16 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
             R.id.share -> requireActivity().shareApp()
             R.id.syncFolder -> {
-                viewModel.isPickingSyncFolder = true
+                viewModel.isPickingDocument = true
                 pickSyncFolder.launch(null)
+            }
+            R.id.backupScratchpad -> {
+                viewModel.isPickingDocument = true
+                exportScratchpad.launch("scratchpad.md")
+            }
+            R.id.restoreScratchpad -> {
+                viewModel.isPickingDocument = true
+                importScratchpad.launch(arrayOf("*/*"))
             }
             R.id.rate -> {
                 prefs.rateClicked = true
@@ -252,6 +296,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.notWorking.setOnClickListener(this)
 
         binding.syncFolder.setOnClickListener(this)
+        binding.backupScratchpad.setOnClickListener(this)
+        binding.restoreScratchpad.setOnClickListener(this)
         binding.syncFolder.setOnLongClickListener(this)
         binding.share.setOnClickListener(this)
         binding.rate.setOnClickListener(this)
@@ -647,3 +693,4 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         super.onDestroy()
     }
 }
+private const val MAX_RESTORE_BYTES = 1024 * 1024

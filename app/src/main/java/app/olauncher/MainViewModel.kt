@@ -52,7 +52,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var isPrivateSpaceToggling = false
 
     // Suppress backToHomeScreen while the sync folder picker (a separate task) is in front
-    var isPickingSyncFolder = false
+    var isPickingDocument = false
 
     val showDialog = SingleLiveEvent<String>()
     val checkForMessages = SingleLiveEvent<Unit?>()

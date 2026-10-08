@@ -17,7 +17,7 @@ The top half is a plain text box that's always there: write something down witho
 - **Always-visible scratchpad**: unlock your phone and start typing. Notes are saved as you type and survive reboots.
 - **Light markdown**: `# headings`, `**bold**`, `*italic*`, `- lists` and `- [ ]` checkboxes you can tick with a tap.
 - **Type to launch**: swipe up, type a few letters, and the app opens as soon as there's only one match.
-- **Sync as `scratchpad.md`**: optionally mirror the scratchpad into a folder, e.g. an Obsidian vault synced to your other devices. Doubles as [backup and restore](#backup-and-restore).
+- **Sync as `scratchpad.md`**: optionally mirror the scratchpad into a folder, e.g. an Obsidian vault synced to your other devices. See [backup and restore](#backup-and-restore).
 - **Small, fixed app list**: a handful of apps with no icons and no clutter. Rename, hide, and align them.
 - **Gestures**: double tap to lock, swipe left/right to open apps, swipe down for notifications or search.
 - **Readable**: separate text sizes for the scratchpad and the rest of the launcher, plus light and dark themes.
@@ -41,14 +41,8 @@ Single Gradle module, built with [`just`](https://github.com/casey/just): `just 
 
 ## Backup and restore
 
-Backup is the folder sync: **Settings → Sync folder** and pick a folder. The note is written there as `scratchpad.md` whenever you leave the launcher. Back that folder up however you like (Syncthing, Obsidian Sync, a cloud-synced folder). Long-press the setting to stop syncing.
-
-To restore, put a `scratchpad.md` in the folder and either:
-
-- **new phone or reinstall**: pick the folder while the scratchpad is empty and the existing file is loaded; or
-- **already syncing**: replace or edit the file and it replaces the note within a few seconds of opening the launcher (the scratchpad must not be focused).
-
-If the scratchpad already has text when you pick a folder, the note overwrites any `scratchpad.md` there. Changes are not merged: the latest write wins, and the launcher's note wins when you leave it.
+- **One-off file**: **Settings → Back up** saves the note to a file of your choosing (default `scratchpad.md`). **Restore** loads a text file (up to 1 MB) after asking you to confirm, replacing the current note.
+- **Continuous**: **Settings → Sync folder** keeps `scratchpad.md` in a folder up to date whenever you leave the launcher, and picks up edits made to that file from outside (Syncthing, Obsidian, etc.) within a few seconds. Long-press to stop syncing. If the scratchpad already has text when you pick a folder, it overwrites any `scratchpad.md` there; nothing is merged and the latest write wins.
 
 ## License
 
