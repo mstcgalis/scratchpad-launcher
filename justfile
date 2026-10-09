@@ -46,7 +46,8 @@ release version:
     export RELEASE_KEYSTORE_PASSWORD="$STOREPASS"
     export RELEASE_KEY_ALIAS="$KEY_ALIAS"
     export RELEASE_KEY_PASSWORD="$KEYPASS"
-    ./gradlew assembleRelease
+    # clean: stale incremental Kotlin output made v1.1.13 non-reproducible for F-Droid (#6)
+    ./gradlew clean assembleRelease
     git tag "v{{version}}"
     git push origin "v{{version}}"
     mkdir -p release-artifacts
