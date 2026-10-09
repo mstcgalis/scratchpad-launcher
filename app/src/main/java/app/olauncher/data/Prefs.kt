@@ -6,6 +6,10 @@ import android.view.Gravity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 
+
+/** Mid-tone link blue, readable on both the dark and light theme. */
+const val DEFAULT_LINK_COLOR = 0xFF4A90E2.toInt()
+
 class Prefs(context: Context) {
     private val PREFS_FILENAME = "app.scratchpad.launcher"
     private val SCRATCHPAD_PREFS_FILENAME = "app.scratchpad.launcher.scratchpad"
@@ -40,6 +44,7 @@ class Prefs(context: Context) {
     private val TEXT_SIZE_SCALE = "TEXT_SIZE_SCALE"
     private val SCRATCHPAD_TEXT_SCALE = "SCRATCHPAD_TEXT_SCALE"
     private val SCRATCHPAD_FONT = "SCRATCHPAD_FONT"
+    private val SCRATCHPAD_ACCENT = "SCRATCHPAD_ACCENT"
     private val FORMAT_TOOLBAR = "FORMAT_TOOLBAR"
     private val CLOCK_HOUR_FORMAT = "CLOCK_HOUR_FORMAT"
     private val CLOCK_FONT = "CLOCK_FONT"
@@ -267,6 +272,11 @@ class Prefs(context: Context) {
     var scratchpadFont: String
         get() = prefs.getString(SCRATCHPAD_FONT, "sans-serif") ?: "sans-serif"
         set(value) = prefs.edit { putString(SCRATCHPAD_FONT, value).apply() }
+
+    /** Link colour in the scratchpad. */
+    var scratchpadAccent: Int
+        get() = prefs.getInt(SCRATCHPAD_ACCENT, DEFAULT_LINK_COLOR)
+        set(value) = prefs.edit { putInt(SCRATCHPAD_ACCENT, value).apply() }
 
     var formatToolbar: Boolean
         get() = prefs.getBoolean(FORMAT_TOOLBAR, false)

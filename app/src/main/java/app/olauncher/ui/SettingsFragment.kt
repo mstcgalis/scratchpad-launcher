@@ -25,6 +25,7 @@ import app.olauncher.BuildConfig
 import app.olauncher.MainViewModel
 import app.olauncher.R
 import app.olauncher.data.Constants
+import app.olauncher.data.DEFAULT_LINK_COLOR
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentSettingsBinding
 import app.olauncher.helper.animateAlpha
@@ -165,6 +166,12 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 prefs.scratchpadFont = SCRATCHPAD_FONTS.keys.toList().let { it[(it.indexOf(prefs.scratchpadFont) + 1) % it.size] }
                 populateScratchpadOptions()
             }
+            R.id.scratchpadAccent -> {
+                showColorPicker(requireContext(), prefs.scratchpadAccent, DEFAULT_LINK_COLOR) {
+                    prefs.scratchpadAccent = it
+                    populateScratchpadOptions()
+                }
+            }
             R.id.formatToolbarToggle -> {
                 prefs.formatToolbar = !prefs.formatToolbar
                 populateScratchpadOptions()
@@ -274,6 +281,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.aboutOlauncher.setOnClickListener(this)
         binding.autoShowKeyboard.setOnClickListener(this)
         binding.scratchpadFont.setOnClickListener(this)
+        binding.scratchpadAccent.setOnClickListener(this)
         binding.formatToolbarToggle.setOnClickListener(this)
         binding.toggleLock.setOnClickListener(this)
         // Home button for recents feature disabled
@@ -587,6 +595,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
     private fun populateScratchpadOptions() {
         binding.scratchpadFont.setText(SCRATCHPAD_FONTS[prefs.scratchpadFont] ?: R.string.font_sans)
+        binding.scratchpadAccent.text = String.format("#%06X", prefs.scratchpadAccent and 0xFFFFFF)
+        binding.scratchpadAccent.setTextColor(prefs.scratchpadAccent)
         binding.formatToolbarToggle.setText(if (prefs.formatToolbar) R.string.on else R.string.off)
     }
 

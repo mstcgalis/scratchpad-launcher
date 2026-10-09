@@ -6,6 +6,9 @@
     <string name="font_sans">Sans</string>
     <string name="font_serif">Serif</string>
     <string name="font_mono">Mono</string>
+    <string name="scratchpad_accent">Link colour</string>
+    <string name="accent_default">Default</string>
+    <string name="scratchpad_accent_preview">A link in your note</string>
     <string name="format_done">Done</string>
     <string name="format_bold">B</string>
     <string name="format_italic">I</string>

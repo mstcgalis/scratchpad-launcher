@@ -111,7 +111,7 @@ object MarkdownStyler {
     private const val MARKER_DIM_SCALE = 0.7f
     private const val HIGHLIGHT_ALPHA = 0x40
 
-    fun apply(editable: Editable, dimColor: Int, accentColor: Int, editing: Boolean) {
+    fun apply(editable: Editable, dimColor: Int, accentColor: Int, linkColor: Int, editing: Boolean) {
         try {
             editable.getSpans(0, editable.length, MarkdownSpan::class.java).forEach { editable.removeSpan(it) }
 
@@ -134,7 +134,10 @@ object MarkdownStyler {
                         }
                         applyEmphasis(editable, span, match.content, match.openMarker, match.closeMarker, dimColor)
                     }
-                    is MarkdownMatch.Link -> applyEmphasis(editable, LinkSpan(match.url), match.content, match.openMarker, match.closeMarker, dimColor)
+                    is MarkdownMatch.Link -> {
+                        applyEmphasis(editable, LinkSpan(match.url), match.content, match.openMarker, match.closeMarker, dimColor)
+                        editable.setSpan(MarkdownColorSpan(linkColor), match.content.start, match.content.end, FLAG)
+                    }
                     is MarkdownMatch.Escape -> dim(editable, match.markerRange, dimColor)
                     is MarkdownMatch.Bullet -> {
                         if (editing) dim(editable, match.markerRange, dimColor)

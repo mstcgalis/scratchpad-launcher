@@ -474,7 +474,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private fun styleScratchpadMarkdown(editable: Editable) {
         val dimColor = requireContext().getColorFromAttr(R.attr.primaryColorTrans50)
         val accentColor = requireContext().getColorFromAttr(R.attr.primaryColor)
-        MarkdownStyler.apply(editable, dimColor, accentColor, binding.scratchpad?.isFocused == true)
+        MarkdownStyler.apply(editable, dimColor, accentColor, prefs.scratchpadAccent, binding.scratchpad?.isFocused == true)
     }
 
     private fun setHomeAlignment(horizontalGravity: Int = prefs.homeAlignment) {
