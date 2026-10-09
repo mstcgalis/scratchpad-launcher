@@ -24,10 +24,12 @@ clean:
 
 # Cut a new signed release: bump version, build, tag, push, publish to GitHub.
 # F-Droid picks up the new tag on its own (UpdateCheckMode: Tags).
-# Usage: just release 1.1.9
-release version:
+# CalVer YYYY.M.N, N counting releases within the month from 0. Usage: just release
+release:
     #!/usr/bin/env bash
     set -euo pipefail
+    month=$(date +%Y.%-m)
+    version="$month.$(git tag -l "v$month.*" | wc -l | tr -d ' ')"
     current_code=$(grep -oE 'versionCode [0-9]+' app/build.gradle | grep -oE '[0-9]+')
     new_code=$((current_code + 1))
     # Changelog shown on the GitHub release and in F-Droid: a hand-written changelogs/<code>.txt if present,
@@ -37,9 +39,9 @@ release version:
     [ -s "$changelog" ] || git log --pretty='- %s' "$(git describe --tags --abbrev=0)..HEAD" > "$changelog"
     [ -s "$changelog" ] || { rm "$changelog"; echo "No commits since the last tag - nothing to release"; exit 1; }
     sed -i '' "s/versionCode .*/versionCode $new_code/" app/build.gradle
-    sed -i '' "s/versionName \".*\"/versionName \"{{version}}\"/" app/build.gradle
+    sed -i '' "s/versionName \".*\"/versionName \"$version\"/" app/build.gradle
     git add app/build.gradle "$changelog"
-    git commit -m "Bump to {{version}}"
+    git commit -m "Bump to $version"
     git push
     source ~/keys/scratchpad-launcher/credentials.env
     export RELEASE_KEYSTORE_PATH=~/keys/scratchpad-launcher/release.keystore
@@ -48,9 +50,9 @@ release version:
     export RELEASE_KEY_PASSWORD="$KEYPASS"
     # clean: stale incremental Kotlin output made v1.1.13 non-reproducible for F-Droid (#6)
     ./gradlew clean assembleRelease
-    git tag "v{{version}}"
-    git push origin "v{{version}}"
+    git tag "v$version"
+    git push origin "v$version"
     mkdir -p release-artifacts
-    cp app/build/outputs/apk/release/app-release.apk "release-artifacts/ScratchpadLauncher-v{{version}}.apk"
-    gh release create "v{{version}}" "release-artifacts/ScratchpadLauncher-v{{version}}.apk" \
-        --repo mstcgalis/scratchpad-launcher --title "v{{version}}" --notes-file "$changelog"
+    cp app/build/outputs/apk/release/app-release.apk "release-artifacts/ScratchpadLauncher-v$version.apk"
+    gh release create "v$version" "release-artifacts/ScratchpadLauncher-v$version.apk" \
+        --repo mstcgalis/scratchpad-launcher --title "v$version" --notes-file "$changelog"
