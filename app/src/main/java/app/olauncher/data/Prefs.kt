@@ -45,6 +45,8 @@ class Prefs(context: Context) {
     private val SCRATCHPAD_TEXT_SCALE = "SCRATCHPAD_TEXT_SCALE"
     private val SCRATCHPAD_FONT = "SCRATCHPAD_FONT"
     private val SCRATCHPAD_ACCENT = "SCRATCHPAD_ACCENT"
+    private val HOME_TEXT_COLOR = "HOME_TEXT_COLOR"
+    private val SHOW_APP_ICONS = "SHOW_APP_ICONS"
     private val FORMAT_TOOLBAR = "FORMAT_TOOLBAR"
     private val CLOCK_HOUR_FORMAT = "CLOCK_HOUR_FORMAT"
     private val CLOCK_FONT = "CLOCK_FONT"
@@ -277,6 +279,15 @@ class Prefs(context: Context) {
     var scratchpadAccent: Int
         get() = prefs.getInt(SCRATCHPAD_ACCENT, DEFAULT_LINK_COLOR)
         set(value) = prefs.edit { putInt(SCRATCHPAD_ACCENT, value).apply() }
+
+    /** Home screen text colour; 0 follows the theme. */
+    var homeTextColor: Int
+        get() = prefs.getInt(HOME_TEXT_COLOR, 0)
+        set(value) = prefs.edit { putInt(HOME_TEXT_COLOR, value).apply() }
+
+    var showAppIcons: Boolean
+        get() = prefs.getBoolean(SHOW_APP_ICONS, false)
+        set(value) = prefs.edit { putBoolean(SHOW_APP_ICONS, value).apply() }
 
     var formatToolbar: Boolean
         get() = prefs.getBoolean(FORMAT_TOOLBAR, false)

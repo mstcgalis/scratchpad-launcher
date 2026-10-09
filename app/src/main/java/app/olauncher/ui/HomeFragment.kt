@@ -9,6 +9,7 @@ import android.content.res.Resources
 import android.os.BatteryManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -24,6 +25,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.graphics.ColorUtils
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -100,6 +102,21 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         setHomeAlignment(prefs.homeAlignment)
         initSwipeTouchListener()
         initClickListeners()
+        applyHomeTextColor()
+    }
+
+    /** Custom text colour over every home label except the format toolbar, which follows the keyboard. */
+    private fun applyHomeTextColor() {
+        val color = prefs.homeTextColor.takeIf { it != 0 } ?: return
+        fun walk(view: View) {
+            if (view === binding.formatToolbar) return
+            if (view is TextView) {
+                view.setTextColor(color)
+                view.setHintTextColor(ColorUtils.setAlphaComponent(color, 0x80))
+            }
+            if (view is ViewGroup) view.children.forEach(::walk)
+        }
+        walk(binding.root)
     }
 
     override fun onResume() {
@@ -472,8 +489,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     }
 
     private fun styleScratchpadMarkdown(editable: Editable) {
-        val dimColor = requireContext().getColorFromAttr(R.attr.primaryColorTrans50)
-        val accentColor = requireContext().getColorFromAttr(R.attr.primaryColor)
+        val accentColor = prefs.homeTextColor.takeIf { it != 0 } ?: requireContext().getColorFromAttr(R.attr.primaryColor)
+        val dimColor = if (prefs.homeTextColor != 0) ColorUtils.setAlphaComponent(accentColor, 0x80)
+        else requireContext().getColorFromAttr(R.attr.primaryColorTrans50)
         MarkdownStyler.apply(editable, dimColor, accentColor, prefs.scratchpadAccent, binding.scratchpad?.isFocused == true)
     }
 
@@ -612,6 +630,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     ): Boolean {
         // Get user handle for the app/shortcut
         val userHandle = getUserHandleFromString(requireContext(), userString)
+        val launcherApps = requireContext().getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
+        setHomeAppIcon(textView, null)
 
         // If it's a shortcut, verify it still exists
         if (isShortcut) {
@@ -620,8 +640,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                 textView.text = ""
                 return false
             }
-            val launcherApps = requireContext().getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
-
             // Query for the specific shortcut
             val query = LauncherApps.ShortcutQuery().apply {
                 setPackage(packageName)
@@ -631,8 +649,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             try {
                 val shortcuts = launcherApps.getShortcuts(query, userHandle)
                 // Check if our shortcut still exists
-                if (shortcuts?.any { it.id == shortcutId } == true) {
+                val shortcut = shortcuts?.firstOrNull { it.id == shortcutId }
+                if (shortcut != null) {
                     textView.text = appName
+                    if (prefs.showAppIcons) setHomeAppIcon(textView, launcherApps.getShortcutBadgedIconDrawable(shortcut, resources.displayMetrics.densityDpi))
                     return true
                 }
                 textView.text = ""
@@ -647,10 +667,19 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         // Regular app check
         if (isPackageInstalled(requireContext(), packageName, userString)) {
             textView.text = appName
+            // ponytail: icons load on the main thread each resume; fine for <=8 apps, cache if it ever stutters.
+            if (prefs.showAppIcons) setHomeAppIcon(textView, runCatching { launcherApps.getActivityList(packageName, userHandle).firstOrNull()?.getBadgedIcon(0) }.getOrNull())
             return true
         }
         textView.text = ""
         return false
+    }
+
+    /** Launcher icon before the label, sized to the text; null clears it. */
+    private fun setHomeAppIcon(textView: TextView, icon: Drawable?) {
+        val size = (textView.textSize * 1.2f).toInt()
+        textView.setCompoundDrawablesRelative(icon?.mutate()?.apply { setBounds(0, 0, size, size) }, null, null, null)
+        textView.compoundDrawablePadding = (textView.textSize * 0.5f).toInt()
     }
 
     private fun hideHomeApps() {

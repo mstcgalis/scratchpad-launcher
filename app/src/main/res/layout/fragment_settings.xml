@@ -108,6 +108,19 @@
                         style="@style/SettingsSwitch" />
                 </LinearLayout>
 
+                <LinearLayout style="@style/SettingsSwitchRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/app_icons" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/appIcons"
+                        style="@style/SettingsSwitch" />
+                </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/screenTimeLayout"
                     style="@style/SettingsSwitchRow">
@@ -167,6 +180,17 @@
                         android:id="@+id/appThemeText"
                         style="@style/SettingsSummary"
                         android:text="@string/dark" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:text="@string/text_colour" />
+
+                    <TextView
+                        android:id="@+id/textColour"
+                        style="@style/SettingsSummary" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/SettingsRow">

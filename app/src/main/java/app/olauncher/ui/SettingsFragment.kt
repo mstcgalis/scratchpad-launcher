@@ -29,6 +29,7 @@ import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentSettingsBinding
 import app.olauncher.helper.Backup
 import app.olauncher.helper.appUsagePermissionGranted
+import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.isAccessServiceEnabled
 import app.olauncher.helper.isTablet
 import app.olauncher.helper.openAppInfo
@@ -69,6 +70,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.homeAppsNum.text = prefs.homeAppsNum.toString()
         populateKeyboardText()
         populateScratchpadOptions()
+        populateTextColour()
+        binding.appIcons.isChecked = prefs.showAppIcons
         populateScreenTimeOnOff()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -165,6 +168,20 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                     prefs.scratchpadAccent = it
                     populateScratchpadOptions()
                 }
+            }
+            R.id.textColour -> {
+                val theme = requireContext().getColorFromAttr(R.attr.primaryColor)
+                showColorPicker(
+                    requireContext(), prefs.homeTextColor.takeIf { it != 0 } ?: theme, 0,
+                    R.string.text_colour, R.string.text_colour_preview, underline = false,
+                ) {
+                    prefs.homeTextColor = it
+                    populateTextColour()
+                }
+            }
+            R.id.appIcons -> {
+                prefs.showAppIcons = !prefs.showAppIcons
+                binding.appIcons.isChecked = prefs.showAppIcons
             }
             R.id.formatToolbarToggle -> {
                 prefs.formatToolbar = !prefs.formatToolbar
@@ -272,7 +289,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.autoShowKeyboard, binding.scratchpadFont, binding.scratchpadAccent, binding.formatToolbarToggle,
             binding.toggleLock, binding.homeAppsNum, binding.screenTimeOnOff, binding.alignment, binding.statusBar,
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
-            binding.textSizeValue, binding.scratchpadSizeValue, binding.alignmentBottom,
+            binding.textSizeValue, binding.scratchpadSizeValue, binding.alignmentBottom, binding.textColour, binding.appIcons,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -490,6 +507,12 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.scratchpadAccent.text = String.format("#%06X", prefs.scratchpadAccent and 0xFFFFFF)
         binding.scratchpadAccent.setTextColor(prefs.scratchpadAccent)
         binding.formatToolbarToggle.isChecked = prefs.formatToolbar
+    }
+
+    private fun populateTextColour() {
+        val color = prefs.homeTextColor
+        binding.textColour.text = if (color == 0) getString(R.string.accent_default) else String.format("#%06X", color and 0xFFFFFF)
+        binding.textColour.setTextColor(if (color == 0) requireContext().getColorFromAttr(R.attr.primaryColorTrans80) else color)
     }
 
     private fun populateKeyboardText() {

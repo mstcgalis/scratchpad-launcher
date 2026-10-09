@@ -16,15 +16,23 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import app.olauncher.R
 
-/** Hue/saturation/brightness sliders plus a hex field; [onPick] gets an opaque colour. */
-fun showColorPicker(context: Context, initial: Int, default: Int, onPick: (Int) -> Unit) {
+/** Hue/saturation/brightness sliders plus a hex field; [onPick] gets an opaque colour, or [default] on reset. */
+fun showColorPicker(
+    context: Context,
+    initial: Int,
+    default: Int,
+    title: Int = R.string.scratchpad_accent,
+    previewText: Int = R.string.scratchpad_accent_preview,
+    underline: Boolean = true,
+    onPick: (Int) -> Unit,
+) {
     val hsv = FloatArray(3).also { Color.colorToHSV(initial, it) }
     val dp = context.resources.displayMetrics.density
     var syncing = false
 
     val preview = TextView(context).apply {
-        setText(R.string.scratchpad_accent_preview)
-        paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        setText(previewText)
+        if (underline) paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
         gravity = Gravity.CENTER
         setPadding(0, 0, 0, (12 * dp).toInt())
@@ -84,7 +92,7 @@ fun showColorPicker(context: Context, initial: Int, default: Int, onPick: (Int) 
         addView(hex)
     }
     AlertDialog.Builder(context)
-        .setTitle(R.string.scratchpad_accent)
+        .setTitle(title)
         .setView(content)
         .setNegativeButton(android.R.string.cancel, null)
         .setNeutralButton(R.string.accent_default) { _, _ -> onPick(default) }

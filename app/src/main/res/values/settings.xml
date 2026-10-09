@@ -2,4 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_info">App info</string>
     <string name="align_to_bottom">Align to bottom</string>
+    <string name="app_icons">App icons</string>
+    <string name="text_colour">Text colour</string>
+    <string name="text_colour_preview">Your home screen</string>
 </resources>
