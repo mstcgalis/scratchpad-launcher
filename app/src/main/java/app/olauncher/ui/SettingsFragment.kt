@@ -18,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import app.olauncher.BuildConfig
@@ -29,9 +28,7 @@ import app.olauncher.data.DEFAULT_LINK_COLOR
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentSettingsBinding
 import app.olauncher.helper.Backup
-import app.olauncher.helper.animateAlpha
 import app.olauncher.helper.appUsagePermissionGranted
-import app.olauncher.helper.getColorFromAttr
 import app.olauncher.helper.isAccessServiceEnabled
 import app.olauncher.helper.isTablet
 import app.olauncher.helper.openAppInfo
@@ -85,6 +82,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateSwipeApps()
         populateSwipeDownAction()
         populateActionHints()
+        binding.appVersion.text = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME}"
         initClickListeners()
         initObservers()
     }
@@ -149,23 +147,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     }
 
     override fun onClick(view: View) {
-        binding.appsNumSelectLayout.visibility = View.GONE
-        binding.dateTimeSelectLayout.visibility = View.GONE
-        binding.appThemeSelectLayout.visibility = View.GONE
-        binding.swipeDownSelectLayout.visibility = View.GONE
-        if (view.id != R.id.textSizeMinus && view.id != R.id.textSizePlus) {
-            if (binding.textSizesLayout.isVisible) {
-                binding.textSizesLayout.visibility = View.GONE
-                applyTextSizeScale()
-            }
-        }
-        if (view.id != R.id.scratchpadSizeMinus && view.id != R.id.scratchpadSizePlus)
-            binding.scratchpadSizesLayout.visibility = View.GONE
-        if (view.id != R.id.alignmentBottom)
-            binding.alignmentSelectLayout.visibility = View.GONE
-
         when (view.id) {
-            R.id.olauncherHiddenApps -> showHiddenApps()
+            R.id.olauncherHiddenApps, R.id.hiddenApps -> showHiddenApps()
             R.id.screenTimeOnOff -> viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
@@ -173,8 +156,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             // Home button for recents feature disabled
             // R.id.homeButtonRecents -> toggleHomeButtonRecents()
             R.id.autoShowKeyboard -> toggleKeyboardText()
-            R.id.scratchpadFont -> {
-                prefs.scratchpadFont = SCRATCHPAD_FONTS.keys.toList().let { it[(it.indexOf(prefs.scratchpadFont) + 1) % it.size] }
+            R.id.scratchpadFont -> pick(R.string.scratchpad_font, SCRATCHPAD_FONTS.map { getString(it.value) to it.key }, prefs.scratchpadFont) {
+                prefs.scratchpadFont = it
                 populateScratchpadOptions()
             }
             R.id.scratchpadAccent -> {
@@ -187,50 +170,48 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 prefs.formatToolbar = !prefs.formatToolbar
                 populateScratchpadOptions()
             }
-            R.id.homeAppsNum -> binding.appsNumSelectLayout.visibility = View.VISIBLE
-            R.id.alignment -> binding.alignmentSelectLayout.visibility = View.VISIBLE
-            R.id.alignmentLeft -> viewModel.updateHomeAlignment(Gravity.START)
-            R.id.alignmentCenter -> viewModel.updateHomeAlignment(Gravity.CENTER)
-            R.id.alignmentRight -> viewModel.updateHomeAlignment(Gravity.END)
+            R.id.homeAppsNum -> pick(R.string.apps_on_home_screen, (0..8).map { "$it" to it }, prefs.homeAppsNum) { updateHomeAppsNum(it) }
+            R.id.alignment -> pick(
+                R.string.home_layout_alignment,
+                listOf(getString(R.string.left) to Gravity.START, getString(R.string.center) to Gravity.CENTER, getString(R.string.right) to Gravity.END),
+                prefs.homeAlignment,
+            ) { viewModel.updateHomeAlignment(it) }
             R.id.alignmentBottom -> updateHomeBottomAlignment()
             R.id.statusBar -> toggleStatusBar()
-            R.id.dateTime -> binding.dateTimeSelectLayout.visibility = View.VISIBLE
-            R.id.dateTimeOn -> toggleDateTime(Constants.DateTime.ON)
-            R.id.dateTimeOff -> toggleDateTime(Constants.DateTime.OFF)
-            R.id.dateOnly -> toggleDateTime(Constants.DateTime.DATE_ONLY)
-            R.id.appThemeText -> binding.appThemeSelectLayout.visibility = View.VISIBLE
-            R.id.themeLight -> updateTheme(AppCompatDelegate.MODE_NIGHT_NO)
-            R.id.themeDark -> updateTheme(AppCompatDelegate.MODE_NIGHT_YES)
-            R.id.themeSystem -> updateTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            R.id.textSizeValue -> binding.textSizesLayout.visibility = View.VISIBLE
+            R.id.dateTime -> pick(
+                R.string.show_date_time,
+                listOf(getString(R.string.on) to Constants.DateTime.ON, getString(R.string.off) to Constants.DateTime.OFF, getString(R.string.date_only) to Constants.DateTime.DATE_ONLY),
+                prefs.dateTimeVisibility,
+            ) { toggleDateTime(it) }
+            R.id.appThemeText -> pick(
+                R.string.theme_mode,
+                listOf(
+                    getString(R.string.system_default) to AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+                    getString(R.string.light) to AppCompatDelegate.MODE_NIGHT_NO,
+                    getString(R.string.dark) to AppCompatDelegate.MODE_NIGHT_YES,
+                ),
+                prefs.appTheme,
+            ) { updateTheme(it) }
+            R.id.textSizeValue -> pick(R.string.text_size, scales(if (isTablet(requireContext())) 2.0f else 1.5f), prefs.textSizeScale) {
+                prefs.textSizeScale = it
+                requireActivity().recreate()
+            }
             R.id.clockAppearance -> findNavController().navigate(R.id.action_settingsFragment_to_clockAppearanceFragment)
-            R.id.scratchpadSizeValue -> binding.scratchpadSizesLayout.visibility = View.VISIBLE
-            R.id.actionAccessibility -> openAccessibilityService()
-            R.id.closeAccessibility -> toggleAccessibilityVisibility(false)
-            R.id.notWorking -> requireContext().openUrl(Constants.URL_DOUBLE_TAP)
+            // Applied when the home view is rebuilt on return, so no activity recreate needed.
+            R.id.scratchpadSizeValue -> pick(R.string.scratchpad_text_size, scales(2.0f), prefs.scratchpadTextScale) {
+                prefs.scratchpadTextScale = it
+                populateScratchpadSize()
+            }
 
             R.id.tvGestures -> binding.flSwipeDown.visibility = View.VISIBLE
 
-            R.id.maxApps0 -> updateHomeAppsNum(0)
-            R.id.maxApps1 -> updateHomeAppsNum(1)
-            R.id.maxApps2 -> updateHomeAppsNum(2)
-            R.id.maxApps3 -> updateHomeAppsNum(3)
-            R.id.maxApps4 -> updateHomeAppsNum(4)
-            R.id.maxApps5 -> updateHomeAppsNum(5)
-            R.id.maxApps6 -> updateHomeAppsNum(6)
-            R.id.maxApps7 -> updateHomeAppsNum(7)
-            R.id.maxApps8 -> updateHomeAppsNum(8)
-
-            R.id.textSizeMinus -> adjustTextSizePreview(-0.1f)
-            R.id.textSizePlus -> adjustTextSizePreview(0.1f)
-            R.id.scratchpadSizeMinus -> adjustScratchpadSize(-0.1f)
-            R.id.scratchpadSizePlus -> adjustScratchpadSize(0.1f)
-
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
-            R.id.swipeDownAction -> binding.swipeDownSelectLayout.visibility = View.VISIBLE
-            R.id.notifications -> updateSwipeDownAction(Constants.SwipeDownAction.NOTIFICATIONS)
-            R.id.search -> updateSwipeDownAction(Constants.SwipeDownAction.SEARCH)
+            R.id.swipeDownAction -> pick(
+                R.string.swipe_down_for,
+                listOf(getString(R.string.notifications) to Constants.SwipeDownAction.NOTIFICATIONS, getString(R.string.search) to Constants.SwipeDownAction.SEARCH),
+                prefs.swipeDownAction,
+            ) { updateSwipeDownAction(it) }
 
             R.id.aboutOlauncher -> {
                 prefs.aboutClicked = true
@@ -268,11 +249,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 requireContext().showToast(getString(R.string.alignment_changed))
             }
 
-            R.id.appThemeText -> {
-                binding.appThemeSelectLayout.visibility = View.VISIBLE
-                binding.themeSystem.visibility = View.VISIBLE
-            }
-
             R.id.swipeLeftApp -> toggleSwipeLeft()
             R.id.swipeRightApp -> toggleSwipeRight()
             R.id.toggleLock -> startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
@@ -286,44 +262,23 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
     private fun initClickListeners() {
         binding.olauncherHiddenApps.setOnClickListener(this)
+        binding.hiddenApps.setOnClickListener(this)
         binding.scrollLayout.setOnClickListener(this)
         binding.appInfo.setOnClickListener(this)
         binding.setLauncher.setOnClickListener(this)
         binding.aboutOlauncher.setOnClickListener(this)
-        binding.autoShowKeyboard.setOnClickListener(this)
-        binding.scratchpadFont.setOnClickListener(this)
-        binding.scratchpadAccent.setOnClickListener(this)
-        binding.formatToolbarToggle.setOnClickListener(this)
-        binding.toggleLock.setOnClickListener(this)
+        // Rows are tapped as a whole; the value view inside keeps the id onClick dispatches on.
+        listOf(
+            binding.autoShowKeyboard, binding.scratchpadFont, binding.scratchpadAccent, binding.formatToolbarToggle,
+            binding.toggleLock, binding.homeAppsNum, binding.screenTimeOnOff, binding.alignment, binding.statusBar,
+            binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
+            binding.textSizeValue, binding.scratchpadSizeValue, binding.alignmentBottom,
+        ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
+        listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
+            .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
         // Home button for recents feature disabled
         // binding.homeButtonRecents.setOnClickListener(this)
-        binding.homeAppsNum.setOnClickListener(this)
-        binding.screenTimeOnOff.setOnClickListener(this)
-        binding.alignment.setOnClickListener(this)
-        binding.alignmentLeft.setOnClickListener(this)
-        binding.alignmentCenter.setOnClickListener(this)
-        binding.alignmentRight.setOnClickListener(this)
-        binding.alignmentBottom.setOnClickListener(this)
-        binding.statusBar.setOnClickListener(this)
-        binding.dateTime.setOnClickListener(this)
-        binding.dateTimeOn.setOnClickListener(this)
-        binding.dateTimeOff.setOnClickListener(this)
-        binding.dateOnly.setOnClickListener(this)
-        binding.swipeLeftApp.setOnClickListener(this)
-        binding.swipeRightApp.setOnClickListener(this)
-        binding.swipeDownAction.setOnClickListener(this)
-        binding.search.setOnClickListener(this)
-        binding.notifications.setOnClickListener(this)
-        binding.appThemeText.setOnClickListener(this)
-        binding.themeLight.setOnClickListener(this)
-        binding.themeDark.setOnClickListener(this)
-        binding.themeSystem.setOnClickListener(this)
-        binding.textSizeValue.setOnClickListener(this)
         binding.clockAppearance.setOnClickListener(this)
-        binding.scratchpadSizeValue.setOnClickListener(this)
-        binding.actionAccessibility.setOnClickListener(this)
-        binding.closeAccessibility.setOnClickListener(this)
-        binding.notWorking.setOnClickListener(this)
 
         binding.syncFolder.setOnClickListener(this)
         binding.backupScratchpad.setOnClickListener(this)
@@ -333,27 +288,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.rate.setOnClickListener(this)
         binding.github.setOnClickListener(this)
         binding.privacy.setOnClickListener(this)
-
-        binding.maxApps0.setOnClickListener(this)
-        binding.maxApps1.setOnClickListener(this)
-        binding.maxApps2.setOnClickListener(this)
-        binding.maxApps3.setOnClickListener(this)
-        binding.maxApps4.setOnClickListener(this)
-        binding.maxApps5.setOnClickListener(this)
-        binding.maxApps6.setOnClickListener(this)
-        binding.maxApps7.setOnClickListener(this)
-        binding.maxApps8.setOnClickListener(this)
-
-        binding.textSizeMinus.setOnClickListener(this)
-        binding.textSizePlus.setOnClickListener(this)
-        binding.scratchpadSizeMinus.setOnClickListener(this)
-        binding.scratchpadSizePlus.setOnClickListener(this)
-
-        binding.alignment.setOnLongClickListener(this)
-        binding.appThemeText.setOnLongClickListener(this)
-        binding.swipeLeftApp.setOnLongClickListener(this)
-        binding.swipeRightApp.setOnLongClickListener(this)
-        binding.toggleLock.setOnLongClickListener(this)
     }
 
     private fun initObservers() {
@@ -377,24 +311,14 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
     private fun toggleSwipeLeft() {
         prefs.swipeLeftEnabled = !prefs.swipeLeftEnabled
-        if (prefs.swipeLeftEnabled) {
-            binding.swipeLeftApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColor))
-            requireContext().showToast(getString(R.string.swipe_left_app_enabled))
-        } else {
-            binding.swipeLeftApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColorTrans50))
-            requireContext().showToast(getString(R.string.swipe_left_app_disabled))
-        }
+        populateSwipeApps()
+        requireContext().showToast(getString(if (prefs.swipeLeftEnabled) R.string.swipe_left_app_enabled else R.string.swipe_left_app_disabled))
     }
 
     private fun toggleSwipeRight() {
         prefs.swipeRightEnabled = !prefs.swipeRightEnabled
-        if (prefs.swipeRightEnabled) {
-            binding.swipeRightApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColor))
-            requireContext().showToast(getString(R.string.swipe_right_app_enabled))
-        } else {
-            binding.swipeRightApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColorTrans50))
-            requireContext().showToast(getString(R.string.swipe_right_app_disabled))
-        }
+        populateSwipeApps()
+        requireContext().showToast(getString(if (prefs.swipeRightEnabled) R.string.swipe_right_app_enabled else R.string.swipe_right_app_disabled))
     }
 
     private fun toggleStatusBar() {
@@ -403,13 +327,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     }
 
     private fun populateStatusBar() {
-        if (prefs.showStatusBar) {
-            showStatusBar()
-            binding.statusBar.text = getString(R.string.on)
-        } else {
-            hideStatusBar()
-            binding.statusBar.text = getString(R.string.off)
-        }
+        if (prefs.showStatusBar) showStatusBar() else hideStatusBar()
+        binding.statusBar.isChecked = prefs.showStatusBar
     }
 
     private fun toggleDateTime(selected: Int) {
@@ -467,27 +386,23 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             prefs.lockModeOn = isAdmin
     }
 
-    private fun toggleAccessibilityVisibility(show: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            binding.notWorking.visibility = View.VISIBLE
-        if (isAccessServiceEnabled(requireContext()))
-            binding.actionAccessibility.text = getString(R.string.disable)
-        binding.accessibilityLayout.isVisible = show
-        binding.scrollView.animateAlpha(if (show) 0.5f else 1f)
-    }
-
-    private fun openAccessibilityService() {
-        toggleAccessibilityVisibility(false)
-        // prefs.lockModeOn = true
-        populateLockSettings()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+    private fun showAccessibilityDisclosure() {
+        val enabled = isAccessServiceEnabled(requireContext())
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.gestures)
+            .setMessage(R.string.accessibility_disclosure)
+            .setNegativeButton(R.string.close, null)
+            .setNeutralButton(R.string.not_working) { _, _ -> requireContext().openUrl(Constants.URL_DOUBLE_TAP) }
+            .setPositiveButton(if (enabled) R.string.disable else R.string.enable) { _, _ ->
+                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            }
+            .show()
     }
 
     private fun toggleLockMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (!prefs.lockModeOn && !isAccessServiceEnabled(requireContext())) {
-                toggleAccessibilityVisibility(true)
+                showAccessibilityDisclosure()
                 return
             }
             prefs.lockModeOn = !prefs.lockModeOn
@@ -520,34 +435,15 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
     private fun updateHomeAppsNum(num: Int) {
         binding.homeAppsNum.text = num.toString()
-        binding.appsNumSelectLayout.visibility = View.GONE
         prefs.homeAppsNum = num
         viewModel.refreshHome(true)
     }
 
-    private var pendingTextSizeScale: Float = -1f
+    private fun <T> pick(title: Int, options: List<Pair<String, T>>, current: T, onPick: (T) -> Unit) =
+        requireContext().showChoices(getString(title), options, current, onPick)
 
-    private fun adjustTextSizePreview(delta: Float) {
-        val maxScale = if (isTablet(requireContext())) 2.0f else 1.5f
-        val current = if (pendingTextSizeScale > 0) pendingTextSizeScale else prefs.textSizeScale
-        val newScale = Math.round((current + delta) * 10f) / 10f
-        val clamped = newScale.coerceIn(0.5f, maxScale)
-        if (clamped == current) return
-        pendingTextSizeScale = clamped
-        val formatted = String.format("%.1f", clamped)
-        binding.textSizeValue.text = formatted
-        binding.textSizeCurrent.text = formatted
-    }
-
-    private fun applyTextSizeScale() {
-        if (pendingTextSizeScale < 0 || prefs.textSizeScale == pendingTextSizeScale) {
-            pendingTextSizeScale = -1f
-            return
-        }
-        prefs.textSizeScale = pendingTextSizeScale
-        pendingTextSizeScale = -1f
-        requireActivity().recreate()
-    }
+    /** 0.5 up to [max] in 0.1 steps, labelled like the row summary. */
+    private fun scales(max: Float) = (5..Math.round(max * 10)).map { String.format("%.1f", it / 10f) to it / 10f }
 
     private fun toggleKeyboardText() {
         if (prefs.autoShowKeyboard && prefs.keyboardMessageShown.not()) {
@@ -560,14 +456,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     }
 
     private fun updateTheme(appTheme: Int) {
-        if (AppCompatDelegate.getDefaultNightMode() == appTheme) return
         prefs.appTheme = appTheme
         populateAppThemeText(appTheme)
-        setAppTheme(appTheme)
-    }
-
-    private fun setAppTheme(theme: Int) {
-        if (AppCompatDelegate.getDefaultNightMode() == theme) return
         requireActivity().recreate()
     }
 
@@ -579,41 +469,31 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         }
     }
 
-    // Applied when the home view is rebuilt on return, so no activity recreate needed.
-    private fun adjustScratchpadSize(delta: Float) {
-        prefs.scratchpadTextScale = (Math.round((prefs.scratchpadTextScale + delta) * 10f) / 10f).coerceIn(0.5f, 2.0f)
-        populateScratchpadSize()
-    }
-
     private fun populateScratchpadSize() {
         val formatted = String.format("%.1f", prefs.scratchpadTextScale)
         binding.scratchpadSizeValue.text = formatted
-        binding.scratchpadSizeCurrent.text = formatted
     }
 
     private fun populateTextSize() {
         val formatted = String.format("%.1f", prefs.textSizeScale)
         binding.textSizeValue.text = formatted
-        binding.textSizeCurrent.text = formatted
     }
 
     private fun populateScreenTimeOnOff() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (requireContext().appUsagePermissionGranted()) binding.screenTimeOnOff.text = getString(R.string.on)
-            else binding.screenTimeOnOff.text = getString(R.string.off)
-        } else binding.screenTimeLayout.visibility = View.GONE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            binding.screenTimeOnOff.isChecked = requireContext().appUsagePermissionGranted()
+        else binding.screenTimeLayout.visibility = View.GONE
     }
 
     private fun populateScratchpadOptions() {
         binding.scratchpadFont.setText(SCRATCHPAD_FONTS[prefs.scratchpadFont] ?: R.string.font_sans)
         binding.scratchpadAccent.text = String.format("#%06X", prefs.scratchpadAccent and 0xFFFFFF)
         binding.scratchpadAccent.setTextColor(prefs.scratchpadAccent)
-        binding.formatToolbarToggle.setText(if (prefs.formatToolbar) R.string.on else R.string.off)
+        binding.formatToolbarToggle.isChecked = prefs.formatToolbar
     }
 
     private fun populateKeyboardText() {
-        if (prefs.autoShowKeyboard) binding.autoShowKeyboard.text = getString(R.string.on)
-        else binding.autoShowKeyboard.text = getString(R.string.off)
+        binding.autoShowKeyboard.isChecked = prefs.autoShowKeyboard
     }
 
     private fun updateHomeBottomAlignment() {
@@ -632,9 +512,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             Gravity.CENTER -> binding.alignment.text = getString(R.string.center)
             Gravity.END -> binding.alignment.text = getString(R.string.right)
         }
-        binding.alignmentBottom.text = if (prefs.homeBottomAlignment)
-            getString(R.string.bottom_on)
-        else getString(R.string.bottom_off)
+        binding.alignmentBottom.isChecked = prefs.homeBottomAlignment
     }
 
     // Home button for recents feature disabled
@@ -655,17 +533,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     // }
 
     private fun populateLockSettings() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            binding.toggleLock.text = getString(
-                if (prefs.lockModeOn && isAccessServiceEnabled(requireContext())) R.string.on
-                else R.string.off
-            )
-        } else {
-            binding.toggleLock.text = getString(
-                if (prefs.lockModeOn) R.string.on
-                else R.string.off
-            )
-        }
+        binding.toggleLock.isChecked = prefs.lockModeOn &&
+                (Build.VERSION.SDK_INT < Build.VERSION_CODES.P || isAccessServiceEnabled(requireContext()))
     }
 
     private fun populateSwipeDownAction() {
@@ -676,7 +545,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     }
 
     private fun updateSwipeDownAction(swipeDownFor: Int) {
-        if (prefs.swipeDownAction == swipeDownFor) return
         prefs.swipeDownAction = swipeDownFor
         populateSwipeDownAction()
     }
@@ -684,10 +552,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     private fun populateSwipeApps() {
         binding.swipeLeftApp.text = prefs.appNameSwipeLeft
         binding.swipeRightApp.text = prefs.appNameSwipeRight
-        if (!prefs.swipeLeftEnabled)
-            binding.swipeLeftApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColorTrans50))
-        if (!prefs.swipeRightEnabled)
-            binding.swipeRightApp.setTextColor(requireContext().getColorFromAttr(R.attr.primaryColorTrans50))
+        binding.swipeLeftApp.alpha = if (prefs.swipeLeftEnabled) 1f else 0.5f
+        binding.swipeRightApp.alpha = if (prefs.swipeRightEnabled) 1f else 0.5f
     }
 
 //    private fun populateDigitalWellbeing() {
