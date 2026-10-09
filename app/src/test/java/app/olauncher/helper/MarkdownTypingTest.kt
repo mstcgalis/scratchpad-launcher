@@ -9,6 +9,7 @@ class MarkdownTypingTest {
         mapOf(
             MarkdownAction.BOLD to "**hello**",
             MarkdownAction.ITALIC to "*hello*",
+            MarkdownAction.UNDERLINE to "<u>hello</u>",
             MarkdownAction.HEADING to "# hello",
             MarkdownAction.BULLET to "- hello",
             MarkdownAction.CHECKBOX to "- [ ] hello",

@@ -15,7 +15,7 @@ The top half is a plain text box that's always there: write something down witho
 ## Features
 
 - **Always-visible scratchpad**: unlock your phone and start typing. Notes are saved as you type and survive reboots.
-- **Light markdown**: `# headings`, `**bold**`, `*italic*`, `- lists` and `- [ ]` checkboxes you can tick with a tap. Formatting marks are hidden until you tap to edit. Lists nest with indentation, deeper headings fade, and the scratchpad font is selectable. An optional formatting toolbar above the keyboard is off by default (Settings → Formatting toolbar).
+- **Light markdown**: `# headings`, `**bold**`, `*italic*`, `<u>underline</u>`, `~~strike~~`, `==highlight==`, `` `code` ``, `[links](url)`, `- lists` and `- [ ]` checkboxes you can tick with a tap. Formatting marks are hidden until you tap to edit. Lists nest with indentation, deeper headings fade, and the scratchpad font is selectable. An optional formatting toolbar above the keyboard is off by default (Settings → Formatting toolbar).
 - **Type to launch**: swipe up, type a few letters, and the app opens as soon as there's only one match.
 - **Sync as `scratchpad.md`**: optionally mirror the scratchpad into a folder, e.g. an Obsidian vault synced to your other devices. See [backup and restore](#backup-and-restore).
 - **Small, fixed app list**: a handful of apps with no icons and no clutter. Rename, hide, and align them.

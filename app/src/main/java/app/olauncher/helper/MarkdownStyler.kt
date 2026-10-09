@@ -9,11 +9,14 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.Editable
 import android.text.Spannable
+import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.ReplacementSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
+import android.text.style.UnderlineSpan
 import android.util.Log
 import androidx.core.graphics.ColorUtils
 
@@ -24,6 +27,12 @@ private class MarkdownStyleSpan(style: Int) : StyleSpan(style), MarkdownSpan
 private class MarkdownSizeSpan(scale: Float) : RelativeSizeSpan(scale), MarkdownSpan
 private class MarkdownColorSpan(color: Int) : ForegroundColorSpan(color), MarkdownSpan
 private class MarkdownStrikeSpan : StrikethroughSpan(), MarkdownSpan
+private class MarkdownUnderlineSpan : UnderlineSpan(), MarkdownSpan
+private class MarkdownHighlightSpan(color: Int) : BackgroundColorSpan(color), MarkdownSpan
+private class MarkdownCodeSpan : TypefaceSpan("monospace"), MarkdownSpan
+
+/** Underlines a link's text; [MarkdownEditText][app.olauncher.ui.MarkdownEditText] opens [url] on tap. */
+class LinkSpan(val url: String) : UnderlineSpan(), MarkdownSpan
 
 private class HiddenMarkerSpan : ReplacementSpan(), MarkdownSpan {
     override fun getSize(paint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt?) = 0
@@ -100,6 +109,7 @@ object MarkdownStyler {
     private const val TAG = "MarkdownStyler"
     private const val FLAG = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
     private const val MARKER_DIM_SCALE = 0.7f
+    private const val HIGHLIGHT_ALPHA = 0x40
 
     fun apply(editable: Editable, dimColor: Int, accentColor: Int, editing: Boolean) {
         try {
@@ -113,8 +123,19 @@ object MarkdownStyler {
                         editable.setSpan(MarkdownColorSpan(shade), match.contentRange.start, match.contentRange.end, FLAG)
                         if (!editing) hide(editable, match.markerRange)
                     }
-                    is MarkdownMatch.Bold -> applyEmphasis(editable, Typeface.BOLD, match.content, match.openMarker, match.closeMarker, dimColor)
-                    is MarkdownMatch.Italic -> applyEmphasis(editable, Typeface.ITALIC, match.content, match.openMarker, match.closeMarker, dimColor)
+                    is MarkdownMatch.Inline -> {
+                        val span = when (match.style) {
+                            InlineStyle.BOLD -> MarkdownStyleSpan(Typeface.BOLD)
+                            InlineStyle.ITALIC -> MarkdownStyleSpan(Typeface.ITALIC)
+                            InlineStyle.UNDERLINE -> MarkdownUnderlineSpan()
+                            InlineStyle.STRIKE -> MarkdownStrikeSpan()
+                            InlineStyle.HIGHLIGHT -> MarkdownHighlightSpan(ColorUtils.setAlphaComponent(accentColor, HIGHLIGHT_ALPHA))
+                            InlineStyle.CODE -> MarkdownCodeSpan()
+                        }
+                        applyEmphasis(editable, span, match.content, match.openMarker, match.closeMarker, dimColor)
+                    }
+                    is MarkdownMatch.Link -> applyEmphasis(editable, LinkSpan(match.url), match.content, match.openMarker, match.closeMarker, dimColor)
+                    is MarkdownMatch.Escape -> dim(editable, match.markerRange, dimColor)
                     is MarkdownMatch.Bullet -> {
                         if (editing) dim(editable, match.markerRange, dimColor)
                         else editable.setSpan(BulletMarkerSpan(), match.markerRange.start, match.markerRange.end, FLAG)
@@ -126,8 +147,9 @@ object MarkdownStyler {
                 }
                 if (!editing) {
                     when (match) {
-                        is MarkdownMatch.Bold -> { hide(editable, match.openMarker); hide(editable, match.closeMarker) }
-                        is MarkdownMatch.Italic -> { hide(editable, match.openMarker); hide(editable, match.closeMarker) }
+                        is MarkdownMatch.Inline -> { hide(editable, match.openMarker); hide(editable, match.closeMarker) }
+                        is MarkdownMatch.Link -> { hide(editable, match.openMarker); hide(editable, match.closeMarker) }
+                        is MarkdownMatch.Escape -> hide(editable, match.markerRange)
                         else -> Unit
                     }
                 }
@@ -147,15 +169,15 @@ object MarkdownStyler {
 
     private fun applyEmphasis(
         editable: Editable,
-        style: Int,
+        span: MarkdownSpan,
         content: TextRange,
         openMarker: TextRange,
         closeMarker: TextRange,
         dimColor: Int,
     ) {
-        editable.setSpan(MarkdownStyleSpan(style), content.start, content.end, FLAG)
-        editable.setSpan(MarkdownColorSpan(dimColor), openMarker.start, openMarker.end, FLAG)
-        editable.setSpan(MarkdownColorSpan(dimColor), closeMarker.start, closeMarker.end, FLAG)
+        editable.setSpan(span, content.start, content.end, FLAG)
+        dim(editable, openMarker, dimColor)
+        dim(editable, closeMarker, dimColor)
     }
 
     private fun applyCheckbox(editable: Editable, match: MarkdownMatch.Checkbox, dimColor: Int, accentColor: Int, editing: Boolean) {
@@ -167,11 +189,14 @@ object MarkdownStyler {
         }
     }
 
+    // Bare URLs have empty markers, and zero-length EXCLUSIVE_EXCLUSIVE spans throw.
     private fun dim(editable: Editable, range: TextRange, dimColor: Int) {
+        if (range.start == range.end) return
         editable.setSpan(MarkdownColorSpan(dimColor), range.start, range.end, FLAG)
     }
 
     private fun hide(editable: Editable, range: TextRange) {
+        if (range.start == range.end) return
         editable.setSpan(HiddenMarkerSpan(), range.start, range.end, FLAG)
     }
 }

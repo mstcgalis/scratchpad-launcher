@@ -1,6 +1,6 @@
 package app.olauncher.helper
 
-enum class MarkdownAction { BOLD, ITALIC, HEADING, BULLET, CHECKBOX, INDENT, OUTDENT }
+enum class MarkdownAction { BOLD, ITALIC, UNDERLINE, STRIKE, HIGHLIGHT, CODE, LINK, HEADING, BULLET, CHECKBOX, INDENT, OUTDENT }
 
 data class MarkdownEdit(val start: Int, val end: Int, val replacement: String, val selectionStart: Int, val selectionEnd: Int)
 
@@ -9,14 +9,27 @@ object MarkdownFormatter {
 
     fun edit(text: String, start: Int, end: Int, action: MarkdownAction): MarkdownEdit {
         require(start in 0..text.length && end in start..text.length)
-        if (action == MarkdownAction.BOLD || action == MarkdownAction.ITALIC) {
-            val marker = if (action == MarkdownAction.BOLD) "**" else "*"
-            val size = marker.length
-            if (start >= size && end + size <= text.length && text.substring(start - size, start) == marker
-                && text.substring(end, end + size) == marker) {
-                return MarkdownEdit(start - size, end + size, text.substring(start, end), start - size, end - size)
+        if (action == MarkdownAction.LINK) {
+            val selected = text.substring(start, end)
+            // A selected URL becomes the target and the cursor goes to the (empty) link text; otherwise the reverse.
+            if (selected.matches(Regex("""https?://\S+"""))) return MarkdownEdit(start, end, "[]($selected)", start + 1, start + 1)
+            val cursor = if (selected.isEmpty()) start + 1 else end + 3
+            return MarkdownEdit(start, end, "[$selected]()", cursor, cursor)
+        }
+        val (open, close) = when (action) {
+            MarkdownAction.BOLD -> "**" to "**"
+            MarkdownAction.ITALIC -> "*" to "*"
+            MarkdownAction.UNDERLINE -> "<u>" to "</u>"
+            MarkdownAction.STRIKE -> "~~" to "~~"
+            MarkdownAction.HIGHLIGHT -> "==" to "=="
+            MarkdownAction.CODE -> "`" to "`"
+            else -> "" to ""
+        }
+        if (open.isNotEmpty()) {
+            if (start >= open.length && text.startsWith(open, start - open.length) && text.startsWith(close, end)) {
+                return MarkdownEdit(start - open.length, end + close.length, text.substring(start, end), start - open.length, end - open.length)
             }
-            return MarkdownEdit(start, end, marker + text.substring(start, end) + marker, start + size, end + size)
+            return MarkdownEdit(start, end, open + text.substring(start, end) + close, start + open.length, end + open.length)
         }
 
         val from = text.lastIndexOf('\n', start - 1) + 1

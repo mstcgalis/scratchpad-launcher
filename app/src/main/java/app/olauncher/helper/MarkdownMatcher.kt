@@ -3,10 +3,15 @@ package app.olauncher.helper
 /** A character range in the source text. [start] inclusive, [end] exclusive. */
 data class TextRange(val start: Int, val end: Int)
 
+enum class InlineStyle { BOLD, ITALIC, UNDERLINE, STRIKE, HIGHLIGHT, CODE }
+
 sealed class MarkdownMatch {
     data class Header(val level: Int, val markerRange: TextRange, val contentRange: TextRange) : MarkdownMatch()
-    data class Bold(val openMarker: TextRange, val content: TextRange, val closeMarker: TextRange) : MarkdownMatch()
-    data class Italic(val openMarker: TextRange, val content: TextRange, val closeMarker: TextRange) : MarkdownMatch()
+    data class Inline(val style: InlineStyle, val openMarker: TextRange, val content: TextRange, val closeMarker: TextRange) : MarkdownMatch()
+    /** `[text](url)`, or a bare URL (empty markers). */
+    data class Link(val url: String, val openMarker: TextRange, val content: TextRange, val closeMarker: TextRange) : MarkdownMatch()
+    /** The backslash of a `\*`-style escape. */
+    data class Escape(val markerRange: TextRange) : MarkdownMatch()
     data class Bullet(val markerRange: TextRange) : MarkdownMatch()
     data class Checkbox(val checked: Boolean, val markerRange: TextRange, val contentRange: TextRange) : MarkdownMatch()
 }
@@ -16,8 +21,28 @@ object MarkdownMatcher {
     private val headerRegex = Regex("""^(#{1,6}) (.*)$""")
     private val checkboxRegex = Regex("""^([ \t]*)- \[([ xX])] (.*)$""")
     private val bulletRegex = Regex("""^([ \t]*)[-+*] (?!\[[ xX]] ).*$""")
-    private val boldRegex = Regex("""\*\*([^\n]+?)\*\*""")
-    private val italicRegex = Regex("""\*([^\n*]+?)\*""")
+
+    private val escapeRegex = Regex("""\\[!-/:-@\[-`{-~]""")
+    private val codeRegex = Regex("""`([^`\n]+)`""")
+    private val linkRegex = Regex("""\[([^\]\n]+)]\(([^)\s]+)\)""")
+    // ponytail: no balanced parens in bare URLs (GFM allows them); wrap such URLs as [text](url).
+    private val bareUrlRegex = Regex("""https?://[^\s<>()\[\]]*[^\s<>()\[\].,;:!?'"*_~=]""")
+
+    /** `_` only counts outside words (CommonMark), so snake_case_names stay plain. */
+    private fun underscore(marker: String) =
+        Regex("""(?<![\p{L}\p{N}_])$marker(?!\s)([^\n]+?)(?<!\s)$marker(?![\p{L}\p{N}_])""")
+
+    // Order matters: longer delimiters claim their markers before the single-character ones.
+    private val delimiters = listOf(
+        InlineStyle.BOLD to Regex("""\*\*([^\n]+?)\*\*"""),
+        InlineStyle.BOLD to underscore("__"),
+        InlineStyle.STRIKE to Regex("""~~([^\n]+?)~~"""),
+        InlineStyle.HIGHLIGHT to Regex("""==([^\n]+?)=="""),
+        InlineStyle.ITALIC to Regex("""\*([^\n*]+?)\*"""),
+        InlineStyle.ITALIC to underscore("_"),
+        // Raw inline HTML is valid CommonMark, so <u> renders as underline in other editors too.
+        InlineStyle.UNDERLINE to Regex("""<u>([^\n]+?)</u>""", RegexOption.IGNORE_CASE),
+    )
 
     fun findMatches(text: String): List<MarkdownMatch> {
         val matches = mutableListOf<MarkdownMatch>()
@@ -28,38 +53,59 @@ object MarkdownMatcher {
             lineStart += line.length + 1
         }
 
-        val inlineText = text.toCharArray()
-        matches.filterIsInstance<MarkdownMatch.Bullet>().forEach { inlineText[it.markerRange.start] = '\u0000' }
-        val boldMatches = boldRegex.findAll(String(inlineText)).toList()
-        for (m in boldMatches) {
-            val content = m.groups[1]!!.range
-            matches.add(
-                MarkdownMatch.Bold(
-                    openMarker = TextRange(m.range.first, m.range.first + 2),
-                    content = TextRange(content.first, content.last + 1),
-                    closeMarker = TextRange(m.range.last - 1, m.range.last + 1),
-                )
-            )
-        }
+        // Claimed characters are blanked out so later, looser rules can't reuse them.
+        val masked = text.toCharArray()
+        fun mask(from: Int, to: Int) { for (i in from until to) masked[i] = '\u0000' }
+        fun find(regex: Regex) = regex.findAll(String(masked)).toList()
 
-        // Mask out bold matches so italic markers don't bleed across bold boundaries
-        // (e.g. the closing "**" of a bold run followed later by a genuine "*italic*").
-        val masked = inlineText
-        for (m in boldMatches) {
-            for (i in m.range) masked[i] = '\u0000'
+        matches.filterIsInstance<MarkdownMatch.Bullet>().forEach { mask(it.markerRange.start, it.markerRange.start + 1) }
+        for (m in find(escapeRegex)) {
+            matches.add(MarkdownMatch.Escape(TextRange(m.range.first, m.range.first + 1)))
+            mask(m.range.first, m.range.last + 1)
         }
-        for (m in italicRegex.findAll(String(masked))) {
+        // Code spans are literal: nothing inside them is markdown.
+        for (m in find(codeRegex)) {
+            matches.add(inline(InlineStyle.CODE, m))
+            mask(m.range.first, m.range.last + 1)
+        }
+        for (m in find(linkRegex)) {
             val content = m.groups[1]!!.range
             matches.add(
-                MarkdownMatch.Italic(
-                    openMarker = TextRange(m.range.first, m.range.first + 1),
+                MarkdownMatch.Link(
+                    url = m.groupValues[2],
+                    openMarker = TextRange(m.range.first, content.first),
                     content = TextRange(content.first, content.last + 1),
-                    closeMarker = TextRange(m.range.last, m.range.last + 1),
+                    closeMarker = TextRange(content.last + 1, m.range.last + 1),
                 )
             )
+            mask(m.range.first, content.first)
+            mask(content.last + 1, m.range.last + 1)
+        }
+        for (m in find(bareUrlRegex)) {
+            val end = m.range.last + 1
+            matches.add(MarkdownMatch.Link(m.value, TextRange(m.range.first, m.range.first), TextRange(m.range.first, end), TextRange(end, end)))
+            mask(m.range.first, end)
+        }
+        for ((style, regex) in delimiters) {
+            for (m in find(regex)) {
+                val match = inline(style, m)
+                matches.add(match)
+                mask(match.openMarker.start, match.openMarker.end)
+                mask(match.closeMarker.start, match.closeMarker.end)
+            }
         }
 
         return matches
+    }
+
+    private fun inline(style: InlineStyle, m: MatchResult): MarkdownMatch.Inline {
+        val content = m.groups[1]!!.range
+        return MarkdownMatch.Inline(
+            style = style,
+            openMarker = TextRange(m.range.first, content.first),
+            content = TextRange(content.first, content.last + 1),
+            closeMarker = TextRange(content.last + 1, m.range.last + 1),
+        )
     }
 
     private fun matchLine(line: String, lineStart: Int): MarkdownMatch? {

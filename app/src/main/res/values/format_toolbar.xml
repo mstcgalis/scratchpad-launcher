@@ -9,6 +9,11 @@
     <string name="format_done">Done</string>
     <string name="format_bold">B</string>
     <string name="format_italic">I</string>
+    <string name="format_underline"><u>U</u></string>
+    <string name="format_strike"><strike>S</strike></string>
+    <string name="format_highlight">==</string>
+    <string name="format_code">`</string>
+    <string name="format_link">↗</string>
     <string name="format_heading">H</string>
     <string name="format_bullet">•</string>
     <string name="format_checkbox">☐</string>

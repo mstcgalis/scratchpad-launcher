@@ -429,6 +429,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         mapOf(
             binding.formatBold to MarkdownAction.BOLD,
             binding.formatItalic to MarkdownAction.ITALIC,
+            binding.formatUnderline to MarkdownAction.UNDERLINE,
+            binding.formatStrike to MarkdownAction.STRIKE,
+            binding.formatHighlight to MarkdownAction.HIGHLIGHT,
+            binding.formatCode to MarkdownAction.CODE,
+            binding.formatLink to MarkdownAction.LINK,
             binding.formatHeading to MarkdownAction.HEADING,
             binding.formatBullet to MarkdownAction.BULLET,
             binding.formatCheckbox to MarkdownAction.CHECKBOX,

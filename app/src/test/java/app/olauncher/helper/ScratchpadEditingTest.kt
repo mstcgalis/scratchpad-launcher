@@ -9,7 +9,7 @@ class ScratchpadEditingTest {
     @Test
     fun `asterisk list markers do not consume inline emphasis`() {
         val source = "  * item *italic*"
-        val match = MarkdownMatcher.findMatches(source).filterIsInstance<MarkdownMatch.Italic>().single()
+        val match = MarkdownMatcher.findMatches(source).inline(InlineStyle.ITALIC).single()
         assertEquals("italic", source.substring(match.content.start, match.content.end))
     }
 

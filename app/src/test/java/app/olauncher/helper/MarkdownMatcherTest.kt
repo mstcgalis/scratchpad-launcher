@@ -45,7 +45,7 @@ class MarkdownMatcherTest {
     @Test
     fun `bold text matches markers and content`() {
         val matches = MarkdownMatcher.findMatches("this is **bold** text")
-        val bold = matches.single() as MarkdownMatch.Bold
+        val bold = matches.inline(InlineStyle.BOLD).single()
         assertEquals(TextRange(8, 10), bold.openMarker)
         assertEquals(TextRange(10, 14), bold.content)
         assertEquals(TextRange(14, 16), bold.closeMarker)
@@ -54,7 +54,7 @@ class MarkdownMatcherTest {
     @Test
     fun `italic text matches markers and content`() {
         val matches = MarkdownMatcher.findMatches("this is *italic* text")
-        val italic = matches.single() as MarkdownMatch.Italic
+        val italic = matches.inline(InlineStyle.ITALIC).single()
         assertEquals(TextRange(8, 9), italic.openMarker)
         assertEquals(TextRange(9, 15), italic.content)
         assertEquals(TextRange(15, 16), italic.closeMarker)
@@ -63,8 +63,8 @@ class MarkdownMatcherTest {
     @Test
     fun `bold markers are not also matched as italic`() {
         val matches = MarkdownMatcher.findMatches("**bold** and *italic*")
-        assertEquals(1, matches.count { it is MarkdownMatch.Bold })
-        val italics = matches.filterIsInstance<MarkdownMatch.Italic>()
+        assertEquals(1, matches.inline(InlineStyle.BOLD).size)
+        val italics = matches.inline(InlineStyle.ITALIC)
         assertEquals(1, italics.size)
         assertEquals("italic", "**bold** and *italic*".substring(italics[0].content.start, italics[0].content.end))
     }
@@ -104,8 +104,8 @@ class MarkdownMatcherTest {
     fun `multiple rules mixed on one line`() {
         val matches = MarkdownMatcher.findMatches("- **bold** and *italic* item")
         assertTrue(matches.any { it is MarkdownMatch.Bullet })
-        assertTrue(matches.any { it is MarkdownMatch.Bold })
-        assertTrue(matches.any { it is MarkdownMatch.Italic })
+        assertTrue(matches.inline(InlineStyle.BOLD).isNotEmpty())
+        assertTrue(matches.inline(InlineStyle.ITALIC).isNotEmpty())
     }
 
     @Test
@@ -114,7 +114,7 @@ class MarkdownMatcherTest {
         val matches = MarkdownMatcher.findMatches(text)
         val header = matches.filterIsInstance<MarkdownMatch.Header>().single()
         assertEquals(TextRange(0, 2), header.markerRange)
-        val bold = matches.filterIsInstance<MarkdownMatch.Bold>().single()
+        val bold = matches.inline(InlineStyle.BOLD).single()
         assertEquals(TextRange(8, 10), bold.openMarker)
         assertEquals(TextRange(10, 14), bold.content)
     }
@@ -124,4 +124,83 @@ class MarkdownMatcherTest {
         val matches = MarkdownMatcher.findMatches("  - nested bullet")
         assertEquals(TextRange(2, 4), matches.filterIsInstance<MarkdownMatch.Bullet>().single().markerRange)
     }
+
+    @Test
+    fun `html u tag matches underline markers and content`() {
+        val u = MarkdownMatcher.findMatches("an <u>under</u> line").inline(InlineStyle.UNDERLINE).single()
+        assertEquals(TextRange(3, 6), u.openMarker)
+        assertEquals(TextRange(6, 11), u.content)
+        assertEquals(TextRange(11, 15), u.closeMarker)
+    }
+
+    @Test
+    fun `underline nests inside bold and does not span lines`() {
+        assertEquals(2, MarkdownMatcher.findMatches("**<u>both</u>**").size)
+        assertTrue(MarkdownMatcher.findMatches("<u>open\nclose</u>").isEmpty())
+    }
+
+    @Test
+    fun `underline action toggles u tags`() {
+        val on = MarkdownFormatter.edit("word", 0, 4, MarkdownAction.UNDERLINE)
+        assertEquals("<u>word</u>", on.replacement)
+        val off = MarkdownFormatter.edit("<u>word</u>", on.selectionStart, on.selectionEnd, MarkdownAction.UNDERLINE)
+        assertEquals(MarkdownEdit(0, 11, "word", 0, 4), off)
+    }
+
+    private fun MarkdownMatch.Inline.text(source: String) = source.substring(content.start, content.end)
+
+    @Test
+    fun `underscores italicise and bold only outside words`() {
+        val source = "_it_ __bold__ snake_case_name"
+        val matches = MarkdownMatcher.findMatches(source)
+        assertEquals("it", matches.inline(InlineStyle.ITALIC).single().text(source))
+        assertEquals("bold", matches.inline(InlineStyle.BOLD).single().text(source))
+    }
+
+    @Test
+    fun `strike highlight and code spans match`() {
+        val source = "~~gone~~ ==mark== `x`"
+        val matches = MarkdownMatcher.findMatches(source)
+        assertEquals("gone", matches.inline(InlineStyle.STRIKE).single().text(source))
+        assertEquals("mark", matches.inline(InlineStyle.HIGHLIGHT).single().text(source))
+        assertEquals(TextRange(19, 20), matches.inline(InlineStyle.CODE).single().content)
+    }
+
+    @Test
+    fun `code spans and escapes are literal`() {
+        val matches = MarkdownMatcher.findMatches("`*not* __bold__` \\*plain\\*")
+        assertEquals(1, matches.filterIsInstance<MarkdownMatch.Inline>().size)
+        assertEquals(listOf(TextRange(17, 18), TextRange(24, 25)), matches.filterIsInstance<MarkdownMatch.Escape>().map { it.markerRange })
+    }
+
+    @Test
+    fun `emphasis nests inside bold`() {
+        val source = "**a *b* c**"
+        assertEquals("b", MarkdownMatcher.findMatches(source).inline(InlineStyle.ITALIC).single().text(source))
+    }
+
+    @Test
+    fun `markdown link hides url and keeps styled text`() {
+        val link = MarkdownMatcher.findMatches("see [**docs**](https://x.org/a_b_c)").filterIsInstance<MarkdownMatch.Link>().single()
+        assertEquals("https://x.org/a_b_c", link.url)
+        assertEquals(TextRange(4, 5), link.openMarker)
+        assertEquals(TextRange(5, 13), link.content)
+        assertEquals(TextRange(13, 35), link.closeMarker)
+        assertEquals(1, MarkdownMatcher.findMatches("see [**docs**](https://x.org/a_b_c)").inline(InlineStyle.BOLD).size)
+    }
+
+    @Test
+    fun `bare url is a link without trailing punctuation or emphasis`() {
+        val matches = MarkdownMatcher.findMatches("go to https://x.org/snake_case_path. now")
+        assertEquals("https://x.org/snake_case_path", matches.filterIsInstance<MarkdownMatch.Link>().single().url)
+        assertTrue(matches.none { it is MarkdownMatch.Inline })
+    }
+
+    @Test
+    fun `link action wraps selection or url`() {
+        assertEquals(MarkdownEdit(0, 4, "[word]()", 7, 7), MarkdownFormatter.edit("word", 0, 4, MarkdownAction.LINK))
+        assertEquals(MarkdownEdit(0, 9, "[](https://x)", 1, 1), MarkdownFormatter.edit("https://x", 0, 9, MarkdownAction.LINK))
+    }
 }
+
+internal fun List<MarkdownMatch>.inline(style: InlineStyle) = filterIsInstance<MarkdownMatch.Inline>().filter { it.style == style }

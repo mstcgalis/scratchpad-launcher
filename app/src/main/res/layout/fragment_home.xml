@@ -319,6 +319,11 @@
             <Button android:id="@+id/formatDone" style="@style/ScratchpadTool" android:text="@string/format_done" />
             <Button android:id="@+id/formatBold" style="@style/ScratchpadTool" android:text="@string/format_bold" android:textStyle="bold" />
             <Button android:id="@+id/formatItalic" style="@style/ScratchpadTool" android:text="@string/format_italic" android:textStyle="italic" />
+            <Button android:id="@+id/formatUnderline" style="@style/ScratchpadTool" android:text="@string/format_underline" />
+            <Button android:id="@+id/formatStrike" style="@style/ScratchpadTool" android:text="@string/format_strike" />
+            <Button android:id="@+id/formatHighlight" style="@style/ScratchpadTool" android:text="@string/format_highlight" />
+            <Button android:id="@+id/formatCode" style="@style/ScratchpadTool" android:text="@string/format_code" />
+            <Button android:id="@+id/formatLink" style="@style/ScratchpadTool" android:text="@string/format_link" />
             <Button android:id="@+id/formatHeading" style="@style/ScratchpadTool" android:text="@string/format_heading" />
             <Button android:id="@+id/formatBullet" style="@style/ScratchpadTool" android:text="@string/format_bullet" />
             <Button android:id="@+id/formatCheckbox" style="@style/ScratchpadTool" android:text="@string/format_checkbox" />

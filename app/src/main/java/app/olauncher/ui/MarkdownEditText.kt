@@ -1,15 +1,20 @@
 package app.olauncher.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.appcompat.widget.AppCompatEditText
 import app.olauncher.helper.CheckboxSpan
+import app.olauncher.helper.LinkSpan
 
 /**
  * Scratchpad [AppCompatEditText] that additionally detects taps landing on a rendered
  * [CheckboxSpan] glyph and toggles the underlying `[ ]`/`[x]` markdown text in place.
+ * While not editing, a tap on a [LinkSpan] opens the link instead of focusing.
  * Any other touch falls through to normal cursor placement/selection.
  */
 class MarkdownEditText @JvmOverloads constructor(
@@ -59,6 +64,13 @@ class MarkdownEditText @JvmOverloads constructor(
                     cancelLongPress()
                     return true
                 }
+                val link = if (isFocused) null else editable.getSpans(offset, offset, LinkSpan::class.java)
+                    .firstOrNull { editable.getSpanStart(it) <= offset && offset < editable.getSpanEnd(it) }
+                if (link != null) {
+                    openLink(link.url)
+                    cancelLongPress()
+                    return true
+                }
             }
         }
         if (event.action == MotionEvent.ACTION_UP && !isFocused) {
@@ -70,6 +82,14 @@ class MarkdownEditText @JvmOverloads constructor(
             return handled
         }
         return super.onTouchEvent(event)
+    }
+
+    private fun openLink(url: String) {
+        val uri = Uri.parse(url).let { if (it.scheme == null) Uri.parse("https://$url") else it }
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE))
+        } catch (_: ActivityNotFoundException) {
+        }
     }
 
     private fun offsetForTouch(currentLayout: android.text.Layout, touchX: Float, touchY: Float): Int {
