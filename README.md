@@ -41,7 +41,7 @@ Single Gradle module, built with [`just`](https://github.com/casey/just): `just 
 
 ## Backup and restore
 
-- **One-off file**: **Settings → Back up** saves the note to a file of your choosing (default `scratchpad.md`). **Restore** loads a text file (up to 1 MB) after asking you to confirm, replacing the current note.
+- **One-off file**: **Settings → Back up** saves everything to a file of your choosing (default `scratchpad-launcher-backup.json`): the note, home apps and their renames, hidden apps, drawer renames and all settings. **Restore** loads such a file (up to 1 MB) after asking you to confirm, replacing all of it. A plain text file (e.g. an older `scratchpad.md` backup) replaces just the note. The sync folder is not included, since its permission is tied to the device.
 - **Continuous**: **Settings → Sync folder** keeps `scratchpad.md` in a folder up to date whenever you leave the launcher, and picks up edits made to that file from outside (Syncthing, Obsidian, etc.) within a few seconds. Long-press to stop syncing. If the scratchpad already has text when you pick a folder, it overwrites any `scratchpad.md` there; nothing is merged and the latest write wins.
 
 ## License

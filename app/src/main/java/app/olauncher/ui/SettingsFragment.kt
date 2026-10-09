@@ -28,6 +28,7 @@ import app.olauncher.data.Constants
 import app.olauncher.data.DEFAULT_LINK_COLOR
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentSettingsBinding
+import app.olauncher.helper.Backup
 import app.olauncher.helper.animateAlpha
 import app.olauncher.helper.appUsagePermissionGranted
 import app.olauncher.helper.getColorFromAttr
@@ -88,11 +89,12 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         initObservers()
     }
 
-    private val exportScratchpad = registerForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
+    private val exportScratchpad = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         viewModel.isPickingDocument = false
         uri ?: return@registerForActivityResult
+        val backup = Backup.encode(prefs.allSettings, prefs.scratchpadText)
         val ok = runCatching {
-            requireContext().contentResolver.openOutputStream(uri, "wt")!!.use { it.write(prefs.scratchpadText.toByteArray()) }
+            requireContext().contentResolver.openOutputStream(uri, "wt")!!.use { it.write(backup.toByteArray()) }
         }.isSuccess
         requireContext().showToast(getString(if (ok) R.string.backup_saved else R.string.backup_failed))
     }
@@ -112,13 +114,22 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             require(size <= MAX_RESTORE_BYTES)
             Charsets.UTF_8.newDecoder().decode(java.nio.ByteBuffer.wrap(buf, 0, size)).toString().removePrefix("\uFEFF").also { require('\u0000' !in it) }
         }.getOrNull()
-        if (text == null) return@registerForActivityResult context.showToast(getString(R.string.restore_failed))
+        // A full backup restores settings and apps too; any other text file (e.g. an old scratchpad.md backup) is just the note.
+        val backup = text?.let { runCatching { Backup.decode(it) } }
+        if (text == null || backup?.isFailure == true) return@registerForActivityResult context.showToast(getString(R.string.restore_failed))
+        val full = backup?.getOrNull()
         AlertDialog.Builder(context)
-            .setMessage(R.string.restore_confirmation)
+            .setMessage(if (full != null) R.string.restore_full_confirmation else R.string.restore_confirmation)
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.restore_scratchpad) { _, _ ->
-                prefs.scratchpadText = text
-                ScratchpadSync.write(context, prefs, text)
+                val note = full?.scratchpad ?: text
+                prefs.scratchpadText = note
+                ScratchpadSync.write(context, prefs, note)
+                if (full != null) {
+                    prefs.replaceSettings(full.settings)
+                    AppCompatDelegate.setDefaultNightMode(prefs.appTheme)
+                    requireActivity().recreate()
+                }
             }
             .show()
     }
@@ -233,7 +244,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             }
             R.id.backupScratchpad -> {
                 viewModel.isPickingDocument = true
-                exportScratchpad.launch("scratchpad.md")
+                exportScratchpad.launch("scratchpad-launcher-backup.json")
             }
             R.id.restoreScratchpad -> {
                 viewModel.isPickingDocument = true

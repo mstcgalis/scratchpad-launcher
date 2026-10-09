@@ -726,4 +726,19 @@ class Prefs(context: Context) {
     fun getAppRenameLabel(appPackage: String): String = prefs.getString(appPackage, "").toString()
 
     fun setAppRenameLabel(appPackage: String, renameLabel: String) = prefs.edit { putString(appPackage, renameLabel) }
+
+    /** Everything except the note and sync folder, which live in their own prefs file. */
+    val allSettings: Map<String, *> get() = prefs.all
+
+    fun replaceSettings(settings: Map<String, Any>) = prefs.edit(commit = true) {
+        clear()
+        for ((key, value) in settings) when (value) {
+            is Boolean -> putBoolean(key, value)
+            is Int -> putInt(key, value)
+            is Long -> putLong(key, value)
+            is Float -> putFloat(key, value)
+            is String -> putString(key, value)
+            is Set<*> -> putStringSet(key, value.mapTo(mutableSetOf()) { it.toString() })
+        }
+    }
 }

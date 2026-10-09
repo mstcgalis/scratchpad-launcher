@@ -3,7 +3,8 @@
     <string name="backup_scratchpad">Back up</string>
     <string name="restore_scratchpad">Restore</string>
     <string name="restore_confirmation">Replace the current scratchpad with this file?</string>
-    <string name="backup_saved">Scratchpad saved</string>
+    <string name="restore_full_confirmation">Replace all settings, home apps and the scratchpad with this backup?</string>
+    <string name="backup_saved">Backup saved</string>
     <string name="backup_failed">Could not save the file</string>
     <string name="restore_failed">Not a text file, or larger than 1 MB</string>
 </resources>
