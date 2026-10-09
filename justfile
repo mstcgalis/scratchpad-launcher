@@ -24,12 +24,14 @@ clean:
 
 # Cut a new signed release: bump version, build, tag, push, publish to GitHub.
 # F-Droid picks up the new tag on its own (UpdateCheckMode: Tags).
-# CalVer YYYY.M.N, N counting releases within the month from 0. Usage: just release
-release:
+# CalVer YYYY.M.N, N counting releases within the month from 0. Usage: just release [VERSION]
+release version="":
     #!/usr/bin/env bash
     set -euo pipefail
     month=$(date +%Y.%-m)
-    version="$month.$(git tag -l "v$month.*" | wc -l | tr -d ' ')"
+    version="{{version}}"
+    [ -n "$version" ] || version="$month.$(git tag -l "v$month.*" | wc -l | tr -d ' ')"
+    git rev-parse -q --verify "refs/tags/v$version" >/dev/null && { echo "Tag v$version already exists"; exit 1; }
     current_code=$(grep -oE 'versionCode [0-9]+' app/build.gradle | grep -oE '[0-9]+')
     new_code=$((current_code + 1))
     # Changelog shown on the GitHub release and in F-Droid: a hand-written changelogs/<code>.txt if present,
