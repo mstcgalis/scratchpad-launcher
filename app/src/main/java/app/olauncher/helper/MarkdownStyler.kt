@@ -9,7 +9,8 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.Editable
 import android.text.Spannable
-import android.text.style.BackgroundColorSpan
+import android.text.TextPaint
+import android.text.style.CharacterStyle
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.ReplacementSpan
@@ -28,7 +29,29 @@ private class MarkdownSizeSpan(scale: Float) : RelativeSizeSpan(scale), Markdown
 private class MarkdownColorSpan(color: Int) : ForegroundColorSpan(color), MarkdownSpan
 private class MarkdownStrikeSpan : StrikethroughSpan(), MarkdownSpan
 private class MarkdownUnderlineSpan : UnderlineSpan(), MarkdownSpan
-private class MarkdownHighlightSpan(color: Int) : BackgroundColorSpan(color), MarkdownSpan
+
+/** Link halo in the text colour, so the blue glyphs aren't muddied by the note's inverse-coloured shadow. */
+private class MarkdownLinkHaloSpan(private val color: Int) : CharacterStyle(), MarkdownSpan {
+    override fun updateDrawState(tp: TextPaint) = tp.setShadowLayer(tp.textSize * 0.06f, 0f, 0f, color)
+}
+
+/**
+ * Highlight box from ascent to descent only; [BackgroundColorSpan] fills the whole line incl. the
+ * 1.3 line spacing. One span per word so it can still wrap. ponytail: a space-less run can't break mid-word.
+ */
+private class MarkdownHighlightSpan(private val color: Int) : ReplacementSpan(), MarkdownSpan {
+    override fun getSize(paint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt?) =
+        paint.measureText(text, start, end).toInt()
+
+    override fun draw(canvas: Canvas, text: CharSequence, start: Int, end: Int, x: Float, top: Int, y: Int, bottom: Int, paint: Paint) {
+        val width = paint.measureText(text, start, end)
+        val saved = paint.color
+        paint.color = color
+        canvas.drawRect(x, y + paint.ascent(), x + width, y + paint.descent(), paint)
+        paint.color = saved
+        canvas.drawText(text, start, end, x, y.toFloat(), paint)
+    }
+}
 private class MarkdownCodeSpan : TypefaceSpan("monospace"), MarkdownSpan
 
 /** Underlines a link's text; [MarkdownEditText][app.olauncher.ui.MarkdownEditText] opens [url] on tap. */
@@ -124,19 +147,29 @@ object MarkdownStyler {
                         if (!editing) hide(editable, match.markerRange)
                     }
                     is MarkdownMatch.Inline -> {
+                        if (match.style == InlineStyle.HIGHLIGHT) {
+                            val color = ColorUtils.setAlphaComponent(accentColor, HIGHLIGHT_ALPHA)
+                            Regex("\\S+\\s*").findAll(editable.subSequence(match.content.start, match.content.end)).forEach {
+                                editable.setSpan(MarkdownHighlightSpan(color), match.content.start + it.range.first, match.content.start + it.range.last + 1, FLAG)
+                            }
+                            dim(editable, match.openMarker, dimColor)
+                            dim(editable, match.closeMarker, dimColor)
+                        } else {
                         val span = when (match.style) {
                             InlineStyle.BOLD -> MarkdownStyleSpan(Typeface.BOLD)
                             InlineStyle.ITALIC -> MarkdownStyleSpan(Typeface.ITALIC)
                             InlineStyle.UNDERLINE -> MarkdownUnderlineSpan()
                             InlineStyle.STRIKE -> MarkdownStrikeSpan()
-                            InlineStyle.HIGHLIGHT -> MarkdownHighlightSpan(ColorUtils.setAlphaComponent(accentColor, HIGHLIGHT_ALPHA))
+                            InlineStyle.HIGHLIGHT -> error("handled above")
                             InlineStyle.CODE -> MarkdownCodeSpan()
                         }
                         applyEmphasis(editable, span, match.content, match.openMarker, match.closeMarker, dimColor)
+                        }
                     }
                     is MarkdownMatch.Link -> {
                         applyEmphasis(editable, LinkSpan(match.url), match.content, match.openMarker, match.closeMarker, dimColor)
                         editable.setSpan(MarkdownColorSpan(linkColor), match.content.start, match.content.end, FLAG)
+                        editable.setSpan(MarkdownLinkHaloSpan(ColorUtils.setAlphaComponent(accentColor, 0x80)), match.content.start, match.content.end, FLAG)
                     }
                     is MarkdownMatch.Escape -> dim(editable, match.markerRange, dimColor)
                     is MarkdownMatch.Bullet -> {
