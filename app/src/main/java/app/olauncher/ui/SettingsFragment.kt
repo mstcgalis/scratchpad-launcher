@@ -88,7 +88,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateDateTime()
         populateSwipeApps()
         populateSwipeDownAction()
-        populateActionHints()
         binding.appVersion.text = "${getString(R.string.app_name)} ${BuildConfig.VERSION_NAME}"
         initClickListeners()
         initObservers()
@@ -155,8 +154,12 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.olauncherHiddenApps, R.id.hiddenApps -> showHiddenApps()
-            R.id.screenTimeOnOff -> viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
+            R.id.hiddenApps -> showHiddenApps()
+            R.id.screenTimeOnOff -> {
+                if (requireContext().appUsagePermissionGranted()) prefs.screenTimeVisible = !prefs.screenTimeVisible
+                else viewModel.showDialog.postValue(Constants.Dialog.DIGITAL_WELLBEING)
+                populateScreenTimeOnOff()
+            }
             R.id.appInfo -> openAppInfo(requireContext(), Process.myUserHandle(), BuildConfig.APPLICATION_ID)
             R.id.setLauncher -> viewModel.resetLauncherLiveData.call()
             R.id.toggleLock -> toggleLockMode()
@@ -209,7 +212,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 listOf(getString(R.string.left) to Gravity.START, getString(R.string.center) to Gravity.CENTER, getString(R.string.right) to Gravity.END),
                 prefs.homeAlignment,
             ) { viewModel.updateHomeAlignment(it) }
-            R.id.alignmentBottom -> updateHomeBottomAlignment()
             R.id.statusBar -> toggleStatusBar()
             R.id.dateTime -> pick(
                 R.string.show_date_time,
@@ -245,11 +247,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 listOf(getString(R.string.notifications) to Constants.SwipeDownAction.NOTIFICATIONS, getString(R.string.search) to Constants.SwipeDownAction.SEARCH),
                 prefs.swipeDownAction,
             ) { updateSwipeDownAction(it) }
-
-            R.id.aboutOlauncher -> {
-                prefs.aboutClicked = true
-                requireContext().openUrl(Constants.URL_ABOUT)
-            }
 
             R.id.share -> requireActivity().shareApp()
             R.id.syncFolder -> {
@@ -294,18 +291,16 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
     }
 
     private fun initClickListeners() {
-        binding.olauncherHiddenApps.setOnClickListener(this)
         binding.hiddenApps.setOnClickListener(this)
         binding.scrollLayout.setOnClickListener(this)
         binding.appInfo.setOnClickListener(this)
         binding.setLauncher.setOnClickListener(this)
-        binding.aboutOlauncher.setOnClickListener(this)
         // Rows are tapped as a whole; the value view inside keeps the id onClick dispatches on.
         listOf(
             binding.autoShowKeyboard, binding.scratchpadFont, binding.scratchpadAccent, binding.formatToolbarToggle,
             binding.toggleLock, binding.homeAppsNum, binding.screenTimeOnOff, binding.alignment, binding.statusBar,
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
-            binding.textSizeValue, binding.scratchpadSizeValue, binding.alignmentBottom, binding.textColour, binding.appIcons,
+            binding.textSizeValue, binding.scratchpadSizeValue, binding.textColour, binding.appIcons,
             binding.recentApps,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
@@ -515,7 +510,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
     private fun populateScreenTimeOnOff() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            binding.screenTimeOnOff.isChecked = requireContext().appUsagePermissionGranted()
+            binding.screenTimeOnOff.isChecked = requireContext().appUsagePermissionGranted() && prefs.screenTimeVisible
         else binding.screenTimeLayout.visibility = View.GONE
     }
 
@@ -548,23 +543,12 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.autoShowKeyboard.isChecked = prefs.autoShowKeyboard
     }
 
-    private fun updateHomeBottomAlignment() {
-        if (viewModel.isOlauncherDefault.value != true) {
-            requireContext().showToast(getString(R.string.please_set_olauncher_as_default_first), Toast.LENGTH_LONG)
-            return
-        }
-        prefs.homeBottomAlignment = !prefs.homeBottomAlignment
-        populateAlignment()
-        viewModel.updateHomeAlignment(prefs.homeAlignment)
-    }
-
     private fun populateAlignment() {
         when (prefs.homeAlignment) {
             Gravity.START -> binding.alignment.text = getString(R.string.left)
             Gravity.CENTER -> binding.alignment.text = getString(R.string.center)
             Gravity.END -> binding.alignment.text = getString(R.string.right)
         }
-        binding.alignmentBottom.isChecked = prefs.homeBottomAlignment
     }
 
     // Home button for recents feature disabled
@@ -628,14 +612,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.action_settingsFragment_to_appListFragment,
             bundleOf(Constants.Key.FLAG to flag)
         )
-    }
-
-    private fun populateActionHints() {
-        if (prefs.aboutClicked.not())
-            binding.aboutOlauncher.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_info, 0)
-        if (viewModel.isOlauncherDefault.value != true) return
-        if (prefs.rateClicked.not() && prefs.toShowHintCounter > Constants.HINT_RATE_US && prefs.toShowHintCounter < Constants.HINT_RATE_US + 100)
-            binding.rate.setCompoundDrawablesWithIntrinsicBounds(0, android.R.drawable.arrow_down_float, 0, 0)
     }
 
     override fun onDestroyView() {

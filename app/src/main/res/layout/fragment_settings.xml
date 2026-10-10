@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="?attr/primaryShadeDarkColor">
+    android:background="?android:attr/colorBackground">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -31,7 +31,6 @@
             android:paddingBottom="32dp">
 
             <TextView
-                android:id="@+id/olauncherHiddenApps"
                 style="@style/TextLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,19 +92,6 @@
                         android:id="@+id/alignment"
                         style="@style/SettingsSummary"
                         android:text="@string/left" />
-                </LinearLayout>
-
-                <LinearLayout style="@style/SettingsSwitchRow">
-
-                    <TextView
-                        style="@style/SettingsTitle"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:text="@string/align_to_bottom" />
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/alignmentBottom"
-                        style="@style/SettingsSwitch" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/SettingsSwitchRow">
@@ -358,12 +344,6 @@
                 android:text="@string/about" />
 
             <LinearLayout style="@style/SettingsCard">
-
-                <TextView
-                    android:id="@+id/aboutOlauncher"
-                    style="@style/SettingsAction"
-                    android:drawablePadding="8dp"
-                    android:text="@string/about_olauncher" />
 
                 <TextView
                     android:id="@+id/appInfo"

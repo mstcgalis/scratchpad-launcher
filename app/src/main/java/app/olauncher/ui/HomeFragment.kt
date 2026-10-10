@@ -541,28 +541,13 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     @RequiresApi(Build.VERSION_CODES.Q)
     private fun populateScreenTime() {
         if (requireContext().appUsagePermissionGranted().not()) return
+        if (!prefs.screenTimeVisible) {
+            binding.tvScreenTime.visibility = View.GONE
+            return
+        }
 
         viewModel.getTodaysScreenTime()
         binding.tvScreenTime.visibility = View.VISIBLE
-
-        val isLandscape = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-        val horizontalMargin = if (isLandscape) 64.dpToPx() else 10.dpToPx()
-        val marginTop = if (isLandscape) {
-            if (prefs.dateTimeVisibility == Constants.DateTime.DATE_ONLY) 36.dpToPx() else 56.dpToPx()
-        } else {
-            if (prefs.dateTimeVisibility == Constants.DateTime.DATE_ONLY) 45.dpToPx() else 72.dpToPx()
-        }
-        val params = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            topMargin = marginTop
-            marginStart = horizontalMargin
-            marginEnd = horizontalMargin
-            gravity = if (prefs.homeAlignment == Gravity.END) Gravity.START else Gravity.END
-        }
-        binding.tvScreenTime.layoutParams = params
-        binding.tvScreenTime.setPadding(10.dpToPx())
     }
 
     private fun populateHomeScreen(appCountUpdated: Boolean) {

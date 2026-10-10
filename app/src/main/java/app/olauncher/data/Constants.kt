@@ -86,7 +86,6 @@ object Constants {
 
     const val MIN_ANIM_REFRESH_RATE = 30f
 
-    const val URL_ABOUT = "https://github.com/mstcgalis/scratchpad-launcher"
     const val URL_PRIVACY = "https://github.com/mstcgalis/scratchpad-launcher#privacy"
     const val URL_DOUBLE_TAP = "https://tanujnotes.notion.site/Double-tap-to-lock-Olauncher-0f7fb103ec1f47d7a90cdfdcd7fb86ef"
     const val URL_GITHUB = "https://github.com/mstcgalis/scratchpad-launcher"
