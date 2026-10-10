@@ -1,1 +1,1 @@
-Ein minimalistischer Launcher mit einem immer sichtbaren Notizblock. Keine Werbung.
+Minimalistischer Launcher mit immer sichtbarem Notizblock. Keine Werbung.
