@@ -10,5 +10,6 @@
     <string name="done">Done</string>
     <string name="size_offset_sp">Size · %1$+d sp</string>
     <string name="letter_spacing_em">Letter spacing · %1$+.2f em</string>
+    <string name="margin_dp">Edge margin · %1$d dp</string>
     <string name="gap_dp">Clock/date gap · %1$d dp</string>
 </resources>

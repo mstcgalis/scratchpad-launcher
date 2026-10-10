@@ -15,9 +15,9 @@
         android:text="@string/clock_appearance" />
 
     <LinearLayout
+        android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:minHeight="190dp"
         android:orientation="vertical"
         android:paddingHorizontal="24dp">
@@ -27,6 +27,7 @@
             style="@style/TextDefault"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/home_app_padding_vertical"
             android:textSize="@dimen/time_size" />
 
         <TextView
@@ -34,7 +35,8 @@
             style="@style/TextDefault"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/date_size" />
+            android:paddingBottom="@dimen/home_app_padding_vertical"
+            android:textSize="@dimen/text_large" />
     </LinearLayout>
 
     <ScrollView
@@ -117,6 +119,19 @@
                         android:layout_height="40dp" />
                 </LinearLayout>
 
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        android:id="@+id/clockMarginValue"
+                        style="@style/SettingsTitle"
+                        android:labelFor="@id/clockMargin" />
+
+                    <SeekBar
+                        android:id="@+id/clockMargin"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <TextView
@@ -180,6 +195,19 @@
 
                     <SeekBar
                         android:id="@+id/dateSpacing"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        android:id="@+id/dateMarginValue"
+                        style="@style/SettingsTitle"
+                        android:labelFor="@id/dateMargin" />
+
+                    <SeekBar
+                        android:id="@+id/dateMargin"
                         android:layout_width="match_parent"
                         android:layout_height="40dp" />
                 </LinearLayout>

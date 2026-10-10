@@ -51,6 +51,7 @@ class Prefs(context: Context) {
     private val SCRATCHPAD_ACCENT = "SCRATCHPAD_ACCENT"
     private val HOME_TEXT_COLOR = "HOME_TEXT_COLOR"
     private val SHOW_APP_ICONS = "SHOW_APP_ICONS"
+    private val SCREEN_TIME_VISIBLE = "SCREEN_TIME_VISIBLE"
     private val RECENT_APPS_COLUMN = "RECENT_APPS_COLUMN"
     private val FORMAT_TOOLBAR = "FORMAT_TOOLBAR"
     private val CLOCK_HOUR_FORMAT = "CLOCK_HOUR_FORMAT"
@@ -62,6 +63,8 @@ class Prefs(context: Context) {
     private val DATE_SIZE_OFFSET = "DATE_SIZE_OFFSET"
     private val DATE_FORMAT = "DATE_FORMAT"
     private val CLOCK_DATE_GAP = "CLOCK_DATE_GAP"
+    private val CLOCK_MARGIN = "CLOCK_MARGIN"
+    private val DATE_MARGIN = "DATE_MARGIN"
     private val DATE_LETTER_SPACING = "DATE_LETTER_SPACING"
     private val CLOCK_LETTER_SPACING = "CLOCK_LETTER_SPACING"
     private val PRO_MESSAGE_SHOWN = "PRO_MESSAGE_SHOWN"
@@ -272,6 +275,15 @@ class Prefs(context: Context) {
         get() = prefs.getInt(DATE_LETTER_SPACING, 0)
         set(value) = prefs.edit { putInt(DATE_LETTER_SPACING, value).apply() }
 
+    /** Horizontal distance (dp) of the clock / date from the screen edge, on top of the home padding. */
+    var clockMargin: Int
+        get() = prefs.getInt(CLOCK_MARGIN, 0)
+        set(value) = prefs.edit { putInt(CLOCK_MARGIN, value).apply() }
+
+    var dateMargin: Int
+        get() = prefs.getInt(DATE_MARGIN, 0)
+        set(value) = prefs.edit { putInt(DATE_MARGIN, value).apply() }
+
     var clockDateGap: Int
         get() = prefs.getInt(CLOCK_DATE_GAP, 0)
         set(value) = prefs.edit { putInt(CLOCK_DATE_GAP, value).apply() }
@@ -289,6 +301,11 @@ class Prefs(context: Context) {
     var homeTextColor: Int
         get() = prefs.getInt(HOME_TEXT_COLOR, 0)
         set(value) = prefs.edit { putInt(HOME_TEXT_COLOR, value).apply() }
+
+    /** Hides the home screen time without revoking usage access (which only the system settings can do). */
+    var screenTimeVisible: Boolean
+        get() = prefs.getBoolean(SCREEN_TIME_VISIBLE, true)
+        set(value) = prefs.edit { putBoolean(SCREEN_TIME_VISIBLE, value).apply() }
 
     var showAppIcons: Boolean
         get() = prefs.getBoolean(SHOW_APP_ICONS, false)

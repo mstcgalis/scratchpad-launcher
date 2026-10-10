@@ -2,6 +2,7 @@ package app.olauncher.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
@@ -36,6 +37,8 @@ class ClockAppearanceFragment : BaseFragment() {
         ViewCompat.requestApplyInsets(view)
         prefs = Prefs(requireContext())
         refreshers.clear()
+        // Same alignment as the home screen.
+        binding.preview.gravity = prefs.homeAlignment or Gravity.CENTER_VERTICAL
 
         binding.clockFont.bind(R.string.font, ClockAppearance.fonts, { prefs.clockFont }) { prefs.clockFont = it }
         binding.dateFont.bind(R.string.font, ClockAppearance.fonts, { prefs.dateFont }) { prefs.dateFont = it }
@@ -47,7 +50,9 @@ class ClockAppearanceFragment : BaseFragment() {
         binding.dateSize.bind({ prefs.dateSizeOffset }) { prefs.dateSizeOffset = it }
         binding.clockSpacing.bind({ prefs.clockLetterSpacing }, ClockAppearance.MIN_SPACING, ClockAppearance.MAX_SPACING) { prefs.clockLetterSpacing = it }
         binding.dateSpacing.bind({ prefs.dateLetterSpacing }, ClockAppearance.MIN_SPACING, ClockAppearance.MAX_SPACING) { prefs.dateLetterSpacing = it }
-        binding.lineGap.bind({ prefs.clockDateGap }, 0, ClockAppearance.MAX_GAP) { prefs.clockDateGap = it }
+        binding.clockMargin.bind({ prefs.clockMargin }, ClockAppearance.MIN_MARGIN, ClockAppearance.MAX_MARGIN) { prefs.clockMargin = it }
+        binding.dateMargin.bind({ prefs.dateMargin }, ClockAppearance.MIN_MARGIN, ClockAppearance.MAX_MARGIN) { prefs.dateMargin = it }
+        binding.lineGap.bind({ prefs.clockDateGap }, ClockAppearance.MIN_GAP, ClockAppearance.MAX_GAP) { prefs.clockDateGap = it }
 
         binding.reset.setOnClickListener {
             prefs.clockFont = "sans"; prefs.dateFont = "sans"
@@ -55,6 +60,7 @@ class ClockAppearanceFragment : BaseFragment() {
             prefs.clockSizeOffset = 0; prefs.dateSizeOffset = 0
             prefs.clockHourFormat = 0; prefs.dateFormat = 0
             prefs.clockLetterSpacing = 0; prefs.dateLetterSpacing = 0; prefs.clockDateGap = 0
+            prefs.clockMargin = 0; prefs.dateMargin = 0
             refresh()
         }
         refresh()
@@ -68,6 +74,8 @@ class ClockAppearanceFragment : BaseFragment() {
         binding.dateSizeValue.text = getString(R.string.size_offset_sp, prefs.dateSizeOffset)
         binding.clockSpacingValue.text = getString(R.string.letter_spacing_em, prefs.clockLetterSpacing / 100f)
         binding.dateSpacingValue.text = getString(R.string.letter_spacing_em, prefs.dateLetterSpacing / 100f)
+        binding.clockMarginValue.text = getString(R.string.margin_dp, prefs.clockMargin)
+        binding.dateMarginValue.text = getString(R.string.margin_dp, prefs.dateMargin)
         binding.lineGapValue.text = getString(R.string.gap_dp, prefs.clockDateGap)
         refreshers.forEach { it() }
     }

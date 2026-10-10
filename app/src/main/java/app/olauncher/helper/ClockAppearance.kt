@@ -5,7 +5,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.util.TypedValue
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.updatePadding
+import android.view.ViewGroup
 import app.olauncher.R
 import android.widget.TextClock
 import android.widget.TextView
@@ -34,7 +34,10 @@ object ClockAppearance {
     /** Letter spacing is stored in hundredths of an em. */
     const val MIN_SPACING = -5
     const val MAX_SPACING = 20
+    const val MIN_GAP = -16
     const val MAX_GAP = 24
+    const val MIN_MARGIN = -16
+    const val MAX_MARGIN = 64
 
     fun apply(context: Context, clock: FittingTextClock, date: TextView, prefs: Prefs) {
         clock.typeface = typeface(context, prefs.clockFont, prefs.clockWeight)
@@ -43,8 +46,21 @@ object ClockAppearance {
         date.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizePx(context, date, prefs.dateSizeOffset))
         clock.letterSpacing = prefs.clockLetterSpacing / 100f
         date.letterSpacing = prefs.dateLetterSpacing / 100f
-        date.updatePadding(top = (prefs.clockDateGap * context.resources.displayMetrics.density).roundToInt())
+        // Margins, not padding: they can go negative (tuck the date up under the clock, or past the home padding).
+        setMargins(context, clock, 0, prefs.clockMargin)
+        setMargins(context, date, prefs.clockDateGap, prefs.dateMargin)
         applyHourFormat(clock, prefs.clockHourFormat)
+    }
+
+    /** Both sides, so a centred element stays centred; only the side it's aligned to is visible. */
+    private fun setMargins(context: Context, view: TextView, topDp: Int, sideDp: Int) {
+        val density = context.resources.displayMetrics.density
+        (view.layoutParams as? ViewGroup.MarginLayoutParams)?.let {
+            it.topMargin = (topDp * density).roundToInt()
+            it.marginStart = (sideDp * density).roundToInt()
+            it.marginEnd = it.marginStart
+            view.layoutParams = it
+        }
     }
 
     fun formatDate(prefs: Prefs, now: Date = Date()): String =
