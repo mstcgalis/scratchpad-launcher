@@ -1,0 +1,5 @@
+- New: underline, strike, highlight, code and link styling in the note
+- New: per-element edge margins and a tighter clock/date gap, with a preview that matches home
+- New: recent apps column, home text colour, app icons, link colour, full backup and restore
+- Screen time sits beside the clock and can be switched off without revoking usage access
+- Settings redesigned on a neutral background; removed the About, Align to bottom and rate-hint clutter
