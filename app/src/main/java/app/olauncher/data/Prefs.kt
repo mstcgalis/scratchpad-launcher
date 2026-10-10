@@ -8,6 +8,10 @@ import androidx.core.content.edit
 
 
 /** Mid-tone link blue, readable on both the dark and light theme. */
+const val RECENTS_OFF = 0
+const val RECENTS_LEFT = 1
+const val RECENTS_RIGHT = 2
+
 const val DEFAULT_LINK_COLOR = 0xFF4A90E2.toInt()
 
 class Prefs(context: Context) {
@@ -47,6 +51,7 @@ class Prefs(context: Context) {
     private val SCRATCHPAD_ACCENT = "SCRATCHPAD_ACCENT"
     private val HOME_TEXT_COLOR = "HOME_TEXT_COLOR"
     private val SHOW_APP_ICONS = "SHOW_APP_ICONS"
+    private val RECENT_APPS_COLUMN = "RECENT_APPS_COLUMN"
     private val FORMAT_TOOLBAR = "FORMAT_TOOLBAR"
     private val CLOCK_HOUR_FORMAT = "CLOCK_HOUR_FORMAT"
     private val CLOCK_FONT = "CLOCK_FONT"
@@ -288,6 +293,11 @@ class Prefs(context: Context) {
     var showAppIcons: Boolean
         get() = prefs.getBoolean(SHOW_APP_ICONS, false)
         set(value) = prefs.edit { putBoolean(SHOW_APP_ICONS, value).apply() }
+
+    /** Which home grid column shows recently used apps: [RECENTS_OFF], [RECENTS_LEFT] or [RECENTS_RIGHT]. */
+    var recentAppsColumn: Int
+        get() = prefs.getInt(RECENT_APPS_COLUMN, RECENTS_OFF)
+        set(value) = prefs.edit { putInt(RECENT_APPS_COLUMN, value).apply() }
 
     var formatToolbar: Boolean
         get() = prefs.getBoolean(FORMAT_TOOLBAR, false)

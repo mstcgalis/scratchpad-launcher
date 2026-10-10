@@ -5,4 +5,8 @@
     <string name="app_icons">App icons</string>
     <string name="text_colour">Text colour</string>
     <string name="text_colour_preview">Your home screen</string>
+    <string name="recent_apps">Recent apps</string>
+    <string name="left_column">Left column</string>
+    <string name="right_column">Right column</string>
+    <string name="recent_apps_permission">Allow usage access to show recent apps</string>
 </resources>

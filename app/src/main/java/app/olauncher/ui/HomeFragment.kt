@@ -3,6 +3,7 @@ package app.olauncher.ui
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -44,6 +45,9 @@ import app.olauncher.R
 import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
+import app.olauncher.data.RECENTS_LEFT
+import app.olauncher.data.RECENTS_OFF
+import app.olauncher.helper.RecentApps
 import app.olauncher.databinding.FragmentHomeBinding
 import app.olauncher.helper.ClockAppearance
 import app.olauncher.helper.MarkdownAction
@@ -66,10 +70,12 @@ import app.olauncher.helper.openSearch
 import app.olauncher.helper.showToast
 import app.olauncher.listener.OnSwipeTouchListener
 import app.olauncher.listener.ViewSwipeTouchListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListener {
 
@@ -78,6 +84,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private lateinit var deviceManager: DevicePolicyManager
     private lateinit var scratchpadDebouncer: Debouncer
     private var syncPollJob: Job? = null
+    private var recentApps: List<LauncherActivityInfo> = emptyList()
+    private val recentsOn get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && prefs.recentAppsColumn != RECENTS_OFF
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -156,7 +164,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             else -> {
                 try { // Launch app
                     val appLocation = view.tag.toString().toInt()
-                    homeAppClicked(appLocation)
+                    if (recentsOn && appLocation > 4) launchRecentApp(appLocation - 5)
+                    else homeAppClicked(appLocation)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -189,6 +198,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     }
 
     override fun onLongClick(view: View): Boolean {
+        // Recent slots aren't pinnable.
+        if (recentsOn && (view.tag?.toString()?.toIntOrNull() ?: 0) > 4) return true
         when (view.id) {
             R.id.homeApp1 -> showAppList(Constants.FLAG_SET_HOME_APP_1, prefs.appName1.isNotEmpty(), true)
             R.id.homeApp2 -> showAppList(Constants.FLAG_SET_HOME_APP_2, prefs.appName2.isNotEmpty(), true)
@@ -561,7 +572,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             populateScreenTime()
 
-        val homeAppsNum = prefs.homeAppsNum
+        val homeAppsNum = if (recentsOn) prefs.homeAppsNum.coerceAtMost(4) else prefs.homeAppsNum
+        if (recentsOn) populateRecentApps()
         if (homeAppsNum == 0) return
 
         binding.homeApp1.visibility = View.VISIBLE
@@ -673,6 +685,42 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         }
         textView.text = ""
         return false
+    }
+
+    /** Slots 5–8 list recently used apps; "left column" just moves the pinned column to the right. */
+    private fun populateRecentApps() {
+        binding.homeAppsGrid?.let { grid ->
+            val pinnedColumn = binding.homeApp1.parent as View
+            val index = if (prefs.recentAppsColumn == RECENTS_LEFT) 1 else 0
+            if (grid.indexOfChild(pinnedColumn) != index) {
+                grid.removeView(pinnedColumn)
+                grid.addView(pinnedColumn, index)
+            }
+        }
+        val slots = listOf(binding.homeApp5, binding.homeApp6, binding.homeApp7, binding.homeApp8)
+        val exclude = (1..prefs.homeAppsNum.coerceAtMost(4)).map { prefs.getAppPackage(it) }.toSet() +
+            prefs.hiddenApps.map { it.substringBefore('|') }
+        val context = requireContext().applicationContext
+        val showIcons = prefs.showAppIcons
+        viewLifecycleOwner.lifecycleScope.launch {
+            val apps = withContext(Dispatchers.IO) {
+                runCatching { RecentApps.query(context, exclude, slots.size) }.getOrDefault(emptyList())
+                    .map { it to if (showIcons) it.getBadgedIcon(0) else null }
+            }
+            recentApps = apps.map { it.first }
+            slots.forEachIndexed { i, slot ->
+                val (app, icon) = apps.getOrNull(i) ?: (null to null)
+                slot.isVisible = app != null
+                slot.text = app?.label
+                slot.alpha = RECENT_APP_ALPHA
+                setHomeAppIcon(slot, icon)
+            }
+        }
+    }
+
+    private fun launchRecentApp(index: Int) {
+        val app = recentApps.getOrNull(index) ?: return
+        launchApp(app.label.toString(), app.componentName.packageName, app.componentName.className, app.user.toString())
     }
 
     /** Launcher icon before the label, sized to the text; null clears it. */
@@ -988,3 +1036,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         _binding = null
     }
 }
+
+/** Recents read as a quieter column next to the pinned apps. */
+private const val RECENT_APP_ALPHA = 0.6f

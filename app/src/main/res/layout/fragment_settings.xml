@@ -122,6 +122,20 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/recentAppsLayout"
+                    style="@style/SettingsRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:text="@string/recent_apps" />
+
+                    <TextView
+                        android:id="@+id/recentApps"
+                        style="@style/SettingsSummary"
+                        android:text="@string/off" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/screenTimeLayout"
                     style="@style/SettingsSwitchRow">
 

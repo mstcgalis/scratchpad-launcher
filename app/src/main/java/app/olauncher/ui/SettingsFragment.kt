@@ -26,6 +26,9 @@ import app.olauncher.R
 import app.olauncher.data.Constants
 import app.olauncher.data.DEFAULT_LINK_COLOR
 import app.olauncher.data.Prefs
+import app.olauncher.data.RECENTS_LEFT
+import app.olauncher.data.RECENTS_OFF
+import app.olauncher.data.RECENTS_RIGHT
 import app.olauncher.databinding.FragmentSettingsBinding
 import app.olauncher.helper.Backup
 import app.olauncher.helper.appUsagePermissionGranted
@@ -72,6 +75,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateScratchpadOptions()
         populateTextColour()
         binding.appIcons.isChecked = prefs.showAppIcons
+        populateRecentApps()
         populateScreenTimeOnOff()
         populateLockSettings()
         // Home button for recents feature disabled
@@ -177,6 +181,18 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 ) {
                     prefs.homeTextColor = it
                     populateTextColour()
+                }
+            }
+            R.id.recentApps -> pick(
+                R.string.recent_apps,
+                listOf(getString(R.string.off) to RECENTS_OFF, getString(R.string.left_column) to RECENTS_LEFT, getString(R.string.right_column) to RECENTS_RIGHT),
+                prefs.recentAppsColumn,
+            ) {
+                prefs.recentAppsColumn = it
+                populateRecentApps()
+                if (it != RECENTS_OFF && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !requireContext().appUsagePermissionGranted()) {
+                    requireContext().showToast(getString(R.string.recent_apps_permission), Toast.LENGTH_LONG)
+                    startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
                 }
             }
             R.id.appIcons -> {
@@ -290,6 +306,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.toggleLock, binding.homeAppsNum, binding.screenTimeOnOff, binding.alignment, binding.statusBar,
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.alignmentBottom, binding.textColour, binding.appIcons,
+            binding.recentApps,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -507,6 +524,18 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.scratchpadAccent.text = String.format("#%06X", prefs.scratchpadAccent and 0xFFFFFF)
         binding.scratchpadAccent.setTextColor(prefs.scratchpadAccent)
         binding.formatToolbarToggle.isChecked = prefs.formatToolbar
+    }
+
+    private fun populateRecentApps() {
+        // Usage access check needs API 29, same as screen time.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) binding.recentAppsLayout.visibility = View.GONE
+        binding.recentApps.setText(
+            when (prefs.recentAppsColumn) {
+                RECENTS_LEFT -> R.string.left_column
+                RECENTS_RIGHT -> R.string.right_column
+                else -> R.string.off
+            }
+        )
     }
 
     private fun populateTextColour() {
