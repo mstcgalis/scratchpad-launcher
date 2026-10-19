@@ -15,6 +15,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
+import android.view.GestureDetector
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.util.TypedValue
@@ -80,6 +81,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.abs
 
 class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListener {
 
@@ -400,10 +402,33 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.scratchpad.let { pad ->
             // A drag that scrolled the note while editing is the user's own scroll: keep it on leaving
             var scrollOnDown = 0
+            // The note covers the top half, so home gestures also work on it while it's not being edited:
+            // sideways always, up/down once the note can't scroll further that way.
+            var flung = false
+            val noteGestures = GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                    val dx = e2.x - (e1?.x ?: e2.x)
+                    val dy = e2.y - (e1?.y ?: e2.y)
+                    flung = true
+                    when {
+                        abs(dx) > abs(dy) && abs(dx) > SWIPE_MIN_PX -> if (dx < 0) noteSwipe(left = true) else noteSwipe(left = false)
+                        dy < -SWIPE_MIN_PX && !pad.canScrollVertically(1) -> showAppList(Constants.FLAG_LAUNCH_APP)
+                        dy > SWIPE_MIN_PX && !pad.canScrollVertically(-1) -> swipeDownAction()
+                        else -> flung = false
+                    }
+                    return flung
+                }
+            })
             pad.setOnTouchListener { _, event ->
                 when (event.actionMasked) {
-                    MotionEvent.ACTION_DOWN -> scrollOnDown = pad.scrollY
+                    MotionEvent.ACTION_DOWN -> { scrollOnDown = pad.scrollY; flung = false }
                     MotionEvent.ACTION_UP -> if (pad.isFocused && pad.scrollY != scrollOnDown) scrolledWhileEditing = true
+                }
+                if (!pad.isFocused) noteGestures.onTouchEvent(event)
+                // A swipe that did something must not also focus the note (and raise the keyboard).
+                if (flung && event.actionMasked == MotionEvent.ACTION_UP) {
+                    pad.onTouchEvent(MotionEvent.obtain(event).apply { action = MotionEvent.ACTION_CANCEL })
+                    return@setOnTouchListener true
                 }
                 false
             }
@@ -552,6 +577,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         slots.forEach { it.gravity = horizontalGravity }
     }
 
+    /** Sideways swipe on the note: same as on the rest of home. */
+    private fun noteSwipe(left: Boolean) {
+        if (left) openSwipeLeftApp() else openSwipeRightApp()
+    }
 
     private fun populateDateTime() {
         binding.dateTimeLayout.isVisible = prefs.dateTimeVisibility != Constants.DateTime.OFF
@@ -989,6 +1018,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         _binding = null
     }
 }
+
+/** Matches OnSwipeTouchListener's distance threshold. */
+private const val SWIPE_MIN_PX = 100
 
 /** Recents read as a quieter column next to the pinned apps. */
 private const val RECENT_APP_ALPHA = 0.6f
