@@ -141,5 +141,8 @@
     <string name="notification_bar">Notification bar</string>
     <string name="private_space">Private space</string>
     <!-- Experimental (jade-feedback spike): English only until kept -->
+    <string tools:ignore="MissingTranslation" name="experimental">Experimental</string>
+    <string tools:ignore="MissingTranslation" name="app_spacing">App spacing</string>
+    <string tools:ignore="MissingTranslation" name="app_text_size">App text size</string>
     <string tools:ignore="MissingTranslation" name="restricted_settings_hint">If the switch is greyed out (Android 13+): open App info → ⋮ → Allow restricted settings, then try again.</string>
 </resources>

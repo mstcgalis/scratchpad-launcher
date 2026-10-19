@@ -54,6 +54,7 @@ import app.olauncher.data.RECENTS_OFF
 import app.olauncher.helper.RecentApps
 import app.olauncher.databinding.FragmentHomeBinding
 import app.olauncher.helper.ClockAppearance
+import app.olauncher.helper.applyAppLabelStyle
 import app.olauncher.helper.MarkdownAction
 import app.olauncher.helper.MarkdownFormatter
 import app.olauncher.helper.hideKeyboard
@@ -620,6 +621,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
         val homeAppsNum = if (recentsOn) prefs.homeAppsNum.coerceAtMost(4) else prefs.homeAppsNum
         if (recentsOn) populateRecentApps()
+        slots.forEach { it.applyAppLabelStyle(prefs, R.dimen.home_app_padding_vertical) }
         if (homeAppsNum == 0) return
 
         slots.take(homeAppsNum).forEachIndexed { i, view ->

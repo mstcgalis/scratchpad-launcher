@@ -288,6 +288,18 @@ class Prefs(context: Context) {
         get() = prefs.getFloat(SCRATCHPAD_LINE_SPACING, 1.3f)
         set(value) = prefs.edit { putFloat(SCRATCHPAD_LINE_SPACING, value).apply() }
 
+    // Experimental (Settings > Experimental)
+
+    /** Vertical padding multiplier of app labels, home and drawer. */
+    var appSpacing: Float
+        get() = prefs.getFloat("APP_SPACING", 1.0f)
+        set(value) = prefs.edit { putFloat("APP_SPACING", value) }
+
+    /** App label size multiplier, home and drawer, on top of the launcher text size. */
+    var appTextScale: Float
+        get() = prefs.getFloat("APP_TEXT_SCALE", 1.0f)
+        set(value) = prefs.edit { putFloat("APP_TEXT_SCALE", value) }
+
     var proMessageShown: Boolean
         get() = prefs.getBoolean(PRO_MESSAGE_SHOWN, false)
         set(value) = prefs.edit { putBoolean(PRO_MESSAGE_SHOWN, value).apply() }

@@ -180,3 +180,10 @@ fun TextView.setLeadingIcon(icon: Drawable?) {
     setCompoundDrawablesRelative(icon?.mutate()?.apply { setBounds(0, 0, size, size) }, null, null, null)
     compoundDrawablePadding = (textSize * 0.5f).toInt()
 }
+
+/** App label size and spacing from the experimental settings (base: TextLarge and the layout's own padding). */
+fun TextView.applyAppLabelStyle(prefs: app.olauncher.data.Prefs, basePadding: Int) {
+    setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, resources.getDimension(R.dimen.text_large) * prefs.appTextScale)
+    val padding = (resources.getDimension(basePadding) * prefs.appSpacing).toInt()
+    setPadding(paddingLeft, padding, paddingRight, padding)
+}

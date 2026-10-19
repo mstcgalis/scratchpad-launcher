@@ -87,6 +87,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         populateAppThemeText()
         populateTextSize()
         populateScratchpadSize()
+        populateExperimental()
         populateAlignment()
         populateStatusBar()
         populateDateTime()
@@ -252,6 +253,9 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
             R.id.tvGestures -> binding.flSwipeDown.visibility = View.VISIBLE
 
+            R.id.appSpacingValue -> pick(R.string.app_spacing, scales(2.0f), prefs.appSpacing) { prefs.appSpacing = it; populateExperimental() }
+            R.id.appTextScaleValue -> pick(R.string.app_text_size, bigScales(), prefs.appTextScale) { prefs.appTextScale = it; populateExperimental() }
+
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
             R.id.swipeDownAction -> pick(
@@ -313,7 +317,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.toggleLock, binding.homeAppsNum, binding.screenTimeOnOff, binding.alignment, binding.statusBar,
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
-            binding.recentApps,
+            binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -536,6 +540,14 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
     /** 0.5 up to [max] in 0.1 steps, labelled like the row summary. */
     private fun scales(max: Float) = (5..Math.round(max * 10)).map { String.format("%.1f", it / 10f) to it / 10f }
+
+    /** [scales] to 2.0, then coarse steps up to 5× for low-vision use. */
+    private fun bigScales() = scales(2.0f) + listOf(2.5f, 3f, 4f, 5f).map { String.format("%.1f", it) to it }
+
+    private fun populateExperimental() {
+        binding.appSpacingValue.text = String.format("%.1f", prefs.appSpacing)
+        binding.appTextScaleValue.text = String.format("%.1f", prefs.appTextScale)
+    }
 
     private fun toggleKeyboardText() {
         if (prefs.autoShowKeyboard && prefs.keyboardMessageShown.not()) {

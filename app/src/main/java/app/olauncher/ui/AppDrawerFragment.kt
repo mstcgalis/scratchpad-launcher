@@ -227,6 +227,7 @@ class AppDrawerFragment : BaseFragment() {
                 prefs.setAppRenameLabel(identifier, renameLabel)
                 viewModel.getAppList()
             },
+            prefs = prefs,
             privateSpaceToggleListener = {
                 viewModel.togglePrivateSpaceLock()
             },
