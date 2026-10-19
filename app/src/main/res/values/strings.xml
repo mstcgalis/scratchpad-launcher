@@ -144,5 +144,6 @@
     <string tools:ignore="MissingTranslation" name="experimental">Experimental</string>
     <string tools:ignore="MissingTranslation" name="app_spacing">App spacing</string>
     <string tools:ignore="MissingTranslation" name="app_text_size">App text size</string>
+    <string tools:ignore="MissingTranslation" name="home_bottom_margin">Space below home apps</string>
     <string tools:ignore="MissingTranslation" name="restricted_settings_hint">If the switch is greyed out (Android 13+): open App info → ⋮ → Allow restricted settings, then try again.</string>
 </resources>

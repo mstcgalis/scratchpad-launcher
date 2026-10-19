@@ -115,6 +115,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
         scratchpadDebouncer = Debouncer(viewLifecycleOwner.lifecycleScope, 300L)
         applyLandscape()
+        binding.homeAppsLayout.updatePadding(bottom = prefs.homeBottomMargin.dpToPx())
         initScratchpad()
         initObservers()
         setHomeAlignment(prefs.homeAlignment)

@@ -300,6 +300,11 @@ class Prefs(context: Context) {
         get() = prefs.getFloat("APP_TEXT_SCALE", 1.0f)
         set(value) = prefs.edit { putFloat("APP_TEXT_SCALE", value) }
 
+    /** Gap (dp) under the home app grid. */
+    var homeBottomMargin: Int
+        get() = prefs.getInt("HOME_BOTTOM_MARGIN", 56)
+        set(value) = prefs.edit { putInt("HOME_BOTTOM_MARGIN", value) }
+
     var proMessageShown: Boolean
         get() = prefs.getBoolean(PRO_MESSAGE_SHOWN, false)
         set(value) = prefs.edit { putBoolean(PRO_MESSAGE_SHOWN, value).apply() }

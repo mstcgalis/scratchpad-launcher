@@ -390,6 +390,17 @@
                         android:id="@+id/appTextScaleValue"
                         style="@style/SettingsSummary" />
                 </LinearLayout>
+
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:text="@string/home_bottom_margin" />
+
+                    <TextView
+                        android:id="@+id/homeBottomMarginValue"
+                        style="@style/SettingsSummary" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView
