@@ -95,6 +95,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private var recentApps: List<LauncherActivityInfo> = emptyList()
     private val recentsOn get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && prefs.recentAppsColumn != RECENTS_OFF
     private val slots get() = with(binding) { listOf(homeApp1, homeApp2, homeApp3, homeApp4, homeApp5, homeApp6, homeApp7, homeApp8) }
+    /** Slot 1-8 on screen -> stored home slot, offset by the home page. */
+    private fun location(slot: Int) = slot + prefs.homePage * 8
     private var notePage = 0
 
     private var _binding: FragmentHomeBinding? = null
@@ -219,7 +221,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                 try { // Launch app
                     val appLocation = view.tag.toString().toInt()
                     if (recentsOn && appLocation > 4) launchRecentApp(appLocation - 5)
-                    else homeAppClicked(appLocation)
+                    else homeAppClicked(location(appLocation))
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -257,7 +259,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         when (view.id) {
             R.id.homeApp1, R.id.homeApp2, R.id.homeApp3, R.id.homeApp4, R.id.homeApp5, R.id.homeApp6, R.id.homeApp7, R.id.homeApp8 -> {
                 val slot = view.tag.toString().toInt()
-                showAppList(slot, prefs.getAppName(slot).isNotEmpty(), true)
+                showAppList(slot, prefs.getAppName(location(slot)).isNotEmpty(), true)
             }
             R.id.clock -> {
                 showAppList(Constants.FLAG_SET_CLOCK_APP)
@@ -580,6 +582,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.homeAppsLayout.gravity = horizontalGravity
         binding.homeAppsGridContainer.gravity = horizontalGravity or verticalGravity
         binding.dateTimeLayout.gravity = horizontalGravity
+        binding.homePageDots.gravity = horizontalGravity
         slots.forEach { it.gravity = horizontalGravity }
     }
 
@@ -587,6 +590,14 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private fun noteSwipe(left: Boolean) {
         if (prefs.scratchpadPages > 1) showNotePage((notePage + if (left) 1 else -1).mod(prefs.scratchpadPages))
         else if (left) openSwipeLeftApp() else openSwipeRightApp()
+    }
+
+    /** Sideways swipe on the bottom half: flips home pages when there are several, else opens the swipe apps. */
+    private fun homeSwipe(left: Boolean) {
+        if (prefs.homePages > 1) {
+            prefs.homePage = (prefs.homePage + if (left) 1 else -1).mod(prefs.homePages)
+            populateHomeScreen(true)
+        } else if (left) openSwipeLeftApp() else openSwipeRightApp()
     }
 
     private fun showNotePage(page: Int) {
@@ -603,6 +614,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         fun dots(count: Int, current: Int) = (0 until count).joinToString(" ") { if (it == current) "●" else "○" }
         binding.notePageDots.isVisible = prefs.scratchpadPages > 1
         binding.notePageDots.text = dots(prefs.scratchpadPages, notePage)
+        binding.homePageDots.isVisible = prefs.homePages > 1
+        binding.homePageDots.text = dots(prefs.homePages, prefs.homePage)
     }
 
     private fun populateDateTime() {
@@ -648,7 +661,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         if (homeAppsNum == 0) return
 
         slots.take(homeAppsNum).forEachIndexed { i, view ->
-            val location = i + 1
+            val location = location(i + 1)
             view.visibility = View.VISIBLE
             if (!setHomeAppText(view, prefs.getAppName(location), prefs.getAppPackage(location), prefs.getAppUser(location), prefs.getIsShortcut(location), prefs.getShortcutId(location)))
                 prefs.clearHomeApp(location)
@@ -721,7 +734,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             }
         }
         val slots = listOf(binding.homeApp5, binding.homeApp6, binding.homeApp7, binding.homeApp8)
-        val exclude = (1..prefs.homeAppsNum.coerceAtMost(4)).map { prefs.getAppPackage(it) }.toSet() +
+        val exclude = (1..prefs.homeAppsNum.coerceAtMost(4)).map { prefs.getAppPackage(location(it)) }.toSet() +
             prefs.hiddenApps.map { it.substringBefore('|') }
         val context = requireContext().applicationContext
         val showIcons = prefs.showAppIcons
@@ -950,12 +963,12 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         return object : OnSwipeTouchListener(context) {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                openSwipeLeftApp()
+                homeSwipe(left = true)
             }
 
             override fun onSwipeRight() {
                 super.onSwipeRight()
-                openSwipeRightApp()
+                homeSwipe(left = false)
             }
 
             override fun onSwipeUp() {
@@ -998,12 +1011,12 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         return object : ViewSwipeTouchListener(context, view) {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                openSwipeLeftApp()
+                homeSwipe(left = true)
             }
 
             override fun onSwipeRight() {
                 super.onSwipeRight()
-                openSwipeRightApp()
+                homeSwipe(left = false)
             }
 
             override fun onSwipeUp() {

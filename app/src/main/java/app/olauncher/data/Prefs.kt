@@ -330,6 +330,14 @@ class Prefs(context: Context) {
     fun setScratchpadPage(page: Int, text: String) =
         if (page == 0) scratchpadText = text else scratchpadPrefs.edit { putString("SCRATCHPAD_TEXT_$page", text) }
 
+    var homePages: Int
+        get() = prefs.getInt("HOME_PAGES", 1)
+        set(value) = prefs.edit { putInt("HOME_PAGES", value) }
+
+    var homePage: Int
+        get() = prefs.getInt("HOME_PAGE", 0).coerceIn(0, homePages - 1)
+        set(value) = prefs.edit { putInt("HOME_PAGE", value) }
+
     var proMessageShown: Boolean
         get() = prefs.getBoolean(PRO_MESSAGE_SHOWN, false)
         set(value) = prefs.edit { putBoolean(PRO_MESSAGE_SHOWN, value).apply() }
@@ -467,7 +475,7 @@ class Prefs(context: Context) {
         get() = prefs.getBoolean(IS_SHORTCUT_SWIPE_RIGHT, false)
         set(value) = prefs.edit { putBoolean(IS_SHORTCUT_SWIPE_RIGHT, value) }
 
-    // Home slots 1-8
+    // Home slots: 1-8 on the first home page, 9-16 on the second, ... (keys unchanged for the first page)
     fun getAppName(location: Int): String = prefs.getString("APP_NAME_$location", "").toString()
     fun getAppPackage(location: Int): String = prefs.getString("APP_PACKAGE_$location", "").toString()
     fun getAppActivityClassName(location: Int): String = prefs.getString("APP_ACTIVITY_CLASS_NAME_$location", "").toString()
@@ -490,7 +498,7 @@ class Prefs(context: Context) {
     fun clearHomeApp(location: Int) = prefs.edit { putString("APP_NAME_$location", ""); putString("APP_PACKAGE_$location", "") }
 
     fun updateAppActivityClassName(packageName: String, activityClassName: String) {
-        for (i in 1..8) {
+        for (i in 1..8 * homePages) {
             if (getAppPackage(i) == packageName) setAppActivityClassName(i, activityClassName)
         }
         if (clockAppPackage == packageName) clockAppClassName = activityClassName

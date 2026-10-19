@@ -260,6 +260,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             }
             R.id.drawerCategories -> { prefs.drawerCategories = !prefs.drawerCategories; populateExperimental() }
             R.id.notePagesValue -> pick(R.string.note_pages, (1..5).map { "$it" to it }, prefs.scratchpadPages) { prefs.scratchpadPages = it; populateExperimental() }
+            R.id.homePagesValue -> pick(R.string.home_pages, (1..3).map { "$it" to it }, prefs.homePages) { prefs.homePages = it; populateExperimental() }
 
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
@@ -323,7 +324,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
             binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue, binding.homeBottomMarginValue,
-            binding.drawerCategories, binding.notePagesValue,
+            binding.drawerCategories, binding.notePagesValue, binding.homePagesValue,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -556,6 +557,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.homeBottomMarginValue.text = "${prefs.homeBottomMargin} dp"
         binding.drawerCategories.isChecked = prefs.drawerCategories
         binding.notePagesValue.text = "${prefs.scratchpadPages}"
+        binding.homePagesValue.text = "${prefs.homePages}"
     }
 
     private fun toggleKeyboardText() {

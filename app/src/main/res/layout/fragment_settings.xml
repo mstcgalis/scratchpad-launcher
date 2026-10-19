@@ -425,6 +425,17 @@
                         android:id="@+id/notePagesValue"
                         style="@style/SettingsSummary" />
                 </LinearLayout>
+
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:text="@string/home_pages" />
+
+                    <TextView
+                        android:id="@+id/homePagesValue"
+                        style="@style/SettingsSummary" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView

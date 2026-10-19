@@ -109,7 +109,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun saveHomeApp(appModel: AppModel, position: Int) {
-        val location = position
+        val location = position + prefs.homePage * 8
         when (appModel) {
             is AppModel.PrivateSpaceHeader -> return
             is AppModel.App -> prefs.setHomeApp(location, appModel.appLabel, appModel.appPackage, appModel.user.toString(), appModel.activityClassName, null)

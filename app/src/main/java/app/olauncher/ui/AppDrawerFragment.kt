@@ -349,7 +349,7 @@ class AppDrawerFragment : BaseFragment() {
             }
 
             if (flag in Constants.FLAG_SET_HOME_APP_1..Constants.FLAG_SET_HOME_APP_8)
-                prefs.setAppName(flag - Constants.FLAG_SET_HOME_APP_1 + 1, name)
+                prefs.setAppName(flag - Constants.FLAG_SET_HOME_APP_1 + 1 + prefs.homePage * 8, name)
             findNavController().popBackStack()
         }
     }

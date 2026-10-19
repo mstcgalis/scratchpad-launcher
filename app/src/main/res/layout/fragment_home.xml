@@ -294,6 +294,17 @@
 
             </LinearLayout>
 
+            <!-- Experimental home pages: swipe sideways on the apps -->
+            <TextView
+                android:id="@+id/homePageDots"
+                style="@style/TextSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.6"
+                android:visibility="gone"
+                tools:text="● ○"
+                tools:visibility="visible" />
+
         </LinearLayout>
 
         <TextView
