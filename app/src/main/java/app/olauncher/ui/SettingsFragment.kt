@@ -431,7 +431,11 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         val enabled = isAccessServiceEnabled(requireContext())
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.gestures)
-            .setMessage(R.string.accessibility_disclosure)
+            .setMessage(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                    getString(R.string.accessibility_disclosure) + "\n\n" + getString(R.string.restricted_settings_hint)
+                else getString(R.string.accessibility_disclosure)
+            )
             .setNegativeButton(R.string.close, null)
             .setNeutralButton(R.string.not_working) { _, _ -> requireContext().openUrl(Constants.URL_DOUBLE_TAP) }
             .setPositiveButton(if (enabled) R.string.disable else R.string.enable) { _, _ ->

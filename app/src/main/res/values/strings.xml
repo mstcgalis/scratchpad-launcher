@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Scratchpad Launcher</string>
     <string name="github" translatable="false">Github</string>
     <string name="lock_layout_description" translatable="false">lock layout description to be used a unique id to lock screen</string>
@@ -140,4 +140,6 @@
     <string name="cheers">Cheers!</string>
     <string name="notification_bar">Notification bar</string>
     <string name="private_space">Private space</string>
+    <!-- Experimental (jade-feedback spike): English only until kept -->
+    <string tools:ignore="MissingTranslation" name="restricted_settings_hint">If the switch is greyed out (Android 13+): open App info → ⋮ → Allow restricted settings, then try again.</string>
 </resources>
