@@ -230,6 +230,11 @@ class AppDrawerFragment : BaseFragment() {
                 prefs.setAppRenameLabel(identifier, renameLabel)
                 viewModel.getAppList()
             },
+            appSinkListener = { appModel ->
+                val key = appModel.sinkKey
+                prefs.sunkApps = prefs.sunkApps.let { if (key in it) it - key else it + key }
+                viewModel.getAppList()
+            },
             prefs = prefs,
             privateSpaceToggleListener = {
                 viewModel.togglePrivateSpaceLock()

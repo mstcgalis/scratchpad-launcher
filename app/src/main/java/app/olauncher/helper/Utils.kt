@@ -110,6 +110,8 @@ suspend fun getAppsList(
             }
 
             appList.sortWith(compareBy(collator) { it.appLabel })
+            val sunk = prefs.sunkApps
+            appList.sortBy { it.sinkKey in sunk } // stable: sunk apps keep their order, at the end
         } catch (e: Exception) {
             e.printStackTrace()
         }

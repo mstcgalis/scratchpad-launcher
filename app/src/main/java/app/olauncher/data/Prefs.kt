@@ -310,6 +310,11 @@ class Prefs(context: Context) {
         get() = prefs.getBoolean("DRAWER_CATEGORIES", false)
         set(value) = prefs.edit { putBoolean("DRAWER_CATEGORIES", value) }
 
+    /** Drawer entries ("package|user", or a shortcut id) listed after everything else. */
+    var sunkApps: Set<String>
+        get() = prefs.getStringSet("SUNK_APPS", emptySet()).orEmpty()
+        set(value) = prefs.edit { putStringSet("SUNK_APPS", value) }
+
     var proMessageShown: Boolean
         get() = prefs.getBoolean(PRO_MESSAGE_SHOWN, false)
         set(value) = prefs.edit { putBoolean(PRO_MESSAGE_SHOWN, value).apply() }

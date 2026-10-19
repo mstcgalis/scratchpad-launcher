@@ -86,6 +86,22 @@
             app:drawableTopCompat="@drawable/ic_hide" />
 
         <TextView
+            android:id="@+id/appSink"
+            style="@style/TextSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="2dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingHorizontal="8dp"
+            android:text="@string/sink"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:drawableTopCompat="@drawable/ic_sink" />
+
+        <TextView
             android:id="@+id/appInfo"
             style="@style/TextSmall"
             android:layout_width="0dp"

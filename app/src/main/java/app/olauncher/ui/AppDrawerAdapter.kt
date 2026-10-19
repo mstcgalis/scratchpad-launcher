@@ -37,6 +37,7 @@ class AppDrawerAdapter(
     private val appDeleteListener: (AppModel) -> Unit,
     private val appHideListener: (AppModel, Int) -> Unit,
     private val appRenameListener: (AppModel, String) -> Unit,
+    private val appSinkListener: (AppModel) -> Unit,
     private val prefs: app.olauncher.data.Prefs,
     private val privateSpaceToggleListener: () -> Unit = {},
     private val privateSpaceSettingsListener: () -> Unit = {},
@@ -131,6 +132,7 @@ class AppDrawerAdapter(
                     appInfoListener,
                     appHideListener,
                     appRenameListener,
+                    appSinkListener,
                     prefs,
                 )
             }
@@ -257,6 +259,7 @@ class AppDrawerAdapter(
             appInfoListener: (AppModel) -> Unit,
             appHideListener: (AppModel, Int) -> Unit,
             appRenameListener: (AppModel, String) -> Unit,
+            appSinkListener: (AppModel) -> Unit,
             prefs: app.olauncher.data.Prefs,
         ) = with(binding) {
             appTitle.applyAppLabelStyle(prefs, R.dimen.app_padding_vertical)
@@ -295,6 +298,8 @@ class AppDrawerAdapter(
                     appHideLayout.visibility = View.VISIBLE
                     // Only allow renaming non hidden apps
                     appRename.isVisible = flag != Constants.FLAG_HIDDEN_APPS
+                    appSink.isVisible = flag == Constants.FLAG_LAUNCH_APP
+                    appSink.setText(if (appModel.sinkKey in prefs.sunkApps) R.string.raise else R.string.sink)
                 }
                 true
             }
@@ -367,6 +372,7 @@ class AppDrawerAdapter(
                 appTitle.visibility = View.VISIBLE
             }
             appHide.setOnClickListener { appHideListener(appModel, bindingAdapterPosition) }
+            appSink.setOnClickListener { appSinkListener(appModel) }
         }
 
         private fun getAppName(context: Context, appPackage: String, user: UserHandle): String {

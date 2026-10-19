@@ -38,6 +38,9 @@ sealed class AppModel : Comparable<AppModel> {
         override val isNew: Boolean = false
     }
 
+    /** Identifies the entry in [Prefs.sunkApps]. */
+    val sinkKey: String get() = if (this is PinnedShortcut) shortcutId else "$appPackage|$user"
+
     override fun compareTo(other: AppModel): Int = when {
         key != null && other.key != null -> key!!.compareTo(other.key)
         else -> appLabel.compareTo(other.appLabel, true)
