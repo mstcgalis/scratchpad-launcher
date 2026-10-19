@@ -414,6 +414,17 @@
                         android:id="@+id/drawerCategories"
                         style="@style/SettingsSwitch" />
                 </LinearLayout>
+
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:text="@string/note_pages" />
+
+                    <TextView
+                        android:id="@+id/notePagesValue"
+                        style="@style/SettingsSummary" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView

@@ -95,6 +95,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private var recentApps: List<LauncherActivityInfo> = emptyList()
     private val recentsOn get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && prefs.recentAppsColumn != RECENTS_OFF
     private val slots get() = with(binding) { listOf(homeApp1, homeApp2, homeApp3, homeApp4, homeApp5, homeApp6, homeApp7, homeApp8) }
+    private var notePage = 0
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -184,7 +185,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         super.onResume()
         populateHomeScreen(false)
         viewModel.isOlauncherDefault()
-        ScratchpadSync.readIfChanged(requireContext(), prefs)?.let {
+        if (notePage == 0) ScratchpadSync.readIfChanged(requireContext(), prefs)?.let {
             prefs.scratchpadText = it
             binding.scratchpad.setText(it)
         }
@@ -195,7 +196,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         syncPollJob = viewLifecycleOwner.lifecycleScope.launch {
             while (isActive) {
                 delay(3000)
-                if (binding.scratchpad.isFocused) continue
+                if (binding.scratchpad.isFocused || notePage != 0) continue
                 ScratchpadSync.readIfChanged(requireContext(), prefs)?.let {
                     prefs.scratchpadText = it
                     binding.scratchpad.setText(it)
@@ -358,7 +359,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                 applyScratchpadTypography(prefs.scratchpadTextScale)
             } else applyScratchpadTypography(target)
         }
-        binding.scratchpad.setText(prefs.scratchpadText)
+        notePage = prefs.scratchpadPage
+        binding.scratchpad.setText(prefs.getScratchpadPage(notePage))
+        updatePageDots()
         binding.scratchpad.text?.let { styleScratchpadMarkdown(it) }
         var typedNewline = -1
         binding.scratchpad.addTextChangedListener(
@@ -377,7 +380,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                     }
                 }
                 val text = editable?.toString().orEmpty()
-                scratchpadDebouncer.submit { prefs.scratchpadText = text }
+                val page = notePage
+                scratchpadDebouncer.submit { prefs.setScratchpadPage(page, text) }
                 editable?.let { styleScratchpadMarkdown(it) }
             },
         )
@@ -579,9 +583,26 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         slots.forEach { it.gravity = horizontalGravity }
     }
 
-    /** Sideways swipe on the note: same as on the rest of home. */
+    /** Sideways swipe on the note: flips note pages when there are several, else opens the swipe apps. */
     private fun noteSwipe(left: Boolean) {
-        if (left) openSwipeLeftApp() else openSwipeRightApp()
+        if (prefs.scratchpadPages > 1) showNotePage((notePage + if (left) 1 else -1).mod(prefs.scratchpadPages))
+        else if (left) openSwipeLeftApp() else openSwipeRightApp()
+    }
+
+    private fun showNotePage(page: Int) {
+        scratchpadDebouncer.cancel()
+        prefs.setScratchpadPage(notePage, binding.scratchpad.text.toString())
+        notePage = page
+        prefs.scratchpadPage = page
+        binding.scratchpad.setText(prefs.getScratchpadPage(page))
+        binding.scratchpad.scrollTo(0, 0)
+        updatePageDots()
+    }
+
+    private fun updatePageDots() {
+        fun dots(count: Int, current: Int) = (0 until count).joinToString(" ") { if (it == current) "●" else "○" }
+        binding.notePageDots.isVisible = prefs.scratchpadPages > 1
+        binding.notePageDots.text = dots(prefs.scratchpadPages, notePage)
     }
 
     private fun populateDateTime() {
@@ -623,6 +644,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         val homeAppsNum = if (recentsOn) prefs.homeAppsNum.coerceAtMost(4) else prefs.homeAppsNum
         if (recentsOn) populateRecentApps()
         slots.forEach { it.applyAppLabelStyle(prefs, R.dimen.home_app_padding_vertical) }
+        updatePageDots()
         if (homeAppsNum == 0) return
 
         slots.take(homeAppsNum).forEachIndexed { i, view ->

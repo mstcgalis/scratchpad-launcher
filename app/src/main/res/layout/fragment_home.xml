@@ -49,6 +49,19 @@
             android:textColor="?attr/primaryColor"
             android:textColorHint="?attr/primaryColorTrans50" />
 
+        <!-- Experimental note pages: swipe sideways on the note -->
+        <TextView
+            android:id="@+id/notePageDots"
+            style="@style/TextSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="24dp"
+            android:alpha="0.6"
+            android:visibility="gone"
+            tools:text="● ○ ○"
+            tools:visibility="visible" />
+
     </FrameLayout>
 
     <!-- Bottom half: clock/date, screen time, app list. Sized to its own content

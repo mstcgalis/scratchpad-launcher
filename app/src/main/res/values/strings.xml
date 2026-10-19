@@ -146,6 +146,7 @@
     <string tools:ignore="MissingTranslation" name="app_text_size">App text size</string>
     <string tools:ignore="MissingTranslation" name="home_bottom_margin">Space below home apps</string>
     <string tools:ignore="MissingTranslation" name="emoji_categories">Emoji categories in drawer</string>
+    <string tools:ignore="MissingTranslation" name="note_pages">Note pages</string>
     <string tools:ignore="MissingTranslation" name="sink">Sink</string>
     <string tools:ignore="MissingTranslation" name="raise">Raise</string>
     <string tools:ignore="MissingTranslation" name="restricted_settings_hint">If the switch is greyed out (Android 13+): open App info → ⋮ → Allow restricted settings, then try again.</string>

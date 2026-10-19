@@ -315,6 +315,21 @@ class Prefs(context: Context) {
         get() = prefs.getStringSet("SUNK_APPS", emptySet()).orEmpty()
         set(value) = prefs.edit { putStringSet("SUNK_APPS", value) }
 
+    var scratchpadPages: Int
+        get() = prefs.getInt("SCRATCHPAD_PAGES", 1)
+        set(value) = prefs.edit { putInt("SCRATCHPAD_PAGES", value) }
+
+    var scratchpadPage: Int
+        get() = prefs.getInt("SCRATCHPAD_PAGE", 0).coerceIn(0, scratchpadPages - 1)
+        set(value) = prefs.edit { putInt("SCRATCHPAD_PAGE", value) }
+
+    /** Note pages after the first; the first stays [scratchpadText] so sync and backup keep working. */
+    fun getScratchpadPage(page: Int): String =
+        if (page == 0) scratchpadText else scratchpadPrefs.getString("SCRATCHPAD_TEXT_$page", "").toString()
+
+    fun setScratchpadPage(page: Int, text: String) =
+        if (page == 0) scratchpadText = text else scratchpadPrefs.edit { putString("SCRATCHPAD_TEXT_$page", text) }
+
     var proMessageShown: Boolean
         get() = prefs.getBoolean(PRO_MESSAGE_SHOWN, false)
         set(value) = prefs.edit { putBoolean(PRO_MESSAGE_SHOWN, value).apply() }

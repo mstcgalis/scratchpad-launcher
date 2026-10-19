@@ -259,6 +259,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 prefs.homeBottomMargin = it; populateExperimental()
             }
             R.id.drawerCategories -> { prefs.drawerCategories = !prefs.drawerCategories; populateExperimental() }
+            R.id.notePagesValue -> pick(R.string.note_pages, (1..5).map { "$it" to it }, prefs.scratchpadPages) { prefs.scratchpadPages = it; populateExperimental() }
 
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
@@ -322,7 +323,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
             binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue, binding.homeBottomMarginValue,
-            binding.drawerCategories,
+            binding.drawerCategories, binding.notePagesValue,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -554,6 +555,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appTextScaleValue.text = String.format("%.1f", prefs.appTextScale)
         binding.homeBottomMarginValue.text = "${prefs.homeBottomMargin} dp"
         binding.drawerCategories.isChecked = prefs.drawerCategories
+        binding.notePagesValue.text = "${prefs.scratchpadPages}"
     }
 
     private fun toggleKeyboardText() {
