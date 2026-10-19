@@ -51,6 +51,22 @@
 
     </LinearLayout>
 
+    <!-- Experimental: emoji categories (from app names), tap to filter -->
+    <HorizontalScrollView
+        android:id="@+id/categoryRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/categoryChips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp" />
+    </HorizontalScrollView>
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"

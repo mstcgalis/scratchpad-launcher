@@ -305,6 +305,11 @@ class Prefs(context: Context) {
         get() = prefs.getInt("HOME_BOTTOM_MARGIN", 56)
         set(value) = prefs.edit { putInt("HOME_BOTTOM_MARGIN", value) }
 
+    /** Row of the emoji that start app names, above the drawer list. */
+    var drawerCategories: Boolean
+        get() = prefs.getBoolean("DRAWER_CATEGORIES", false)
+        set(value) = prefs.edit { putBoolean("DRAWER_CATEGORIES", value) }
+
     var proMessageShown: Boolean
         get() = prefs.getBoolean(PRO_MESSAGE_SHOWN, false)
         set(value) = prefs.edit { putBoolean(PRO_MESSAGE_SHOWN, value).apply() }

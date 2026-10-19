@@ -24,7 +24,10 @@ import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentAppDrawerBinding
+import androidx.core.view.isVisible
+import app.olauncher.helper.AppCategories
 import app.olauncher.helper.deletePinnedShortcut
+import app.olauncher.helper.dpToPx
 import app.olauncher.helper.hideKeyboard
 import app.olauncher.helper.isEinkDisplay
 import app.olauncher.helper.isSystemAnimationsDisabled
@@ -305,6 +308,30 @@ class AppDrawerFragment : BaseFragment() {
 
         adapter.setAppList(combined)
         adapter.filter.filter(binding.search.query)
+        updateCategoryRow(apps)
+    }
+
+    // Experimental: one chip per emoji that starts an app name; tap filters, tap again clears
+    private fun updateCategoryRow(apps: List<AppModel>) {
+        val categories = if (prefs.drawerCategories && flag == Constants.FLAG_LAUNCH_APP)
+            AppCategories.all(apps.map { it.appLabel }) else emptyList()
+        binding.categoryRow.isVisible = categories.isNotEmpty()
+        if (adapter.category !in categories) adapter.category = null
+        binding.categoryChips.removeAllViews()
+        categories.forEach { emoji ->
+            val chip = TextView(requireContext()).apply {
+                text = emoji
+                textSize = 24f
+                setPadding(16.dpToPx(), 8.dpToPx(), 16.dpToPx(), 8.dpToPx())
+                alpha = if (adapter.category == null || adapter.category == emoji) 1f else 0.4f
+                setOnClickListener {
+                    adapter.category = if (adapter.category == emoji) null else emoji
+                    adapter.filter.filter(binding.search.query)
+                    updateCategoryRow(apps)
+                }
+            }
+            binding.categoryChips.addView(chip)
+        }
     }
 
     private fun initClickListeners() {

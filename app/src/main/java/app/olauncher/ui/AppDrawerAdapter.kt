@@ -21,6 +21,7 @@ import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.databinding.AdapterAppDrawerBinding
 import app.olauncher.databinding.AdapterPrivateSpaceHeaderBinding
+import app.olauncher.helper.AppCategories
 import app.olauncher.helper.applyAppLabelStyle
 import app.olauncher.helper.hideKeyboard
 import app.olauncher.helper.isSystemApp
@@ -67,6 +68,8 @@ class AppDrawerAdapter(
     private var autoLaunch = true
     private var isBangSearch = false
     var allowAutoLaunch = true
+    /** Emoji category filter (see AppCategories); null shows everything. */
+    var category: String? = null
     private val diacriticsRegex = Regex("\\p{InCombiningDiacriticalMarks}+")
     private val separatorsRegex = Regex("[-_+,.`'\\s\\p{Z}]")
     private val appFilter = createAppFilter()
@@ -151,10 +154,12 @@ class AppDrawerAdapter(
         return object : Filter() {
             override fun performFiltering(charSearch: CharSequence?): FilterResults {
                 isBangSearch = charSearch?.startsWith("!") ?: false
-                autoLaunch = allowAutoLaunch && (charSearch?.startsWith(" ")?.not() ?: true)
+                // Never on an empty query: picking a one-app category must not launch it
+                autoLaunch = allowAutoLaunch && !charSearch.isNullOrBlank() && !charSearch.startsWith(" ")
 
-                val appFilteredList = (if (charSearch.isNullOrBlank()) appsList
-                else appsList.filter { app ->
+                val inCategory = category?.let { c -> appsList.filter { AppCategories.of(it.appLabel) == c } } ?: appsList
+                val appFilteredList = (if (charSearch.isNullOrBlank()) inCategory.toMutableList()
+                else inCategory.filter { app ->
                     app !is AppModel.PrivateSpaceHeader && appLabelMatches(app.appLabel, charSearch)
                 } as MutableList<AppModel>)
 

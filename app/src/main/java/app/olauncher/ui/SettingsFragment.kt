@@ -258,6 +258,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.homeBottomMarginValue -> pick(R.string.home_bottom_margin, listOf(56, 40, 24, 12, 0).map { "$it dp" to it }, prefs.homeBottomMargin) {
                 prefs.homeBottomMargin = it; populateExperimental()
             }
+            R.id.drawerCategories -> { prefs.drawerCategories = !prefs.drawerCategories; populateExperimental() }
 
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
@@ -321,6 +322,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
             binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue, binding.homeBottomMarginValue,
+            binding.drawerCategories,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -551,6 +553,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appSpacingValue.text = String.format("%.1f", prefs.appSpacing)
         binding.appTextScaleValue.text = String.format("%.1f", prefs.appTextScale)
         binding.homeBottomMarginValue.text = "${prefs.homeBottomMargin} dp"
+        binding.drawerCategories.isChecked = prefs.drawerCategories
     }
 
     private fun toggleKeyboardText() {

@@ -401,6 +401,19 @@
                         android:id="@+id/homeBottomMarginValue"
                         style="@style/SettingsSummary" />
                 </LinearLayout>
+
+                <LinearLayout style="@style/SettingsSwitchRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/emoji_categories" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/drawerCategories"
+                        style="@style/SettingsSwitch" />
+                </LinearLayout>
             </LinearLayout>
 
             <TextView
