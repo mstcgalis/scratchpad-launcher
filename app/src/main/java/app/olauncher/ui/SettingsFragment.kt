@@ -242,7 +242,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             }
             R.id.clockAppearance -> findNavController().navigate(R.id.action_settingsFragment_to_clockAppearanceFragment)
             // Applied when the home view is rebuilt on return, so no activity recreate needed.
-            R.id.scratchpadSizeValue -> pick(R.string.scratchpad_text_size, scales(2.0f), prefs.scratchpadTextScale) {
+            R.id.scratchpadSizeValue -> pick(R.string.scratchpad_text_size, bigScales(), prefs.scratchpadTextScale) {
                 prefs.scratchpadTextScale = it
                 populateScratchpadSize()
             }

@@ -351,7 +351,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private fun initScratchpad() {
         applyScratchpadTypography(prefs.scratchpadTextScale)
         binding.scratchpad.onPinch = { scale, done ->
-            val target = (prefs.scratchpadTextScale * scale).coerceIn(0.5f, 2.0f)
+            val target = (prefs.scratchpadTextScale * scale).coerceIn(0.5f, 5.0f)
             if (done) {
                 prefs.scratchpadTextScale = Math.round(target * 10f) / 10f
                 applyScratchpadTypography(prefs.scratchpadTextScale)
