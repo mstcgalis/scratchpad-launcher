@@ -427,8 +427,19 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
                     if (ViewCompat.getRootWindowInsets(pad)?.isVisible(WindowInsetsCompat.Type.ime()) != true) leaveEditing()
                 }
             })
+            val basePaddingBottom = pad.paddingBottom
             ViewCompat.setOnApplyWindowInsetsListener(pad) { _, insets ->
                 val visible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                // The window doesn't resize, so a keyboard taller than the bottom half covers the note's last
+                // lines. Pad the note above the keyboard (and toolbar) so the cursor line scrolls into view.
+                val keyboardTop = pad.rootView.height - insets.getInsets(WindowInsetsCompat.Type.ime()).bottom -
+                    (if (visible && prefs.formatToolbar) binding.formatToolbar.height else 0)
+                val padBottom = IntArray(2).also { pad.getLocationInWindow(it) }[1] + pad.height
+                val covered = if (visible) (padBottom - keyboardTop).coerceAtLeast(0) else 0
+                if (pad.paddingBottom != basePaddingBottom + covered) {
+                    pad.updatePadding(bottom = basePaddingBottom + covered)
+                    if (visible) pad.post { pad.bringPointIntoView(pad.selectionEnd.coerceAtLeast(0)) }
+                }
                 // Keyboard hidden without an animation
                 if (keyboardWasVisible && !visible && !keyboardAnimating) leaveEditing()
                 keyboardWasVisible = visible
