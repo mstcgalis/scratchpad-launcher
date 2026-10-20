@@ -305,6 +305,16 @@ class Prefs(context: Context) {
         get() = prefs.getInt("HOME_BOTTOM_MARGIN", 56)
         set(value) = prefs.edit { putInt("HOME_BOTTOM_MARGIN", value) }
 
+    /** Home apps stacked in one column instead of two side by side. */
+    var homeOneColumn: Boolean
+        get() = prefs.getBoolean("HOME_ONE_COLUMN", false)
+        set(value) = prefs.edit { putBoolean("HOME_ONE_COLUMN", value) }
+
+    /** Clock and date above the note instead of under it. */
+    var dateTimeTop: Boolean
+        get() = prefs.getBoolean("DATE_TIME_TOP", false)
+        set(value) = prefs.edit { putBoolean("DATE_TIME_TOP", value) }
+
     /** Row of the emoji that start app names, above the drawer list. */
     var drawerCategories: Boolean
         get() = prefs.getBoolean("DRAWER_CATEGORIES", false)

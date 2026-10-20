@@ -408,6 +408,32 @@
                         style="@style/SettingsTitle"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:text="@string/home_one_column" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/homeOneColumn"
+                        style="@style/SettingsSwitch" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/SettingsSwitchRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/date_time_top" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/dateTimeTop"
+                        style="@style/SettingsSwitch" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/SettingsSwitchRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:text="@string/emoji_categories" />
 
                     <androidx.appcompat.widget.SwitchCompat

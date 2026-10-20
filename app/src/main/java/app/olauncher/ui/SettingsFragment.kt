@@ -255,9 +255,11 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
 
             R.id.appSpacingValue -> pick(R.string.app_spacing, scales(2.0f), prefs.appSpacing) { prefs.appSpacing = it; populateExperimental() }
             R.id.appTextScaleValue -> pick(R.string.app_text_size, bigScales(), prefs.appTextScale) { prefs.appTextScale = it; populateExperimental() }
-            R.id.homeBottomMarginValue -> pick(R.string.home_bottom_margin, listOf(56, 40, 24, 12, 0).map { "$it dp" to it }, prefs.homeBottomMargin) {
+            R.id.homeBottomMarginValue -> pick(R.string.home_bottom_margin, listOf(320, 240, 160, 120, 80, 56, 40, 24, 12, 0).map { "$it dp" to it }, prefs.homeBottomMargin) {
                 prefs.homeBottomMargin = it; populateExperimental()
             }
+            R.id.homeOneColumn -> { prefs.homeOneColumn = !prefs.homeOneColumn; populateExperimental() }
+            R.id.dateTimeTop -> { prefs.dateTimeTop = !prefs.dateTimeTop; populateExperimental() }
             R.id.drawerCategories -> { prefs.drawerCategories = !prefs.drawerCategories; populateExperimental() }
             R.id.notePagesValue -> pick(R.string.note_pages, (1..5).map { "$it" to it }, prefs.scratchpadPages) { prefs.scratchpadPages = it; populateExperimental() }
             R.id.homePagesValue -> pick(R.string.home_pages, (1..3).map { "$it" to it }, prefs.homePages) { prefs.homePages = it; populateExperimental() }
@@ -324,7 +326,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
             binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue, binding.homeBottomMarginValue,
-            binding.drawerCategories, binding.notePagesValue, binding.homePagesValue,
+            binding.homeOneColumn, binding.dateTimeTop, binding.drawerCategories, binding.notePagesValue, binding.homePagesValue,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -555,6 +557,8 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appSpacingValue.text = String.format("%.1f", prefs.appSpacing)
         binding.appTextScaleValue.text = String.format("%.1f", prefs.appTextScale)
         binding.homeBottomMarginValue.text = "${prefs.homeBottomMargin} dp"
+        binding.homeOneColumn.isChecked = prefs.homeOneColumn
+        binding.dateTimeTop.isChecked = prefs.dateTimeTop
         binding.drawerCategories.isChecked = prefs.drawerCategories
         binding.notePagesValue.text = "${prefs.scratchpadPages}"
         binding.homePagesValue.text = "${prefs.homePages}"

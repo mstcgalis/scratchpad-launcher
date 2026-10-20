@@ -118,7 +118,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
         scratchpadDebouncer = Debouncer(viewLifecycleOwner.lifecycleScope, 300L)
         applyLandscape()
-        binding.homeAppsLayout.updatePadding(bottom = prefs.homeBottomMargin.dpToPx())
+        applyHomeLayout()
         initScratchpad()
         initObservers()
         setHomeAlignment(prefs.homeAlignment)
@@ -167,6 +167,25 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         binding.scratchpadFrame.layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
         binding.homeControls.layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
         (binding.homeAppsLayout.layoutParams as FrameLayout.LayoutParams).gravity = Gravity.BOTTOM
+    }
+
+    /** Settings > Experimental: space under the apps, one app column, clock above the note (portrait only). */
+    private fun applyHomeLayout() {
+        binding.homeAppsLayout.updatePadding(bottom = prefs.homeBottomMargin.dpToPx())
+        if (prefs.homeOneColumn) {
+            binding.homeAppsGrid.orientation = LinearLayout.VERTICAL
+            binding.homeAppsGrid.children.forEach {
+                it.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
+        }
+        if (prefs.dateTimeTop && resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) {
+            val dateTime = binding.dateTimeLayout
+            binding.homeAppsLayout.removeView(dateTime)
+            dateTime.updatePadding(left = 24.dpToPx(), top = 48.dpToPx(), right = 24.dpToPx())
+            binding.homeColumns.addView(dateTime, 0, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            binding.scratchpad.updatePadding(top = 24.dpToPx())
+            (binding.notePageDots.layoutParams as ViewGroup.MarginLayoutParams).topMargin = 0
+        }
     }
 
     /** Custom text colour over every home label except the format toolbar, which follows the keyboard. */
@@ -329,7 +348,8 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private fun initSwipeTouchListener() {
         val context = requireContext()
         binding.mainLayout.setOnTouchListener(getSwipeGestureListener(context))
-        slots.forEach { it.setOnTouchListener(getViewSwipeTouchListener(context, it)) }
+        (slots + listOf(binding.clock, binding.date, binding.tvScreenTime))
+            .forEach { it.setOnTouchListener(getViewSwipeTouchListener(context, it)) }
     }
 
     private fun initClickListeners() {

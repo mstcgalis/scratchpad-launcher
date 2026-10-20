@@ -145,6 +145,8 @@
     <string tools:ignore="MissingTranslation" name="app_spacing">App spacing</string>
     <string tools:ignore="MissingTranslation" name="app_text_size">App text size</string>
     <string tools:ignore="MissingTranslation" name="home_bottom_margin">Space below home apps</string>
+    <string tools:ignore="MissingTranslation" name="home_one_column">Home apps in one column</string>
+    <string tools:ignore="MissingTranslation" name="date_time_top">Clock at top</string>
     <string tools:ignore="MissingTranslation" name="emoji_categories">Emoji categories in drawer</string>
     <string tools:ignore="MissingTranslation" name="note_pages">Note pages</string>
     <string tools:ignore="MissingTranslation" name="home_pages">Home app pages</string>
