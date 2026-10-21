@@ -201,6 +201,21 @@ class MarkdownMatcherTest {
         assertEquals(MarkdownEdit(0, 4, "[word]()", 7, 7), MarkdownFormatter.edit("word", 0, 4, MarkdownAction.LINK))
         assertEquals(MarkdownEdit(0, 9, "[](https://x)", 1, 1), MarkdownFormatter.edit("https://x", 0, 9, MarkdownAction.LINK))
     }
+
+    @Test
+    fun `dashes, stars or underscores alone on a line are a divider`() {
+        for (line in listOf("---", "***", "___", "- - -", "* * *", "-----", "   ---  ")) {
+            val match = MarkdownMatcher.findMatches("a\n$line\nb").single()
+            assertEquals(line, MarkdownMatch.Rule(TextRange(2, 2 + line.length)), match)
+        }
+    }
+
+    @Test
+    fun `fewer than three or mixed markers are not a divider`() {
+        for (line in listOf("--", "-*-", "--- x", "    ---", "-- -x")) {
+            assertTrue(line, MarkdownMatcher.findMatches(line).none { it is MarkdownMatch.Rule })
+        }
+    }
 }
 
 internal fun List<MarkdownMatch>.inline(style: InlineStyle) = filterIsInstance<MarkdownMatch.Inline>().filter { it.style == style }

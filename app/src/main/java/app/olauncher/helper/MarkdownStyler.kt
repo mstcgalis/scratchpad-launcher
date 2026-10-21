@@ -12,6 +12,7 @@ import android.text.Spannable
 import android.text.TextPaint
 import android.text.style.CharacterStyle
 import android.text.style.ForegroundColorSpan
+import android.text.style.LineBackgroundSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.ReplacementSpan
 import android.text.style.StrikethroughSpan
@@ -66,6 +67,18 @@ private class BulletMarkerSpan : ReplacementSpan(), MarkdownSpan {
     override fun getSize(paint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt?) = paint.measureText("• ").toInt()
     override fun draw(canvas: Canvas, text: CharSequence, start: Int, end: Int, x: Float, top: Int, y: Int, bottom: Int, paint: Paint) {
         canvas.drawText("• ", x, y.toFloat(), paint)
+    }
+}
+
+/** Divider across the whole text width, at the middle of the (hidden) `---` line's text. */
+private class RuleSpan(private val color: Int) : LineBackgroundSpan, MarkdownSpan {
+    override fun drawBackground(
+        canvas: Canvas, paint: Paint, left: Int, right: Int, top: Int, baseline: Int, bottom: Int,
+        text: CharSequence, start: Int, end: Int, lineNumber: Int,
+    ) {
+        val linePaint = Paint(paint).apply { color = this@RuleSpan.color; strokeWidth = paint.textSize * 0.06f; clearShadowLayer() }
+        val y = baseline + (paint.ascent() + paint.descent()) / 2f
+        canvas.drawLine(left.toFloat(), y, right.toFloat(), y, linePaint)
     }
 }
 
@@ -175,6 +188,13 @@ object MarkdownStyler {
                     is MarkdownMatch.Bullet -> {
                         if (editing) dim(editable, match.markerRange, dimColor)
                         else editable.setSpan(BulletMarkerSpan(), match.markerRange.start, match.markerRange.end, FLAG)
+                    }
+                    is MarkdownMatch.Rule -> {
+                        if (editing) dim(editable, match.range, dimColor)
+                        else {
+                            editable.setSpan(RuleSpan(dimColor), match.range.start, match.range.end, FLAG)
+                            hide(editable, match.range)
+                        }
                     }
                     is MarkdownMatch.Checkbox -> {
                         applyCheckbox(editable, match, dimColor, accentColor, editing)

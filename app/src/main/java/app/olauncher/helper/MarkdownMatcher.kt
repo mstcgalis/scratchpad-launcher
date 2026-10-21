@@ -13,11 +13,15 @@ sealed class MarkdownMatch {
     /** The backslash of a `\*`-style escape. */
     data class Escape(val markerRange: TextRange) : MarkdownMatch()
     data class Bullet(val markerRange: TextRange) : MarkdownMatch()
+    /** `---`, `***` or `___` alone on a line: a full-width divider (HTML `<hr>`). */
+    data class Rule(val range: TextRange) : MarkdownMatch()
     data class Checkbox(val checked: Boolean, val markerRange: TextRange, val contentRange: TextRange) : MarkdownMatch()
 }
 
 object MarkdownMatcher {
 
+    // ponytail: no setext headings, so `---` under a line is always a divider, never an underline heading.
+    private val ruleRegex = Regex("""^ {0,3}([-*_])(?: *\1){2,} *$""")
     private val headerRegex = Regex("""^(#{1,6}) (.*)$""")
     private val checkboxRegex = Regex("""^([ \t]*)- \[([ xX])] (.*)$""")
     private val bulletRegex = Regex("""^([ \t]*)[-+*] (?!\[[ xX]] ).*$""")
@@ -59,6 +63,7 @@ object MarkdownMatcher {
         fun find(regex: Regex) = regex.findAll(String(masked)).toList()
 
         matches.filterIsInstance<MarkdownMatch.Bullet>().forEach { mask(it.markerRange.start, it.markerRange.start + 1) }
+        matches.filterIsInstance<MarkdownMatch.Rule>().forEach { mask(it.range.start, it.range.end) }
         for (m in find(escapeRegex)) {
             matches.add(MarkdownMatch.Escape(TextRange(m.range.first, m.range.first + 1)))
             mask(m.range.first, m.range.last + 1)
@@ -109,6 +114,8 @@ object MarkdownMatcher {
     }
 
     private fun matchLine(line: String, lineStart: Int): MarkdownMatch? {
+        // Before bullets: `* * *` and `- - -` are dividers, not list items (CommonMark).
+        if (ruleRegex.matches(line)) return MarkdownMatch.Rule(TextRange(lineStart, lineStart + line.length))
         checkboxRegex.find(line)?.let { m ->
             return MarkdownMatch.Checkbox(
                 checked = m.groupValues[2].equals("x", ignoreCase = true),
