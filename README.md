@@ -4,6 +4,10 @@
 
 The top half is a plain text box that's always there: write something down without opening an app, and it's still there after a reboot. The bottom half is a small, fixed list of apps. Nothing else.
 
+> You've done it. I've been testing out launchers for ages but this mashup has been the most game changing configuration. Absolutely blown away by how intuitive the note pad is.
+>
+> — Jade, a user
+
 <a href="https://f-droid.org/packages/app.scratchpad.launcher/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
 <a href="https://github.com/mstcgalis/scratchpad-launcher/releases/latest"><img src="https://img.shields.io/github/v/release/mstcgalis/scratchpad-launcher?label=APK&style=for-the-badge" alt="Latest release APK" height="28"></a>
 
