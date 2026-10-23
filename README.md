@@ -14,6 +14,10 @@ Unlock your phone and you're already in your notes. No app to open, no widget to
 
 The top half is a plain text box that's always there: write something down without opening an app, and it's still there after a reboot. The bottom half is a small, fixed list of apps. Nothing else.
 
+> You've done it. I've been testing out launchers for ages but this mashup has been the most game changing configuration. Absolutely blown away by how intuitive the note pad is.
+>
+> — Jade, a user
+
 <p align="center">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" alt="Scratchpad Launcher home screen" width="260">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" alt="Scratchpad with markdown headings, bold text and tickable checkboxes above the app list" width="260">
