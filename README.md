@@ -1,13 +1,18 @@
-# Scratchpad Launcher
+<h1><img width="80" src="fastlane/metadata/android/en-US/images/icon.png" alt="" align="absmiddle"> Scratchpad Launcher</h1>
 
 **A minimal Android home screen that's also a piece of paper.**
 
+<a href="https://github.com/mstcgalis/scratchpad-launcher/releases/latest"><img src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="70"></a>
+<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/{%22id%22:%22app.scratchpad.launcher%22,%22url%22:%22https://github.com/mstcgalis/scratchpad-launcher%22,%22author%22:%22mstcgalis%22,%22name%22:%22Scratchpad%20Launcher%22}"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/b1c8ac6f2ab08497189721a788a5763e28ff64cd/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="70"></a>
+<a href="https://f-droid.org/packages/app.scratchpad.launcher/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="70"></a>
+
+<img src="https://img.shields.io/badge/Requires-Android%207.0%2B%20(API%2024)-3DDC84?logo=android&logoColor=white" alt="Requires Android 7.0+ (API 24)">
+<img src="https://img.shields.io/github/v/release/mstcgalis/scratchpad-launcher?label=Latest&color=555" alt="Latest release">
+<img src="https://img.shields.io/badge/License-GPLv3-blue" alt="License: GPLv3">
+
 The top half is a plain text box that's always there: write something down without opening an app, and it's still there after a reboot. The bottom half is a small, fixed list of apps. Nothing else.
 
-<a href="https://f-droid.org/packages/app.scratchpad.launcher/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80"></a>
-<a href="https://github.com/mstcgalis/scratchpad-launcher/releases/latest"><img src="https://img.shields.io/github/v/release/mstcgalis/scratchpad-launcher?label=APK&style=for-the-badge" alt="Latest release APK" height="28"></a>
-
-<p>
+<p align="center">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" alt="Scratchpad Launcher home screen" width="260">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" alt="Scratchpad with markdown headings, bold text and tickable checkboxes above the app list" width="260">
 </p>
