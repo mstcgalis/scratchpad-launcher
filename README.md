@@ -2,6 +2,8 @@
 
 **A minimal Android home screen that's also a piece of paper.**
 
+Unlock your phone and you're already in your notes. No app to open, no widget to tap, no account.
+
 <a href="https://github.com/mstcgalis/scratchpad-launcher/releases/latest"><img src="https://raw.githubusercontent.com/NeoApplications/Neo-Backup/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png" alt="Get it on GitHub" height="70"></a>
 <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/{%22id%22:%22app.scratchpad.launcher%22,%22url%22:%22https://github.com/mstcgalis/scratchpad-launcher%22,%22author%22:%22mstcgalis%22,%22name%22:%22Scratchpad%20Launcher%22}"><img src="https://raw.githubusercontent.com/ImranR98/Obtainium/b1c8ac6f2ab08497189721a788a5763e28ff64cd/assets/graphics/badge_obtainium.png" alt="Get it on Obtainium" height="70"></a>
 <a href="https://f-droid.org/packages/app.scratchpad.launcher/"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="70"></a>
@@ -16,6 +18,12 @@ The top half is a plain text box that's always there: write something down witho
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" alt="Scratchpad Launcher home screen" width="260">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" alt="Scratchpad with markdown headings, bold text and tickable checkboxes above the app list" width="260">
 </p>
+
+## Why
+
+Sometimes you just want to write something down and have it always visible, without opening any app. This is a fork of [Olauncher](https://github.com/tanujnotes/Olauncher), a minimal, ad-free Android launcher, with the app grid cut down and a persistent scratchpad put in its place.
+
+It's for anyone who keeps a shopping list, a phone number, or today's three tasks in their head because opening a notes app feels like too much.
 
 ## Features
 
@@ -34,11 +42,11 @@ No accounts, no analytics, no ads, and no network calls except links you tap you
 
 The optional accessibility service is used only for double-tap-to-lock. It's off by default and collects nothing.
 
-## Why
+## Support the project
 
-Sometimes you just want to write something down and have it always visible, without opening any app. This is a fork of [Olauncher](https://github.com/tanujnotes/Olauncher), a minimal, ad-free Android launcher, with the app grid cut down and a persistent scratchpad put in its place.
+If Scratchpad Launcher is useful to you, **[give it a star ⭐](https://github.com/mstcgalis/scratchpad-launcher/stargazers)**. Once the repo has 35 stars it can be listed in [Obtainium's app directory](https://apps.obtainium.imranr.dev), making it easier for others to find.
 
-Feedback and bug reports are welcome in [Issues](https://github.com/mstcgalis/scratchpad-launcher/issues) or by email at [daniel@dgalis.sk](mailto:daniel@dgalis.sk).
+Feedback, ideas and bug reports are welcome in [Issues](https://github.com/mstcgalis/scratchpad-launcher/issues) or by email at [daniel@dgalis.sk](mailto:daniel@dgalis.sk).
 
 ## Development
 
