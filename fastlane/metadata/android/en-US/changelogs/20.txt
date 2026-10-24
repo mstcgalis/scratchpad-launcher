@@ -1,0 +1,1 @@
+- Clock at top, space below apps, emoji categories, app spacing and app text size moved out of Experimental into Home screen and Appearance
