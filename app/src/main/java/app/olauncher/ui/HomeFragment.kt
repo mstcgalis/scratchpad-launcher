@@ -622,7 +622,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
     private fun showNotePage(page: Int) {
         scratchpadDebouncer.cancel()
-        prefs.setScratchpadPage(notePage, binding.scratchpad.text.toString())
+        val text = binding.scratchpad.text.toString()
+        prefs.setScratchpadPage(notePage, text)
+        if (notePage == 0) ScratchpadSync.write(requireContext(), prefs, text)
         notePage = page
         prefs.scratchpadPage = page
         binding.scratchpad.setText(prefs.getScratchpadPage(page))
@@ -1066,8 +1068,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         syncPollJob?.cancel()
         scratchpadDebouncer.cancel()
         binding.scratchpad.text?.toString()?.let {
-            prefs.scratchpadText = it
-            ScratchpadSync.write(requireContext(), prefs, it)
+            prefs.setScratchpadPage(notePage, it)
+            // Only page 0 is the synced note.
+            if (notePage == 0) ScratchpadSync.write(requireContext(), prefs, it)
         }
     }
 
