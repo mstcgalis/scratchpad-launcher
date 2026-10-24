@@ -1,0 +1,10 @@
+- Swipeable note pages and home app pages (up to 5)
+- Three app columns (up to 15 apps per page), thanks @Archetype444
+- One app column, clock at top, adjustable space below apps
+- Emoji categories and sink-to-bottom in the app drawer
+- --- divider line in the note, text size up to 5x
+- App spacing and text size settings
+- Apps on home screen is a slider
+- Swipes on the clock open swipe apps
+- Cursor stays above the keyboard
+- Double-tap lock explains restricted settings
