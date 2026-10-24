@@ -68,6 +68,12 @@
                         android:id="@+id/homeAppsNum"
                         style="@style/SettingsSummary"
                         tools:text="@string/_8" />
+
+                    <SeekBar
+                        android:id="@+id/homeAppsNumBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:contentDescription="@string/apps_on_home_screen" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/SettingsRow">

@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -73,7 +74,14 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         componentName = ComponentName(requireContext(), DeviceAdmin::class.java)
         checkAdminPermission()
 
-        binding.homeAppsNum.text = prefs.homeAppsNum.toString()
+        binding.homeAppsNumBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(bar: SeekBar?, value: Int, fromUser: Boolean) {
+                if (fromUser && value != prefs.homeAppsNum) updateHomeAppsNum(value)
+            }
+            override fun onStartTrackingTouch(bar: SeekBar?) = Unit
+            override fun onStopTrackingTouch(bar: SeekBar?) = Unit
+        })
+        updateHomeAppsNum(prefs.homeAppsNum, save = false)
         populateKeyboardText()
         populateScratchpadOptions()
         populateTextColour()
@@ -215,7 +223,6 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 prefs.formatToolbar = !prefs.formatToolbar
                 populateScratchpadOptions()
             }
-            R.id.homeAppsNum -> pick(R.string.apps_on_home_screen, (0..if (prefs.homeColumns == 3) 15 else 8).map { "$it" to it }, prefs.homeAppsNum) { updateHomeAppsNum(it) }
             R.id.alignment -> pick(
                 R.string.home_layout_alignment,
                 listOf(getString(R.string.left) to Gravity.START, getString(R.string.center) to Gravity.CENTER, getString(R.string.right) to Gravity.END),
@@ -260,7 +267,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             }
             R.id.homeColumnsValue -> pick(R.string.home_columns, (1..3).map { "$it" to it }, prefs.homeColumns) {
                 prefs.homeColumns = it
-                if (it < 3) updateHomeAppsNum(prefs.homeAppsNum.coerceAtMost(8))
+                updateHomeAppsNum(prefs.homeAppsNum.coerceAtMost(if (it < 3) 8 else Constants.HOME_PAGE_SLOTS))
                 populateExperimental()
             }
             R.id.dateTimeTop -> { prefs.dateTimeTop = !prefs.dateTimeTop; populateExperimental() }
@@ -326,7 +333,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         // Rows are tapped as a whole; the value view inside keeps the id onClick dispatches on.
         listOf(
             binding.autoShowKeyboard, binding.scratchpadFont, binding.scratchpadAccent, binding.formatToolbarToggle,
-            binding.toggleLock, binding.homeAppsNum, binding.screenTimeOnOff, binding.alignment, binding.statusBar,
+            binding.toggleLock, binding.screenTimeOnOff, binding.alignment, binding.statusBar,
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
             binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue, binding.homeBottomMarginValue,
@@ -542,8 +549,11 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.homeWidget.text = info?.loadLabel(requireContext().packageManager) ?: getString(R.string.off)
     }
 
-    private fun updateHomeAppsNum(num: Int) {
+    private fun updateHomeAppsNum(num: Int, save: Boolean = true) {
         binding.homeAppsNum.text = num.toString()
+        binding.homeAppsNumBar.max = if (prefs.homeColumns == 3) Constants.HOME_PAGE_SLOTS else 8
+        binding.homeAppsNumBar.progress = num
+        if (!save) return
         prefs.homeAppsNum = num
         viewModel.refreshHome(true)
     }
