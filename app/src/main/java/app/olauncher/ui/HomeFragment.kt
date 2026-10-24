@@ -183,7 +183,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             binding.homeAppsLayout.removeView(dateTime)
             dateTime.updatePadding(left = 24.dpToPx(), top = 48.dpToPx(), right = 24.dpToPx())
             binding.homeColumns.addView(dateTime, 0, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
-            binding.scratchpad.updatePadding(top = 24.dpToPx())
+            binding.date.updatePadding(bottom = 0)
+            // Room for the page dots only when they show; otherwise the note starts right under the date.
+            binding.scratchpad.updatePadding(top = (if (prefs.scratchpadPages > 1) 20 else 4).dpToPx())
             (binding.notePageDots.layoutParams as ViewGroup.MarginLayoutParams).topMargin = 0
         }
     }
