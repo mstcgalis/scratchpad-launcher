@@ -70,6 +70,17 @@ object Constants {
     const val FLAG_SET_HOME_APP_7 = 7
     const val FLAG_SET_HOME_APP_8 = 8
 
+    /** Home slots per page (three columns of five); stored slot = slot + page * HOME_PAGE_SLOTS. */
+    const val HOME_PAGE_SLOTS = 15
+
+    /** Picker flag for home slot 1-15. Flags 11-15 are taken, so slots 9+ use 200 + slot. */
+    fun homeSlotFlag(slot: Int) = if (slot <= 8) slot else 200 + slot
+    fun homeSlot(flag: Int): Int? = when (flag) {
+        in 1..8 -> flag
+        in 209..215 -> flag - 200
+        else -> null
+    }
+
     const val FLAG_SET_SWIPE_LEFT_APP = 11
     const val FLAG_SET_SWIPE_RIGHT_APP = 12
     const val FLAG_SET_CLOCK_APP = 13

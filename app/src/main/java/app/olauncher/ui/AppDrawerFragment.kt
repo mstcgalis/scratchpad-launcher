@@ -85,7 +85,7 @@ class AppDrawerFragment : BaseFragment() {
     private fun initViews() {
         if (flag == Constants.FLAG_HIDDEN_APPS)
             binding.search.queryHint = getString(R.string.hidden_apps)
-        else if (flag in Constants.FLAG_SET_HOME_APP_1..Constants.FLAG_SET_CALENDAR_APP)
+        else if (flag in Constants.FLAG_SET_HOME_APP_1..Constants.FLAG_SET_SCREEN_TIME_APP || Constants.homeSlot(flag) != null)
             binding.search.queryHint = "Please select an app"
         try {
             searchTextView = binding.search.findViewById(R.id.search_src_text)
@@ -348,8 +348,7 @@ class AppDrawerFragment : BaseFragment() {
                 return@setOnClickListener
             }
 
-            if (flag in Constants.FLAG_SET_HOME_APP_1..Constants.FLAG_SET_HOME_APP_8)
-                prefs.setAppName(flag - Constants.FLAG_SET_HOME_APP_1 + 1 + prefs.homePage * 8, name)
+            Constants.homeSlot(flag)?.let { prefs.setAppName(it + prefs.homePage * Constants.HOME_PAGE_SLOTS, name) }
             findNavController().popBackStack()
         }
     }

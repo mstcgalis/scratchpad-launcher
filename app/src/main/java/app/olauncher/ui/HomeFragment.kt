@@ -94,9 +94,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private var syncPollJob: Job? = null
     private var recentApps: List<LauncherActivityInfo> = emptyList()
     private val recentsOn get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && prefs.recentAppsColumn != RECENTS_OFF
-    private val slots get() = with(binding) { listOf(homeApp1, homeApp2, homeApp3, homeApp4, homeApp5, homeApp6, homeApp7, homeApp8) }
-    /** Slot 1-8 on screen -> stored home slot, offset by the home page. */
-    private fun location(slot: Int) = slot + prefs.homePage * 8
+    /** Slots 9-15, only in the three-column layout. */
+    private var extraSlots: List<TextView> = emptyList()
+    private val slots get() = with(binding) { listOf(homeApp1, homeApp2, homeApp3, homeApp4, homeApp5, homeApp6, homeApp7, homeApp8) } + extraSlots
+    /** Slot 1-15 on screen -> stored home slot, offset by the home page. */
+    private fun location(slot: Int) = slot + prefs.homePage * Constants.HOME_PAGE_SLOTS
     private var notePage = 0
 
     private var _binding: FragmentHomeBinding? = null
@@ -172,12 +174,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     /** Settings > Experimental: space under the apps, one app column, clock above the note (portrait only). */
     private fun applyHomeLayout() {
         binding.homeAppsLayout.updatePadding(bottom = prefs.homeBottomMargin.dpToPx())
-        if (prefs.homeOneColumn) {
-            binding.homeAppsGrid.orientation = LinearLayout.VERTICAL
-            binding.homeAppsGrid.children.forEach {
-                it.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            }
-        }
+        // Recent apps fill slots 5-8, so they keep the original two columns of four.
+        val columns = if (recentsOn) 2 else prefs.homeColumns
+        extraSlots = emptyList() // a recreated view must not keep the old binding's slots
+        if (columns != 2) arrangeColumns(columns)
         if (prefs.dateTimeTop && resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE) {
             val dateTime = binding.dateTimeLayout
             binding.homeAppsLayout.removeView(dateTime)
@@ -185,6 +185,23 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             binding.homeColumns.addView(dateTime, 0, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             binding.scratchpad.updatePadding(top = 24.dpToPx())
             (binding.notePageDots.layoutParams as ViewGroup.MarginLayoutParams).topMargin = 0
+        }
+    }
+
+    /** Rebuilds the grid as columns filled top to bottom: one column of 8, or three of 5 (15 apps). */
+    private fun arrangeColumns(columns: Int) {
+        val grid = binding.homeAppsGrid
+        if (columns == 3) extraSlots = (9..15).map { n ->
+            (layoutInflater.inflate(R.layout.home_app_slot, grid, false) as TextView).apply { tag = "$n" }
+        }
+        val all = slots
+        all.forEach { (it.parent as? ViewGroup)?.removeView(it) }
+        grid.removeAllViews()
+        all.chunked(if (columns == 3) 5 else all.size).forEach { column ->
+            grid.addView(LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                column.forEach { addView(it, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)) }
+            }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         }
     }
 
@@ -275,11 +292,12 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     override fun onLongClick(view: View): Boolean {
         // Recent slots aren't pinnable.
         if (recentsOn && (view.tag?.toString()?.toIntOrNull() ?: 0) > 4) return true
+        if (view in slots) {
+            val slot = view.tag.toString().toInt()
+            showAppList(Constants.homeSlotFlag(slot), prefs.getAppName(location(slot)).isNotEmpty(), true)
+            return true
+        }
         when (view.id) {
-            R.id.homeApp1, R.id.homeApp2, R.id.homeApp3, R.id.homeApp4, R.id.homeApp5, R.id.homeApp6, R.id.homeApp7, R.id.homeApp8 -> {
-                val slot = view.tag.toString().toInt()
-                showAppList(slot, prefs.getAppName(location(slot)).isNotEmpty(), true)
-            }
             R.id.clock -> {
                 showAppList(Constants.FLAG_SET_CLOCK_APP)
                 prefs.clockAppPackage = ""
@@ -348,8 +366,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     private fun initSwipeTouchListener() {
         val context = requireContext()
         binding.mainLayout.setOnTouchListener(getSwipeGestureListener(context))
-        (slots + listOf(binding.clock, binding.date, binding.tvScreenTime))
-            .forEach { it.setOnTouchListener(getViewSwipeTouchListener(context, it)) }
+        slots.forEach { it.setOnTouchListener(getViewSwipeTouchListener(context, it)) }
+        // Sideways swipes on the clock and date always open the swipe apps, even with home pages.
+        listOf(binding.clock, binding.date, binding.tvScreenTime)
+            .forEach { it.setOnTouchListener(getViewSwipeTouchListener(context, it, pages = false)) }
     }
 
     private fun initClickListeners() {
@@ -608,8 +628,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
 
     /** Sideways swipe on the note: flips note pages when there are several, else opens the swipe apps. */
     private fun noteSwipe(left: Boolean) {
-        if (prefs.scratchpadPages > 1) showNotePage((notePage + if (left) 1 else -1).mod(prefs.scratchpadPages))
-        else if (left) openSwipeLeftApp() else openSwipeRightApp()
+        if (prefs.scratchpadPages > 1) {
+            showNotePage((notePage + if (left) 1 else -1).mod(prefs.scratchpadPages))
+            binding.scratchpad.slideIn(left)
+        } else if (left) openSwipeLeftApp() else openSwipeRightApp()
     }
 
     /** Sideways swipe on the bottom half: flips home pages when there are several, else opens the swipe apps. */
@@ -617,7 +639,15 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         if (prefs.homePages > 1) {
             prefs.homePage = (prefs.homePage + if (left) 1 else -1).mod(prefs.homePages)
             populateHomeScreen(true)
+            binding.homeAppsGrid.slideIn(left)
         } else if (left) openSwipeLeftApp() else openSwipeRightApp()
+    }
+
+    /** Page flips slide in from the swipe side, so the change reads as following the finger. */
+    private fun View.slideIn(left: Boolean) {
+        translationX = (if (left) 1 else -1) * 48.dpToPx().toFloat()
+        alpha = 0.3f
+        animate().translationX(0f).alpha(1f).setDuration(150).start()
     }
 
     private fun showNotePage(page: Int) {
@@ -1029,16 +1059,16 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         }
     }
 
-    private fun getViewSwipeTouchListener(context: Context, view: View): View.OnTouchListener {
+    private fun getViewSwipeTouchListener(context: Context, view: View, pages: Boolean = true): View.OnTouchListener {
         return object : ViewSwipeTouchListener(context, view) {
             override fun onSwipeLeft() {
                 super.onSwipeLeft()
-                homeSwipe(left = true)
+                if (pages) homeSwipe(left = true) else openSwipeLeftApp()
             }
 
             override fun onSwipeRight() {
                 super.onSwipeRight()
-                homeSwipe(left = false)
+                if (pages) homeSwipe(left = false) else openSwipeRightApp()
             }
 
             override fun onSwipeUp() {

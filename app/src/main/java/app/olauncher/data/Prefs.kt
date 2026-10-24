@@ -306,9 +306,10 @@ class Prefs(context: Context) {
         set(value) = prefs.edit { putInt("HOME_BOTTOM_MARGIN", value) }
 
     /** Home apps stacked in one column instead of two side by side. */
-    var homeOneColumn: Boolean
-        get() = prefs.getBoolean("HOME_ONE_COLUMN", false)
-        set(value) = prefs.edit { putBoolean("HOME_ONE_COLUMN", value) }
+    /** 1-3; 3 columns hold up to 15 apps. Defaults from the earlier one-column switch. */
+    var homeColumns: Int
+        get() = prefs.getInt("HOME_COLUMNS", if (prefs.getBoolean("HOME_ONE_COLUMN", false)) 1 else 2)
+        set(value) = prefs.edit { putInt("HOME_COLUMNS", value) }
 
     /** Clock and date above the note instead of under it. */
     var dateTimeTop: Boolean
@@ -508,7 +509,7 @@ class Prefs(context: Context) {
     fun clearHomeApp(location: Int) = prefs.edit { putString("APP_NAME_$location", ""); putString("APP_PACKAGE_$location", "") }
 
     fun updateAppActivityClassName(packageName: String, activityClassName: String) {
-        for (i in 1..8 * homePages) {
+        for (i in 1..Constants.HOME_PAGE_SLOTS * homePages) {
             if (getAppPackage(i) == packageName) setAppActivityClassName(i, activityClassName)
         }
         if (clockAppPackage == packageName) clockAppClassName = activityClassName

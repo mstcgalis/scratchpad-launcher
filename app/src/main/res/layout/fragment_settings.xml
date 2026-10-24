@@ -402,17 +402,15 @@
                         style="@style/SettingsSummary" />
                 </LinearLayout>
 
-                <LinearLayout style="@style/SettingsSwitchRow">
+                <LinearLayout style="@style/SettingsRow">
 
                     <TextView
                         style="@style/SettingsTitle"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:text="@string/home_one_column" />
+                        android:text="@string/home_columns" />
 
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/homeOneColumn"
-                        style="@style/SettingsSwitch" />
+                    <TextView
+                        android:id="@+id/homeColumnsValue"
+                        style="@style/SettingsSummary" />
                 </LinearLayout>
 
                 <LinearLayout style="@style/SettingsSwitchRow">

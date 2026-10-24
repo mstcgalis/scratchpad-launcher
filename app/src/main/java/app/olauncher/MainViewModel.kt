@@ -79,14 +79,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            Constants.FLAG_SET_HOME_APP_1 -> saveHomeApp(appModel, 1)
-            Constants.FLAG_SET_HOME_APP_2 -> saveHomeApp(appModel, 2)
-            Constants.FLAG_SET_HOME_APP_3 -> saveHomeApp(appModel, 3)
-            Constants.FLAG_SET_HOME_APP_4 -> saveHomeApp(appModel, 4)
-            Constants.FLAG_SET_HOME_APP_5 -> saveHomeApp(appModel, 5)
-            Constants.FLAG_SET_HOME_APP_6 -> saveHomeApp(appModel, 6)
-            Constants.FLAG_SET_HOME_APP_7 -> saveHomeApp(appModel, 7)
-            Constants.FLAG_SET_HOME_APP_8 -> saveHomeApp(appModel, 8)
+            in 1..8, in 209..215 -> saveHomeApp(appModel, Constants.homeSlot(flag)!!)
 
             Constants.FLAG_SET_SWIPE_LEFT_APP -> saveSwipeApp(appModel, isLeft = true)
             Constants.FLAG_SET_SWIPE_RIGHT_APP -> saveSwipeApp(appModel, isLeft = false)
@@ -109,7 +102,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun saveHomeApp(appModel: AppModel, position: Int) {
-        val location = position + prefs.homePage * 8
+        val location = position + prefs.homePage * Constants.HOME_PAGE_SLOTS
         when (appModel) {
             is AppModel.PrivateSpaceHeader -> return
             is AppModel.App -> prefs.setHomeApp(location, appModel.appLabel, appModel.appPackage, appModel.user.toString(), appModel.activityClassName, null)

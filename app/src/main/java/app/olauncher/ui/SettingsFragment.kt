@@ -215,7 +215,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
                 prefs.formatToolbar = !prefs.formatToolbar
                 populateScratchpadOptions()
             }
-            R.id.homeAppsNum -> pick(R.string.apps_on_home_screen, (0..8).map { "$it" to it }, prefs.homeAppsNum) { updateHomeAppsNum(it) }
+            R.id.homeAppsNum -> pick(R.string.apps_on_home_screen, (0..if (prefs.homeColumns == 3) 15 else 8).map { "$it" to it }, prefs.homeAppsNum) { updateHomeAppsNum(it) }
             R.id.alignment -> pick(
                 R.string.home_layout_alignment,
                 listOf(getString(R.string.left) to Gravity.START, getString(R.string.center) to Gravity.CENTER, getString(R.string.right) to Gravity.END),
@@ -258,11 +258,15 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.homeBottomMarginValue -> pick(R.string.home_bottom_margin, listOf(320, 240, 160, 120, 80, 56, 40, 24, 12, 0).map { "$it dp" to it }, prefs.homeBottomMargin) {
                 prefs.homeBottomMargin = it; populateExperimental()
             }
-            R.id.homeOneColumn -> { prefs.homeOneColumn = !prefs.homeOneColumn; populateExperimental() }
+            R.id.homeColumnsValue -> pick(R.string.home_columns, (1..3).map { "$it" to it }, prefs.homeColumns) {
+                prefs.homeColumns = it
+                if (it < 3) updateHomeAppsNum(prefs.homeAppsNum.coerceAtMost(8))
+                populateExperimental()
+            }
             R.id.dateTimeTop -> { prefs.dateTimeTop = !prefs.dateTimeTop; populateExperimental() }
             R.id.drawerCategories -> { prefs.drawerCategories = !prefs.drawerCategories; populateExperimental() }
             R.id.notePagesValue -> pick(R.string.note_pages, (1..5).map { "$it" to it }, prefs.scratchpadPages) { prefs.scratchpadPages = it; populateExperimental() }
-            R.id.homePagesValue -> pick(R.string.home_pages, (1..3).map { "$it" to it }, prefs.homePages) { prefs.homePages = it; populateExperimental() }
+            R.id.homePagesValue -> pick(R.string.home_pages, (1..5).map { "$it" to it }, prefs.homePages) { prefs.homePages = it; populateExperimental() }
 
             R.id.swipeLeftApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_LEFT_APP)
             R.id.swipeRightApp -> showAppListIfEnabled(Constants.FLAG_SET_SWIPE_RIGHT_APP)
@@ -326,7 +330,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
             binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue, binding.homeBottomMarginValue,
-            binding.homeOneColumn, binding.dateTimeTop, binding.drawerCategories, binding.notePagesValue, binding.homePagesValue,
+            binding.homeColumnsValue, binding.dateTimeTop, binding.drawerCategories, binding.notePagesValue, binding.homePagesValue,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -557,7 +561,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appSpacingValue.text = String.format("%.1f", prefs.appSpacing)
         binding.appTextScaleValue.text = String.format("%.1f", prefs.appTextScale)
         binding.homeBottomMarginValue.text = "${prefs.homeBottomMargin} dp"
-        binding.homeOneColumn.isChecked = prefs.homeOneColumn
+        binding.homeColumnsValue.text = "${prefs.homeColumns}"
         binding.dateTimeTop.isChecked = prefs.dateTimeTop
         binding.drawerCategories.isChecked = prefs.drawerCategories
         binding.notePagesValue.text = "${prefs.scratchpadPages}"
