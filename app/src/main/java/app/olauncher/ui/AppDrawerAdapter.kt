@@ -69,6 +69,9 @@ class AppDrawerAdapter(
     private var autoLaunch = true
     private var isBangSearch = false
     var allowAutoLaunch = true
+    /** Closes the one row whose edit options are open, so only one row is edited at a time. */
+    private var openEdit: (() -> Unit)? = null
+
     /** Emoji category filter (see AppCategories); null shows everything. */
     var category: String? = null
     private val diacriticsRegex = Regex("\\p{InCombiningDiacriticalMarks}+")
@@ -209,6 +212,7 @@ class AppDrawerAdapter(
             .replace(separatorsRegex, "")
 
     fun setAppList(appsList: MutableList<AppModel>) {
+        openEdit = null // rows are rebound, so a stale edit must not swallow the next tap
         // Add empty app for bottom padding in recyclerview and assign to list
         appsList.add(
             AppModel.App(
@@ -246,7 +250,7 @@ class AppDrawerAdapter(
         }
     }
 
-    class ViewHolder(private val binding: AdapterAppDrawerBinding) :
+    inner class ViewHolder(private val binding: AdapterAppDrawerBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             flag: Int,
@@ -276,10 +280,21 @@ class AppDrawerAdapter(
             appTitle.setLeadingIcon(icon)
             otherProfileIndicator.isVisible = appModel.user != myUserHandle
 
-            appTitle.setOnClickListener { clickListener(appModel) }
+            fun closeEdit() {
+                appHideLayout.visibility = View.GONE
+                renameLayout.visibility = View.GONE
+                appTitle.visibility = View.VISIBLE
+                if (etAppRename.hasFocus()) etAppRename.hideKeyboard()
+            }
+            // A tap elsewhere while a row is being edited only closes that row's edit options.
+            appTitle.setOnClickListener {
+                openEdit?.let { it(); openEdit = null } ?: clickListener(appModel)
+            }
 
             appTitle.setOnLongClickListener {
                 if (appModel.appPackage.isNotEmpty()) {
+                    openEdit?.invoke()
+                    openEdit = ::closeEdit
                     appDelete.alpha = when (
                         appModel is AppModel.PinnedShortcut || !root.context.isSystemApp(appModel.appPackage, appModel.user)
                     ) {
@@ -342,12 +357,14 @@ class AppDrawerAdapter(
                     if (renameLabel.isNotBlank() && appModel.appPackage.isNotBlank()) {
                         appRenameListener(appModel, renameLabel)
                         renameLayout.visibility = View.GONE
+                        openEdit = null
                     }
                     true
                 }
                 false
             }
             tvSaveRename.setOnClickListener {
+                openEdit = null
                 etAppRename.hideKeyboard()
                 val renameLabel = etAppRename.text.toString().trim()
                 if (renameLabel.isNotBlank() && appModel.appPackage.isNotBlank()) {
@@ -363,14 +380,8 @@ class AppDrawerAdapter(
             }
             appInfo.setOnClickListener { appInfoListener(appModel) }
             appDelete.setOnClickListener { appDeleteListener(appModel) }
-            appMenuClose.setOnClickListener {
-                appHideLayout.visibility = View.GONE
-                appTitle.visibility = View.VISIBLE
-            }
-            appRenameClose.setOnClickListener {
-                renameLayout.visibility = View.GONE
-                appTitle.visibility = View.VISIBLE
-            }
+            appMenuClose.setOnClickListener { closeEdit(); openEdit = null }
+            appRenameClose.setOnClickListener { closeEdit(); openEdit = null }
             appHide.setOnClickListener { appHideListener(appModel, bindingAdapterPosition) }
             appSink.setOnClickListener { appSinkListener(appModel) }
         }

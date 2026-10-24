@@ -1,6 +1,9 @@
 package app.olauncher.ui
 
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Process
@@ -24,6 +27,9 @@ import app.olauncher.data.AppModel
 import app.olauncher.data.Constants
 import app.olauncher.data.Prefs
 import app.olauncher.databinding.FragmentAppDrawerBinding
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsAnimationCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import app.olauncher.helper.AppCategories
 import app.olauncher.helper.deletePinnedShortcut
@@ -80,6 +86,28 @@ class AppDrawerFragment : BaseFragment() {
         initAdapter()
         initObservers()
         initClickListeners()
+        initCategoryRow()
+    }
+
+    private val systemDark get() =
+        Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+    /** Like the note's format toolbar: keyboard colours, riding the keyboard's top edge (thumb reach). */
+    private fun initCategoryRow() {
+        val row = binding.categoryRow
+        row.setBackgroundColor(if (systemDark) Color.BLACK else Color.WHITE)
+        fun follow(insets: WindowInsetsCompat) {
+            val bottom = insets.getInsets(WindowInsetsCompat.Type.ime() or WindowInsetsCompat.Type.navigationBars()).bottom
+            val rowBottom = IntArray(2).also { binding.root.getLocationInWindow(it) }[1] + row.bottom
+            row.translationY = (row.rootView.height - bottom - rowBottom).coerceAtMost(0).toFloat()
+        }
+        ViewCompat.setWindowInsetsAnimationCallback(binding.root, object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
+            override fun onProgress(insets: WindowInsetsCompat, runningAnimations: List<WindowInsetsAnimationCompat>): WindowInsetsCompat {
+                follow(insets)
+                return insets
+            }
+        })
+        ViewCompat.setOnApplyWindowInsetsListener(row) { _, insets -> follow(insets); insets }
     }
 
     private fun initViews() {
@@ -321,13 +349,18 @@ class AppDrawerFragment : BaseFragment() {
         val categories = if (prefs.drawerCategories && flag == Constants.FLAG_LAUNCH_APP)
             AppCategories.all(apps.map { it.appLabel }) else emptyList()
         binding.categoryRow.isVisible = categories.isNotEmpty()
+        binding.categoryRow.post { if (_binding != null) ViewCompat.requestApplyInsets(binding.categoryRow) }
         if (adapter.category !in categories) adapter.category = null
         binding.categoryChips.removeAllViews()
         categories.forEach { emoji ->
             val chip = TextView(requireContext()).apply {
                 text = emoji
-                textSize = 24f
-                setPadding(16.dpToPx(), 8.dpToPx(), 16.dpToPx(), 8.dpToPx())
+                textSize = 20f
+                gravity = android.view.Gravity.CENTER
+                minWidth = 48.dpToPx()
+                height = 48.dpToPx()
+                setPadding(12.dpToPx(), 0, 12.dpToPx(), 0)
+                setTextColor(if (systemDark) Color.WHITE else Color.BLACK)
                 alpha = if (adapter.category == null || adapter.category == emoji) 1f else 0.4f
                 setOnClickListener {
                     adapter.category = if (adapter.category == emoji) null else emoji
