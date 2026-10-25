@@ -7,6 +7,7 @@ import android.net.Uri
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import android.view.ViewConfiguration
 import androidx.appcompat.widget.AppCompatEditText
 import app.olauncher.helper.CheckboxSpan
 import app.olauncher.helper.LinkSpan
@@ -29,6 +30,11 @@ class MarkdownEditText @JvmOverloads constructor(
     private var pinching = false
     /** The touch went down on a checkbox or link: its long-press must not open settings (or select text). */
     private var downOnTapTarget = false
+    /** The touch moved past the slop while not editing: it's a scroll, not a tap. */
+    private var dragged = false
+    private var downX = 0f
+    private var downY = 0f
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private val scaleDetector = ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScaleBegin(detector: ScaleGestureDetector): Boolean { pinch = 1f; return true }
         override fun onScale(detector: ScaleGestureDetector): Boolean {
@@ -50,8 +56,21 @@ class MarkdownEditText @JvmOverloads constructor(
             }
             if (pinching) return true
         }
-        if (event.actionMasked == MotionEvent.ACTION_DOWN) downOnTapTarget = checkboxAt(event) != null || linkAt(event) != null
-        if (event.action == MotionEvent.ACTION_UP) {
+        if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+            downOnTapTarget = checkboxAt(event) != null || linkAt(event) != null
+            dragged = false
+            downX = event.x
+            downY = event.y
+        }
+        if (event.actionMasked == MotionEvent.ACTION_MOVE && !isFocused && !dragged &&
+            Math.hypot((event.x - downX).toDouble(), (event.y - downY).toDouble()) > touchSlop
+        ) {
+            // Scrolling the note must not focus it on release (cursor, raw markers, jump to the cursor):
+            // cancel the press so UP doesn't take focus. Later MOVEs still scroll the text.
+            dragged = true
+            cancelTouch(event)
+        }
+        if (event.action == MotionEvent.ACTION_UP && !dragged) {
             checkboxAt(event)?.let { span ->
                 val editable = text!!
                 val toggleIndex = editable.getSpanStart(span) + 1
