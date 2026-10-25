@@ -132,7 +132,13 @@ class MarkdownEditText @JvmOverloads constructor(
     private fun openLink(url: String) {
         val uri = Uri.parse(url).let { if (it.scheme == null) Uri.parse("https://$url") else it }
         try {
-            context.startActivity(Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE))
+            context.startActivity(
+                when (uri.scheme) {
+                    "tel" -> Intent(Intent.ACTION_DIAL, uri)
+                    "mailto" -> Intent(Intent.ACTION_SENDTO, uri)
+                    else -> Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE)
+                }
+            )
         } catch (_: ActivityNotFoundException) {
         }
     }

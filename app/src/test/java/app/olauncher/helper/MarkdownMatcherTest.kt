@@ -197,6 +197,17 @@ class MarkdownMatcherTest {
     }
 
     @Test
+    fun `phone numbers and emails are links`() {
+        fun urls(text: String) = MarkdownMatcher.findMatches(text).filterIsInstance<MarkdownMatch.Link>().map { it.url }
+        assertEquals(listOf("tel:+421905123456"), urls("call +421 905 123 456."))
+        assertEquals(listOf("mailto:jane_doe@x.co.uk"), urls("mail jane_doe@x.co.uk, thanks"))
+        assertEquals(listOf("tel:+1555", "mailto:a@b.org"), urls("tel:+1555 or mailto:a@b.org"))
+        assertEquals(listOf("tel:+421905"), urls("[me](tel:+421905)"))
+        assertEquals(emptyList<String>(), urls("on 2026-10-25 at 12:30 paid 1 500 eur, see @mention"))
+        assertTrue(MarkdownMatcher.findMatches("jane_doe@x.org").none { it is MarkdownMatch.Inline })
+    }
+
+    @Test
     fun `link action wraps selection or url`() {
         assertEquals(MarkdownEdit(0, 4, "[word]()", 7, 7), MarkdownFormatter.edit("word", 0, 4, MarkdownAction.LINK))
         assertEquals(MarkdownEdit(0, 9, "[](https://x)", 1, 1), MarkdownFormatter.edit("https://x", 0, 9, MarkdownAction.LINK))

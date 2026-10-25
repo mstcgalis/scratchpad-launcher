@@ -30,7 +30,10 @@ object MarkdownMatcher {
     private val codeRegex = Regex("""`([^`\n]+)`""")
     private val linkRegex = Regex("""\[([^\]\n]+)]\(([^)\s]+)\)""")
     // ponytail: no balanced parens in bare URLs (GFM allows them); wrap such URLs as [text](url).
-    private val bareUrlRegex = Regex("""https?://[^\s<>()\[\]]*[^\s<>()\[\].,;:!?'"*_~=]""")
+    private val bareUrlRegex = Regex("""(?:https?://|tel:|mailto:)[^\s<>()\[\]]*[^\s<>()\[\].,;:!?'"*_~=]""")
+    private val emailRegex = Regex("""(?<![\w.+-])[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.[A-Za-z]{2,}(?![\w-])""")
+    // ponytail: only international numbers (leading +), so dates and amounts don't turn into links.
+    private val phoneRegex = Regex("""(?<![\w+])\+\d[\d -]{5,}\d(?!\w)""")
 
     /** `_` only counts outside words (CommonMark), so snake_case_names stay plain. */
     private fun underscore(marker: String) =
@@ -86,9 +89,13 @@ object MarkdownMatcher {
             mask(m.range.first, content.first)
             mask(content.last + 1, m.range.last + 1)
         }
-        for (m in find(bareUrlRegex)) {
+        for ((regex, url) in listOf<Pair<Regex, (String) -> String>>(
+            bareUrlRegex to { it },
+            emailRegex to { "mailto:$it" },
+            phoneRegex to { "tel:" + it.filter { c -> c == '+' || c.isDigit() } },
+        )) for (m in find(regex)) {
             val end = m.range.last + 1
-            matches.add(MarkdownMatch.Link(m.value, TextRange(m.range.first, m.range.first), TextRange(m.range.first, end), TextRange(end, end)))
+            matches.add(MarkdownMatch.Link(url(m.value), TextRange(m.range.first, m.range.first), TextRange(m.range.first, end), TextRange(end, end)))
             mask(m.range.first, end)
         }
         for ((style, regex) in delimiters) {
