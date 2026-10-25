@@ -265,6 +265,9 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             R.id.homeBottomMarginValue -> pick(R.string.home_bottom_margin, listOf(320, 240, 160, 120, 80, 56, 40, 24, 12, 0).map { "$it dp" to it }, prefs.homeBottomMargin) {
                 prefs.homeBottomMargin = it; populateExperimental()
             }
+            R.id.wallpaperDimValue -> pick(R.string.wallpaper_dim, listOf(0, 20, 40, 60, 80).map { "$it%" to it }, prefs.wallpaperDim) {
+                prefs.wallpaperDim = it; populateExperimental()
+            }
             R.id.homeColumnsValue -> pick(R.string.home_columns, (1..3).map { "$it" to it }, prefs.homeColumns) {
                 prefs.homeColumns = it
                 updateHomeAppsNum(prefs.homeAppsNum.coerceAtMost(if (it < 3) 8 else Constants.HOME_PAGE_SLOTS))
@@ -337,7 +340,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
             binding.dateTime, binding.swipeLeftApp, binding.swipeRightApp, binding.swipeDownAction, binding.appThemeText,
             binding.textSizeValue, binding.scratchpadSizeValue, binding.scratchpadLineSpacing, binding.textColour, binding.appIcons, binding.homeWidget,
             binding.recentApps, binding.appSpacingValue, binding.appTextScaleValue, binding.homeBottomMarginValue,
-            binding.homeColumnsValue, binding.dateTimeTop, binding.drawerCategories, binding.notePagesValue, binding.homePagesValue,
+            binding.homeColumnsValue, binding.wallpaperDimValue, binding.dateTimeTop, binding.drawerCategories, binding.notePagesValue, binding.homePagesValue,
         ).forEach { v -> (v.parent as View).setOnClickListener { onClick(v) } }
         listOf(binding.alignment, binding.swipeLeftApp, binding.swipeRightApp, binding.toggleLock)
             .forEach { v -> (v.parent as View).setOnLongClickListener { onLongClick(v) } }
@@ -572,6 +575,7 @@ class SettingsFragment : BaseFragment(), View.OnClickListener, View.OnLongClickL
         binding.appTextScaleValue.text = String.format("%.1f", prefs.appTextScale)
         binding.homeBottomMarginValue.text = "${prefs.homeBottomMargin} dp"
         binding.homeColumnsValue.text = "${prefs.homeColumns}"
+        binding.wallpaperDimValue.text = "${prefs.wallpaperDim}%"
         binding.dateTimeTop.isChecked = prefs.dateTimeTop
         binding.drawerCategories.isChecked = prefs.drawerCategories
         binding.notePagesValue.text = "${prefs.scratchpadPages}"

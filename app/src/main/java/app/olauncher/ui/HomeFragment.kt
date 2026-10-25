@@ -174,6 +174,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
     /** Settings > Experimental: space under the apps, one app column, clock above the note (portrait only). */
     private fun applyHomeLayout() {
         binding.homeAppsLayout.updatePadding(bottom = prefs.homeBottomMargin.dpToPx())
+        binding.mainLayout.setBackgroundColor(
+            ColorUtils.setAlphaComponent(requireContext().getColorFromAttr(R.attr.primaryInverseColor), prefs.wallpaperDim * 255 / 100)
+        )
         // Recent apps fill slots 5-8, so they keep the original two columns of four.
         val columns = if (recentsOn) 2 else prefs.homeColumns
         extraSlots = emptyList() // a recreated view must not keep the old binding's slots

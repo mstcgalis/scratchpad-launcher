@@ -300,6 +300,11 @@ class Prefs(context: Context) {
         get() = prefs.getFloat("APP_TEXT_SCALE", 1.0f)
         set(value) = prefs.edit { putFloat("APP_TEXT_SCALE", value) }
 
+    /** Percent of a scrim (opposite of the text colour) over the wallpaper, for busy backgrounds. */
+    var wallpaperDim: Int
+        get() = prefs.getInt("WALLPAPER_DIM", 0)
+        set(value) = prefs.edit { putInt("WALLPAPER_DIM", value) }
+
     /** Gap (dp) under the home app grid. */
     var homeBottomMargin: Int
         get() = prefs.getInt("HOME_BOTTOM_MARGIN", 56)

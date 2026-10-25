@@ -241,6 +241,17 @@
 
                     <TextView
                         style="@style/SettingsTitle"
+                        android:text="@string/wallpaper_dim" />
+
+                    <TextView
+                        android:id="@+id/wallpaperDimValue"
+                        style="@style/SettingsSummary" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/SettingsRow">
+
+                    <TextView
+                        style="@style/SettingsTitle"
                         android:text="@string/text_colour" />
 
                     <TextView
