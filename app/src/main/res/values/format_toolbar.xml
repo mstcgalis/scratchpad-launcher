@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="scratchpad_font">Scratchpad font</string>
     <string name="scratchpad">Scratchpad</string>
     <string name="format_toolbar">Formatting toolbar</string>
@@ -10,17 +10,17 @@
     <string name="accent_default">Default</string>
     <string name="scratchpad_accent_preview">A link in your note</string>
     <string name="format_done">Done</string>
-    <string name="format_bold">B</string>
-    <string name="format_italic">I</string>
-    <string name="format_underline"><u>U</u></string>
-    <string name="format_strike"><strike>S</strike></string>
-    <string name="format_highlight">==</string>
-    <string name="format_code">`</string>
-    <string name="format_link">↗</string>
-    <string name="format_heading">H</string>
-    <string name="format_bullet">•</string>
-    <string name="format_checkbox">☐</string>
-    <string name="format_indent">→</string>
-    <string name="format_outdent">←</string>
+    <string name="format_bold" translatable="false">B</string>
+    <string name="format_italic" translatable="false">I</string>
+    <string name="format_underline" translatable="false"><u>U</u></string>
+    <string name="format_strike" translatable="false"><strike>S</strike></string>
+    <string name="format_highlight" translatable="false">==</string>
+    <string name="format_code" translatable="false">`</string>
+    <string name="format_link" translatable="false">↗</string>
+    <string name="format_heading" translatable="false">H</string>
+    <string name="format_bullet" translatable="false">•</string>
+    <string name="format_checkbox" translatable="false">☐</string>
+    <string name="format_indent" translatable="false">→</string>
+    <string name="format_outdent" translatable="false">←</string>
     <string name="format_clear_done">Clear ✓</string>
 </resources>

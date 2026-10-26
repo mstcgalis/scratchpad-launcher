@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="backup_scratchpad">Back up</string>
     <string name="restore_scratchpad">Restore</string>
     <string name="restore_confirmation">Replace the current scratchpad with this file?</string>

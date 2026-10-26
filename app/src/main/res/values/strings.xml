@@ -141,17 +141,17 @@
     <string name="notification_bar">Notification bar</string>
     <string name="private_space">Private space</string>
     <!-- Experimental (jade-feedback spike): English only until kept -->
-    <string tools:ignore="MissingTranslation" name="experimental">Experimental</string>
-    <string tools:ignore="MissingTranslation" name="app_spacing">App spacing</string>
-    <string tools:ignore="MissingTranslation" name="app_text_size">App text size</string>
-    <string tools:ignore="MissingTranslation" name="home_bottom_margin">Space below home apps</string>
-    <string tools:ignore="MissingTranslation" name="home_columns">Home app columns</string>
-    <string tools:ignore="MissingTranslation" name="date_time_top">Clock at top</string>
-    <string tools:ignore="MissingTranslation" name="wallpaper_dim">Dim wallpaper</string>
-    <string tools:ignore="MissingTranslation" name="emoji_categories">Emoji categories in drawer</string>
-    <string tools:ignore="MissingTranslation" name="note_pages">Note pages</string>
-    <string tools:ignore="MissingTranslation" name="home_pages">Home app pages</string>
-    <string tools:ignore="MissingTranslation" name="sink">Sink</string>
-    <string tools:ignore="MissingTranslation" name="raise">Raise</string>
-    <string tools:ignore="MissingTranslation" name="restricted_settings_hint">If the switch is greyed out (Android 13+): open App info → ⋮ → Allow restricted settings, then try again.</string>
+    <string name="experimental">Experimental</string>
+    <string name="app_spacing">App spacing</string>
+    <string name="app_text_size">App text size</string>
+    <string name="home_bottom_margin">Space below home apps</string>
+    <string name="home_columns">Home app columns</string>
+    <string name="date_time_top">Clock at top</string>
+    <string name="wallpaper_dim">Dim wallpaper</string>
+    <string name="emoji_categories">Emoji categories in drawer</string>
+    <string name="note_pages">Note pages</string>
+    <string name="home_pages">Home app pages</string>
+    <string name="sink">Sink</string>
+    <string name="raise">Raise</string>
+    <string name="restricted_settings_hint">If the switch is greyed out (Android 13+): open App info → ⋮ → Allow restricted settings, then try again.</string>
 </resources>
