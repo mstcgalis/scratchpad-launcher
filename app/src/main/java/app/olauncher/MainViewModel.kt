@@ -24,7 +24,7 @@ import app.olauncher.helper.isOlauncherDefault
 import app.olauncher.helper.isPackageInstalled
 import app.olauncher.helper.isPrivateSpaceLocked
 import app.olauncher.helper.showToast
-import app.olauncher.helper.usageStats.EventLogWrapper
+import app.olauncher.helper.usageStats.getScreenTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -281,12 +281,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
             // Querying a whole day of usage events is slow, so keep it off the main thread
             val timeSpent = withContext(Dispatchers.IO) {
-                val eventLogWrapper = EventLogWrapper(appContext)
-                eventLogWrapper.aggregateSimpleUsageStats(
-                    eventLogWrapper.aggregateForegroundStats(
-                        eventLogWrapper.getForegroundStatsByTimestamps(startTime, endTime)
-                    )
-                )
+                getScreenTime(appContext, startTime, endTime)
             }
             screenTimeValue.value = appContext.formattedTimeSpent(timeSpent)
             prefs.screenTimeLastUpdated = endTime
