@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_info">App info</string>
+    <string name="remove">Remove</string>
+    <string name="shortcut_not_found">Shortcut not found</string>
+    <string name="unable_to_open_shortcut">Unable to open shortcut</string>
     <string name="align_to_bottom">Align to bottom</string>
     <string name="app_icons">App icons</string>
     <string name="text_colour">Text colour</string>

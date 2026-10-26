@@ -134,6 +134,8 @@ class MainActivity : AppCompatActivity() {
         isResumed = true
         viewModel.isPrivateSpaceToggling = false
         viewModel.isPickingDocument = false
+        // Pick up shortcuts pinned (e.g. PWAs) or removed while we were in the background
+        viewModel.getAppList()
     }
 
     override fun onStop() {

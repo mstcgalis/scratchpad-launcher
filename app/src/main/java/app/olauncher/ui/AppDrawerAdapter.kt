@@ -301,6 +301,7 @@ class AppDrawerAdapter(
                         true -> 1.0f
                         false -> 0.5f
                     }
+                    appDelete.setText(if (appModel is AppModel.PinnedShortcut) R.string.remove else R.string.delete)
                     appHide.text = if (flag == Constants.FLAG_HIDDEN_APPS)
                         root.context.getString(R.string.adapter_show)
                     else

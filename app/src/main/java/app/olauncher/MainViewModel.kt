@@ -97,12 +97,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return
         val launcher = appContext.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
         val query = LauncherApps.ShortcutQuery().apply {
+            setPackage(appModel.appPackage)
             setQueryFlags(LauncherApps.ShortcutQuery.FLAG_MATCH_PINNED)
         }
-        launcher.getShortcuts(query, appModel.user)?.find { it.id == appModel.shortcutId }
-            ?.let { shortcut ->
-                launcher.startShortcut(shortcut, null, null)
+        try {
+            val shortcut = launcher.getShortcuts(query, appModel.user)
+                ?.find { it.id == appModel.shortcutId }
+            if (shortcut == null) {
+                appContext.showToast(R.string.shortcut_not_found)
+                return
             }
+            launcher.startShortcut(shortcut, null, null)
+        } catch (_: Exception) {
+            appContext.showToast(R.string.unable_to_open_shortcut)
+        }
     }
 
     private fun saveHomeApp(appModel: AppModel, position: Int) {
