@@ -55,6 +55,16 @@ class AppDrawerFragment : BaseFragment() {
 
     private var flag = Constants.FLAG_LAUNCH_APP
     private var canRename = false
+
+    // Clock/date/screen-time pickers offer Reset when a custom app is set; blank prefs mean the system default
+    private val canReset by lazy {
+        when (flag) {
+            Constants.FLAG_SET_CLOCK_APP -> prefs.clockAppPackage
+            Constants.FLAG_SET_CALENDAR_APP -> prefs.calendarAppPackage
+            Constants.FLAG_SET_SCREEN_TIME_APP -> prefs.screenTimeAppPackage
+            else -> ""
+        }.isNotBlank()
+    }
     private var currentAppList: List<AppModel>? = null
     private var currentPrivateSpaceApps: List<AppModel>? = null
     private var currentPrivateSpaceLocked: Boolean = true
@@ -115,6 +125,10 @@ class AppDrawerFragment : BaseFragment() {
             binding.search.queryHint = getString(R.string.hidden_apps)
         else if (flag in Constants.FLAG_SET_HOME_APP_1..Constants.FLAG_SET_SCREEN_TIME_APP || Constants.homeSlot(flag) != null)
             binding.search.queryHint = "Please select an app"
+        if (canReset) {
+            binding.appRename.setText(R.string.reset)
+            binding.appRename.visibility = View.VISIBLE
+        }
         try {
             searchTextView = binding.search.findViewById(R.id.search_src_text)
             searchTextView?.gravity = prefs.appLabelAlignment
@@ -140,7 +154,7 @@ class AppDrawerFragment : BaseFragment() {
                     adapter.allowAutoLaunch = !isSearchComposing()
                     adapter.filter.filter(newText)
                     binding.appRename.visibility =
-                        if (canRename && newText.isNotBlank()) View.VISIBLE else View.GONE
+                        if (canRename && newText.isNotBlank() || canReset && newText.isBlank()) View.VISIBLE else View.GONE
                     return true
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -379,6 +393,15 @@ class AppDrawerFragment : BaseFragment() {
 
     private fun initClickListeners() {
         binding.appRename.setOnClickListener {
+            if (canReset) {
+                when (flag) {
+                    Constants.FLAG_SET_CLOCK_APP -> { prefs.clockAppPackage = ""; prefs.clockAppClassName = ""; prefs.clockAppUser = "" }
+                    Constants.FLAG_SET_CALENDAR_APP -> { prefs.calendarAppPackage = ""; prefs.calendarAppClassName = ""; prefs.calendarAppUser = "" }
+                    Constants.FLAG_SET_SCREEN_TIME_APP -> { prefs.screenTimeAppPackage = ""; prefs.screenTimeAppClassName = ""; prefs.screenTimeAppUser = "" }
+                }
+                findNavController().popBackStack()
+                return@setOnClickListener
+            }
             val name = binding.search.query.toString().trim()
             if (name.isEmpty()) {
                 requireContext().showToast(getString(R.string.type_a_new_app_name_first))

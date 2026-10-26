@@ -303,27 +303,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
             return true
         }
         when (view.id) {
-            R.id.clock -> {
-                showAppList(Constants.FLAG_SET_CLOCK_APP)
-                prefs.clockAppPackage = ""
-                prefs.clockAppClassName = ""
-                prefs.clockAppUser = ""
-            }
-
-            R.id.date -> {
-                showAppList(Constants.FLAG_SET_CALENDAR_APP)
-                prefs.calendarAppPackage = ""
-                prefs.calendarAppClassName = ""
-                prefs.calendarAppUser = ""
-            }
-
-            R.id.tvScreenTime -> {
-                showAppList(Constants.FLAG_SET_SCREEN_TIME_APP)
-                prefs.screenTimeAppPackage = ""
-                prefs.screenTimeAppClassName = ""
-                prefs.screenTimeAppUser = ""
-            }
-
+            R.id.clock -> showAppList(Constants.FLAG_SET_CLOCK_APP)
+            R.id.date -> showAppList(Constants.FLAG_SET_CALENDAR_APP)
+            R.id.tvScreenTime -> showAppList(Constants.FLAG_SET_SCREEN_TIME_APP)
             R.id.setDefaultLauncher -> {
                 prefs.hideSetDefaultLauncher = true
                 binding.setDefaultLauncher.visibility = View.GONE
