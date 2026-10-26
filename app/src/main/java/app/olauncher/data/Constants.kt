@@ -102,7 +102,7 @@ object Constants {
     const val URL_PRIVACY = "https://github.com/mstcgalis/scratchpad-launcher#privacy"
     const val URL_DOUBLE_TAP = "https://tanujnotes.notion.site/Double-tap-to-lock-Olauncher-0f7fb103ec1f47d7a90cdfdcd7fb86ef"
     const val URL_GITHUB = "https://github.com/mstcgalis/scratchpad-launcher"
-    const val URL_DUCK_SEARCH = "https://duck.co/?q="
+    const val URL_DUCK_SEARCH = "https://duckduckgo.com/?q="
 
     const val DIGITAL_WELLBEING_PACKAGE_NAME = "com.google.android.apps.wellbeing"
     const val DIGITAL_WELLBEING_ACTIVITY = "com.google.android.apps.wellbeing.settings.TopLevelSettingsActivity"
