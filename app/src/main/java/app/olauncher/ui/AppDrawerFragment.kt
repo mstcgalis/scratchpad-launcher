@@ -183,6 +183,7 @@ class AppDrawerFragment : BaseFragment() {
             prefs.appLabelAlignment,
             appClickListener = { appModel ->
                 viewModel.selectedApp(appModel, flag)
+                binding.search.setQuery("", false)
                 if (flag == Constants.FLAG_LAUNCH_APP || flag == Constants.FLAG_HIDDEN_APPS)
                     findNavController().popBackStack(R.id.mainFragment, false)
                 else
@@ -342,6 +343,8 @@ class AppDrawerFragment : BaseFragment() {
         }
 
         adapter.setAppList(combined)
+        // A list refresh must not auto-launch: a stale one-match query would relaunch the app on every return (upstream #654/#766)
+        adapter.allowAutoLaunch = false
         adapter.filter.filter(binding.search.query)
         updateCategoryRow(apps)
     }
