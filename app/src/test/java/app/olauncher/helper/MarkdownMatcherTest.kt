@@ -227,6 +227,13 @@ class MarkdownMatcherTest {
             assertTrue(line, MarkdownMatcher.findMatches(line).none { it is MarkdownMatch.Rule })
         }
     }
+
+    @Test
+    fun `hashtags and mentions are tags, headings emails and links are not`() {
+        val text = "#todo call @anna re #work/q4 #1\n# Heading a@b.com https://x.com/#frag `#code` C#"
+        val tags = MarkdownMatcher.findMatches(text).filterIsInstance<MarkdownMatch.Tag>().map { text.substring(it.range.start, it.range.end) }
+        assertEquals(listOf("#todo", "@anna", "#work/q4"), tags)
+    }
 }
 
 internal fun List<MarkdownMatch>.inline(style: InlineStyle) = filterIsInstance<MarkdownMatch.Inline>().filter { it.style == style }

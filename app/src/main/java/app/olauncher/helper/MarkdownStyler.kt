@@ -185,6 +185,7 @@ object MarkdownStyler {
                         editable.setSpan(MarkdownLinkHaloSpan(ColorUtils.setAlphaComponent(accentColor, 0x80)), match.content.start, match.content.end, FLAG)
                     }
                     is MarkdownMatch.Escape -> dim(editable, match.markerRange, dimColor)
+                    is MarkdownMatch.Tag -> editable.setSpan(MarkdownColorSpan(accentColor), match.range.start, match.range.end, FLAG)
                     is MarkdownMatch.Bullet -> {
                         if (editing) dim(editable, match.markerRange, dimColor)
                         else editable.setSpan(BulletMarkerSpan(), match.markerRange.start, match.markerRange.end, FLAG)

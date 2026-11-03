@@ -18,6 +18,10 @@ The top half is a plain text box that's always there: write something down witho
 >
 > — Jade, a user
 
+> Love this launcher.
+>
+> — [debdutdeb](https://github.com/mstcgalis/scratchpad-launcher/issues/26), on GitHub
+
 <p align="center">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" alt="Scratchpad Launcher home screen" width="260">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" alt="Scratchpad with markdown headings, bold text and tickable checkboxes above the app list" width="260">
@@ -32,7 +36,7 @@ It's for anyone who keeps a shopping list, a phone number, or today's three task
 ## Features
 
 - **Always-visible scratchpad**: unlock your phone and start typing. Notes are saved as you type and survive reboots.
-- **Light markdown**: `# headings`, `**bold**`, `*italic*`, `<u>underline</u>`, `~~strike~~`, `==highlight==`, `` `code` ``, `[links](url)` (bare web links, emails and `+` phone numbers are tappable too), `- lists` and `- [ ]` checkboxes you can tick with a tap. Formatting marks are hidden until you tap to edit. Lists nest with indentation, deeper headings fade, and the scratchpad font is selectable. An optional formatting toolbar above the keyboard is off by default (Settings → Formatting toolbar).
+- **Light markdown**: `# headings`, `**bold**`, `*italic*`, `<u>underline</u>`, `~~strike~~`, `==highlight==`, `` `code` ``, `[links](url)` (bare web links, emails and `+` phone numbers are tappable too), `- lists`, `- [ ]` checkboxes you can tick with a tap, and highlighted `#tags` and `@mentions`. Formatting marks are hidden until you tap to edit. Lists nest with indentation, deeper headings fade, and the scratchpad font is selectable. An optional formatting toolbar above the keyboard is off by default (Settings → Formatting toolbar).
 - **Type to launch**: swipe up, type a few letters, and the app opens as soon as there's only one match.
 - **Sync as `scratchpad.md`**: optionally mirror the scratchpad into a folder, e.g. an Obsidian vault synced to your other devices. See [backup and restore](#backup-and-restore).
 - **Small, fixed app list**: a handful of apps with no icons and no clutter. Rename, hide, and align them.

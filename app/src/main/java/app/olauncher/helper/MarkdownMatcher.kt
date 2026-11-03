@@ -16,6 +16,8 @@ sealed class MarkdownMatch {
     /** `---`, `***` or `___` alone on a line: a full-width divider (HTML `<hr>`). */
     data class Rule(val range: TextRange) : MarkdownMatch()
     data class Checkbox(val checked: Boolean, val markerRange: TextRange, val contentRange: TextRange) : MarkdownMatch()
+    /** `#tag` or `@name`, highlighted like in Obsidian/Discord. */
+    data class Tag(val range: TextRange) : MarkdownMatch()
 }
 
 object MarkdownMatcher {
@@ -34,6 +36,9 @@ object MarkdownMatcher {
     private val emailRegex = Regex("""(?<![\w.+-])[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.[A-Za-z]{2,}(?![\w-])""")
     // ponytail: only international numbers (leading +), so dates and amounts don't turn into links.
     private val phoneRegex = Regex("""(?<![\w+])\+\d[\d -]{5,}\d(?!\w)""")
+    // Obsidian-style: must start with a letter or _ (so `#1` and `# Heading` stay plain), `/` nests.
+    // ponytail: highlight only, no tap action; a single note has nothing to filter by.
+    private val tagRegex = Regex("""(?<![\p{L}\p{N}_#@&/])[#@][\p{L}_][\p{L}\p{N}_/-]*""")
 
     /** `_` only counts outside words (CommonMark), so snake_case_names stay plain. */
     private fun underscore(marker: String) =
@@ -97,6 +102,10 @@ object MarkdownMatcher {
             val end = m.range.last + 1
             matches.add(MarkdownMatch.Link(url(m.value), TextRange(m.range.first, m.range.first), TextRange(m.range.first, end), TextRange(end, end)))
             mask(m.range.first, end)
+        }
+        for (m in find(tagRegex)) {
+            matches.add(MarkdownMatch.Tag(TextRange(m.range.first, m.range.last + 1)))
+            mask(m.range.first, m.range.last + 1)
         }
         for ((style, regex) in delimiters) {
             for (m in find(regex)) {
