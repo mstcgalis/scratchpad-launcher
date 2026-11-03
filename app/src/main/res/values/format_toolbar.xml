@@ -10,17 +10,18 @@
     <string name="accent_default">Default</string>
     <string name="scratchpad_accent_preview">A link in your note</string>
     <string name="format_done">Done</string>
-    <string name="format_bold" translatable="false">B</string>
-    <string name="format_italic" translatable="false">I</string>
-    <string name="format_underline" translatable="false"><u>U</u></string>
-    <string name="format_strike" translatable="false"><strike>S</strike></string>
-    <string name="format_highlight" translatable="false">==</string>
-    <string name="format_code" translatable="false">`</string>
-    <string name="format_link" translatable="false">↗</string>
-    <string name="format_heading" translatable="false">H</string>
-    <string name="format_bullet" translatable="false">•</string>
-    <string name="format_checkbox" translatable="false">☐</string>
-    <string name="format_indent" translatable="false">→</string>
-    <string name="format_outdent" translatable="false">←</string>
+    <!-- ponytail: icon labels (TalkBack + long-press) are English-only; translate when someone asks -->
+    <string name="format_bold" translatable="false">Bold</string>
+    <string name="format_italic" translatable="false">Italic</string>
+    <string name="format_underline" translatable="false">Underline</string>
+    <string name="format_strike" translatable="false">Strikethrough</string>
+    <string name="format_highlight" translatable="false">Highlight</string>
+    <string name="format_code" translatable="false">Code</string>
+    <string name="format_link" translatable="false">Link</string>
+    <string name="format_heading" translatable="false">Heading</string>
+    <string name="format_bullet" translatable="false">Bulleted list</string>
+    <string name="format_checkbox" translatable="false">Checkbox</string>
+    <string name="format_indent" translatable="false">Indent</string>
+    <string name="format_outdent" translatable="false">Outdent</string>
     <string name="format_clear_done">Clear ✓</string>
 </resources>

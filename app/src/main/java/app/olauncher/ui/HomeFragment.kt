@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -40,6 +41,7 @@ import androidx.core.view.updatePadding
 import androidx.core.view.setPadding
 import androidx.core.view.doOnLayout
 import androidx.core.widget.addTextChangedListener
+import androidx.appcompat.widget.TooltipCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -518,7 +520,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, View.OnLongClickListe
         val systemDark = Resources.getSystem().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         toolbar.setBackgroundColor(if (systemDark) 0xFF000000.toInt() else 0xFFFFFFFF.toInt())
         val textColor = if (systemDark) Color.WHITE else Color.BLACK
-        ((toolbar.getChildAt(0)) as ViewGroup).children.forEach { (it as? TextView)?.setTextColor(textColor) }
+        ((toolbar.getChildAt(0)) as ViewGroup).children.forEach {
+            (it as? ImageView)?.setColorFilter(textColor)
+            TooltipCompat.setTooltipText(it, it.contentDescription) // long-press names the icon
+        }
 
         // The layout never resizes: the toolbar just rides the keyboard's top edge over the bottom half,
         // so closing the keyboard can't shift the note or the clock. ponytail: a keyboard taller than the

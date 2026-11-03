@@ -343,6 +343,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?attr/primaryColorInverseTrans90"
+        android:fadingEdgeLength="40dp"
+        android:requiresFadingEdge="horizontal"
         android:scrollbars="none"
         android:visibility="gone">
 
@@ -352,21 +354,21 @@
             android:orientation="horizontal"
             android:paddingHorizontal="16dp">
 
-            <Button android:id="@+id/formatDone" style="@style/ScratchpadTool" android:text="@string/format_done" />
-            <Button android:id="@+id/formatBold" style="@style/ScratchpadTool" android:text="@string/format_bold" android:textStyle="bold" />
-            <Button android:id="@+id/formatItalic" style="@style/ScratchpadTool" android:text="@string/format_italic" android:textStyle="italic" />
-            <Button android:id="@+id/formatUnderline" style="@style/ScratchpadTool" android:text="@string/format_underline" />
-            <Button android:id="@+id/formatStrike" style="@style/ScratchpadTool" android:text="@string/format_strike" />
-            <Button android:id="@+id/formatHighlight" style="@style/ScratchpadTool" android:text="@string/format_highlight" />
-            <Button android:id="@+id/formatCode" style="@style/ScratchpadTool" android:text="@string/format_code" />
-            <Button android:id="@+id/formatLink" style="@style/ScratchpadTool" android:text="@string/format_link" />
-            <Button android:id="@+id/formatHeading" style="@style/ScratchpadTool" android:text="@string/format_heading" />
-            <Button android:id="@+id/formatBullet" style="@style/ScratchpadTool" android:text="@string/format_bullet" />
-            <Button android:id="@+id/formatCheckbox" style="@style/ScratchpadTool" android:text="@string/format_checkbox" />
-            <Button android:id="@+id/formatIndent" style="@style/ScratchpadTool" android:text="@string/format_indent" />
-            <Button android:id="@+id/formatOutdent" style="@style/ScratchpadTool" android:text="@string/format_outdent" />
+            <ImageButton android:id="@+id/formatDone" style="@style/ScratchpadTool" android:src="@drawable/ic_format_done" android:contentDescription="@string/format_done" />
+            <ImageButton android:id="@+id/formatBold" style="@style/ScratchpadTool" android:src="@drawable/ic_format_bold" android:contentDescription="@string/format_bold" />
+            <ImageButton android:id="@+id/formatItalic" style="@style/ScratchpadTool" android:src="@drawable/ic_format_italic" android:contentDescription="@string/format_italic" />
+            <ImageButton android:id="@+id/formatUnderline" style="@style/ScratchpadTool" android:src="@drawable/ic_format_underline" android:contentDescription="@string/format_underline" />
+            <ImageButton android:id="@+id/formatStrike" style="@style/ScratchpadTool" android:src="@drawable/ic_format_strike" android:contentDescription="@string/format_strike" />
+            <ImageButton android:id="@+id/formatHighlight" style="@style/ScratchpadTool" android:src="@drawable/ic_format_highlight" android:contentDescription="@string/format_highlight" />
+            <ImageButton android:id="@+id/formatCode" style="@style/ScratchpadTool" android:src="@drawable/ic_format_code" android:contentDescription="@string/format_code" />
+            <ImageButton android:id="@+id/formatLink" style="@style/ScratchpadTool" android:src="@drawable/ic_format_link" android:contentDescription="@string/format_link" />
+            <ImageButton android:id="@+id/formatHeading" style="@style/ScratchpadTool" android:src="@drawable/ic_format_heading" android:contentDescription="@string/format_heading" />
+            <ImageButton android:id="@+id/formatBullet" style="@style/ScratchpadTool" android:src="@drawable/ic_format_bullet" android:contentDescription="@string/format_bullet" />
+            <ImageButton android:id="@+id/formatCheckbox" style="@style/ScratchpadTool" android:src="@drawable/ic_format_checkbox" android:contentDescription="@string/format_checkbox" />
+            <ImageButton android:id="@+id/formatIndent" style="@style/ScratchpadTool" android:src="@drawable/ic_format_indent" android:contentDescription="@string/format_indent" />
+            <ImageButton android:id="@+id/formatOutdent" style="@style/ScratchpadTool" android:src="@drawable/ic_format_outdent" android:contentDescription="@string/format_outdent" />
             <!-- Last, away from the others: deletes ticked lines -->
-            <Button android:id="@+id/formatClearDone" style="@style/ScratchpadTool" android:layout_marginStart="16dp" android:text="@string/format_clear_done" />
+            <ImageButton android:id="@+id/formatClearDone" style="@style/ScratchpadTool" android:layout_marginStart="16dp" android:src="@drawable/ic_format_clear_done" android:contentDescription="@string/format_clear_done" />
         </LinearLayout>
     </HorizontalScrollView>
 </FrameLayout>
