@@ -1,0 +1,8 @@
+- #tags and @mentions are highlighted
+- Formatting toolbar: clear icons, most-used first, long-press for names
+- Tap phone numbers and email addresses to call or write
+- Scrolling the note no longer opens the keyboard
+- Dim wallpaper option for busy backgrounds
+- 10 new languages
+- Screen time counts overlapping and screen-off usage correctly
+- Fixes for pinned shortcuts, e-ink screens and app search
